@@ -1,0 +1,224 @@
+{
+  "name": "GreenNode — Q&A Telegram Bot",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": ["message"],
+        "additionalFields": {}
+      },
+      "id": "cc33dd44-0003-4000-8000-000000000001",
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.1,
+      "position": [240, 300],
+      "webhookId": "greennode-qa-telegram",
+      "notes": "Gắn vào bot TOKEN trong Telegram credentials của n8n"
+    },
+    {
+      "parameters": {
+        "jsCode": "const msg = $input.first().json;\nconst text = msg.message?.text || msg.channel_post?.text || '';\nconst chatId = msg.message?.chat?.id || msg.channel_post?.chat?.id || '';\nconst userId = msg.message?.from?.id || '';\nconst username = msg.message?.from?.username || '';\n\n// Bỏ qua lệnh /start, /help\nif (text.startsWith('/start') || text.startsWith('/help')) {\n  return [{ json: { skip: true, chatId, reply: '👋 Xin chào! Gửi câu hỏi về GreenNode VKS, đối thủ, pricing, hoặc market trends.' } }];\n}\n\nconst ts = Date.now().toString(36);\nreturn [{ json: {\n  skip: false,\n  question: text.trim(),\n  chatId: String(chatId),\n  userId: String(userId),\n  username,\n  session_id: `tg-${chatId}-${ts}`,\n  request_id: `qa-${ts}`\n}}];"
+      },
+      "id": "cc33dd44-0003-4000-8000-000000000002",
+      "name": "Parse Message",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "id": "cond-skip",
+              "leftValue": "={{ $json.skip }}",
+              "rightValue": true,
+              "operator": { "type": "boolean", "operation": "equal" }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "cc33dd44-0003-4000-8000-000000000003",
+      "name": "Skip command?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "sendMessage",
+        "chatId": "={{ $json.chatId }}",
+        "text": "={{ $json.reply }}",
+        "additionalFields": {}
+      },
+      "id": "cc33dd44-0003-4000-8000-000000000004",
+      "name": "Reply to Command",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [900, 160]
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "sendMessage",
+        "chatId": "={{ $json.chatId }}",
+        "text": "_⏳ Đang xử lý câu hỏi..._",
+        "additionalFields": { "parse_mode": "Markdown" }
+      },
+      "id": "cc33dd44-0003-4000-8000-000000000005",
+      "name": "Send Typing Indicator",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [900, 360]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.AGENTBASE_BASE_URL }}/tasks/qa",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"question\": \"{{ $('Parse Message').item.json.question }}\",\n  \"actor_id\": \"{{ $('Parse Message').item.json.userId }}\",\n  \"session_id\": \"{{ $('Parse Message').item.json.session_id }}\"\n}",
+        "options": { "timeout": 45000 }
+      },
+      "id": "cc33dd44-0003-4000-8000-000000000006",
+      "name": "POST /tasks/qa",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1120, 360],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "id": "cond-escalated",
+              "leftValue": "={{ $json.escalated }}",
+              "rightValue": true,
+              "operator": { "type": "boolean", "operation": "equal" }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "cc33dd44-0003-4000-8000-000000000007",
+      "name": "Escalated?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1340, 360]
+    },
+    {
+      "parameters": {
+        "jsCode": "const r = $input.first().json;\nconst parsed = $('Parse Message').first().json;\nconst answer = r.answer || 'Không có câu trả lời.';\nconst conf = r.confidence || 'medium';\nconst confIcon = conf === 'high' ? '🟢' : conf === 'medium' ? '🟡' : '🔴';\nconst sources = (r.sources || []).slice(0,3).join(', ');\nreturn [{ json: {\n  chatId: parsed.chatId,\n  reply: `${answer}\\n\\n${confIcon} *Confidence:* ${conf}${sources ? '\\n📚 Sources: ' + sources : ''}`\n}}];"
+      },
+      "id": "cc33dd44-0003-4000-8000-000000000008",
+      "name": "Format Direct Answer",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1560, 260]
+    },
+    {
+      "parameters": {
+        "jsCode": "const r = $input.first().json;\nconst parsed = $('Parse Message').first().json;\nconst answer = r.answer || 'Workspace chưa có dữ liệu đủ để trả lời chắc chắn.';\nconst researchUsed = r.research_used ? '\\n\\n🔍 _Đã collect dữ liệu mới nhất._' : '';\nreturn [{ json: {\n  chatId: parsed.chatId,\n  reply: `${answer}${researchUsed}\\n\\n🔴 *Confidence:* low — Cần xác minh thêm.`\n}}];"
+      },
+      "id": "cc33dd44-0003-4000-8000-000000000009",
+      "name": "Format Escalated Answer",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1560, 460]
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "sendMessage",
+        "chatId": "={{ $json.chatId }}",
+        "text": "={{ $json.reply }}",
+        "additionalFields": { "parse_mode": "Markdown" }
+      },
+      "id": "cc33dd44-0003-4000-8000-000000000010",
+      "name": "Telegram — Send Answer",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [1780, 360]
+    },
+    {
+      "parameters": {
+        "jsCode": "const parsed = $('Parse Message').first().json;\nreturn [{ json: {\n  chatId: parsed.chatId,\n  reply: '❌ Xin lỗi, đang gặp sự cố kỹ thuật. Vui lòng thử lại sau.'\n}}];"
+      },
+      "id": "cc33dd44-0003-4000-8000-000000000011",
+      "name": "Format Error Reply",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1120, 520]
+    },
+    {
+      "parameters": {},
+      "id": "cc33dd44-0003-4000-8000-000000000012",
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [900, 520]
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "sendMessage",
+        "chatId": "={{ $json.chatId }}",
+        "text": "={{ $json.reply }}",
+        "additionalFields": {}
+      },
+      "id": "cc33dd44-0003-4000-8000-000000000013",
+      "name": "Telegram — Send Error Reply",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [1340, 520]
+    }
+  ],
+  "connections": {
+    "Telegram Trigger": {
+      "main": [[{ "node": "Parse Message", "type": "main", "index": 0 }]]
+    },
+    "Parse Message": {
+      "main": [[{ "node": "Skip command?", "type": "main", "index": 0 }]]
+    },
+    "Skip command?": {
+      "main": [
+        [{ "node": "Reply to Command", "type": "main", "index": 0 }],
+        [{ "node": "Send Typing Indicator", "type": "main", "index": 0 }]
+      ]
+    },
+    "Send Typing Indicator": {
+      "main": [[{ "node": "POST /tasks/qa", "type": "main", "index": 0 }]]
+    },
+    "POST /tasks/qa": {
+      "main": [[{ "node": "Escalated?", "type": "main", "index": 0 }]]
+    },
+    "Escalated?": {
+      "main": [
+        [{ "node": "Format Escalated Answer", "type": "main", "index": 0 }],
+        [{ "node": "Format Direct Answer", "type": "main", "index": 0 }]
+      ]
+    },
+    "Format Direct Answer": {
+      "main": [[{ "node": "Telegram — Send Answer", "type": "main", "index": 0 }]]
+    },
+    "Format Escalated Answer": {
+      "main": [[{ "node": "Telegram — Send Answer", "type": "main", "index": 0 }]]
+    },
+    "Error Trigger": {
+      "main": [[{ "node": "Format Error Reply", "type": "main", "index": 0 }]]
+    },
+    "Format Error Reply": {
+      "main": [[{ "node": "Telegram — Send Error Reply", "type": "main", "index": 0 }]]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "tags": ["greennode", "qa", "telegram"],
+  "pinData": {}
+}

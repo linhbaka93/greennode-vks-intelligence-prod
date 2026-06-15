@@ -1,0 +1,205 @@
+{
+  "name": "GreenNode — Battlecard Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "greennode-battlecard",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "ee55ff66-0005-4000-8000-000000000001",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "webhookId": "greennode-battlecard",
+      "notes": "POST body: { competitor: 'aws-eks' | 'viettel-voks' | 'fpt-fke' | 'bizfly-bke', requester: 'sales@...' }"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "id": "cond-comp",
+              "leftValue": "={{ $json.body.competitor }}",
+              "rightValue": "",
+              "operator": { "type": "string", "operation": "notEmpty" }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "ee55ff66-0005-4000-8000-000000000002",
+      "name": "Competitor specified?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={ \"error\": \"competitor field is required\", \"valid_values\": [\"aws-eks\",\"viettel-voks\",\"fpt-fke\",\"bizfly-bke\"] }",
+        "options": { "responseCode": 422 }
+      },
+      "id": "ee55ff66-0005-4000-8000-000000000003",
+      "name": "Respond 422",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [680, 460]
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $input.first().json.body || $input.first().json;\nconst ts = Date.now().toString(36);\nreturn [{ json: {\n  request_id: `battlecard-${ts}`,\n  competitor: body.competitor,\n  requester: body.requester || 'n8n-webhook'\n}}];"
+      },
+      "id": "ee55ff66-0005-4000-8000-000000000004",
+      "name": "Prepare Request",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 240]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"accepted\": true,\n  \"request_id\": \"{{ $json.request_id }}\",\n  \"competitor\": \"{{ $json.competitor }}\",\n  \"message\": \"Battlecard đang được tạo. Kết quả sẽ gửi qua Telegram.\"\n}",
+        "options": { "responseCode": 202 }
+      },
+      "id": "ee55ff66-0005-4000-8000-000000000005",
+      "name": "Respond 202 Accepted",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [900, 160]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.AGENTBASE_BASE_URL }}/tasks/battlecard",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"request_id\": \"{{ $('Prepare Request').item.json.request_id }}\",\n  \"source\": \"n8n-webhook\",\n  \"payload\": { \"competitor\": \"{{ $('Prepare Request').item.json.competitor }}\" },\n  \"dry_run\": false,\n  \"save_output\": true,\n  \"human_approval_required\": false\n}",
+        "options": { "timeout": 360000 }
+      },
+      "id": "ee55ff66-0005-4000-8000-000000000006",
+      "name": "POST /tasks/battlecard",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [900, 320],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "id": "cond-quality",
+              "leftValue": "={{ $json.quality_passed }}",
+              "rightValue": true,
+              "operator": { "type": "boolean", "operation": "equal" }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "ee55ff66-0005-4000-8000-000000000007",
+      "name": "Quality passed?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1120, 320]
+    },
+    {
+      "parameters": {
+        "jsCode": "const r = $input.first().json;\nconst prep = $('Prepare Request').first().json;\nconst score = r.quality_score ? (r.quality_score * 100).toFixed(0) + '%' : 'N/A';\nreturn [{ json: {\n  msg: `🎴 *Battlecard Sẵn Sàng — ${prep.competitor.toUpperCase()}*\\n\\n✅ Quality: ${score}\\n📁 Artifact: ${r.artifact_path || '-'}\\n\\nRequested by: ${prep.requester}\\n\\n_Xem file final.md để lấy battlecard hoàn chỉnh._`\n}}];"
+      },
+      "id": "ee55ff66-0005-4000-8000-000000000008",
+      "name": "Build Success Message",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1340, 240]
+    },
+    {
+      "parameters": {
+        "jsCode": "const r = $input.first().json;\nconst prep = $('Prepare Request').first().json;\nconst score = r.quality_score ? (r.quality_score * 100).toFixed(0) + '%' : 'N/A';\nconst issues = (r.warnings || []).slice(0,3).join('\\n• ');\nreturn [{ json: {\n  msg: `⚠️ *Battlecard Quality Issue — ${prep.competitor.toUpperCase()}*\\n\\nScore: ${score}\\nStatus: ${r.status}\\nArtifact: ${r.artifact_path || '-'}\\n\\n❌ Issues:\\n• ${issues || 'Xem artifact'}\\n\\nRequested by: ${prep.requester}`\n}}];"
+      },
+      "id": "ee55ff66-0005-4000-8000-000000000009",
+      "name": "Build Quality Issue Message",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1340, 400]
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "sendMessage",
+        "chatId": "={{ $env.TELEGRAM_OWNER_CHAT_ID }}",
+        "text": "={{ $json.msg }}",
+        "additionalFields": { "parse_mode": "Markdown" }
+      },
+      "id": "ee55ff66-0005-4000-8000-000000000010",
+      "name": "Telegram — Notify Result",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [1560, 320]
+    },
+    {
+      "parameters": {},
+      "id": "ee55ff66-0005-4000-8000-000000000011",
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [680, 560]
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "sendMessage",
+        "chatId": "={{ $env.TELEGRAM_OWNER_CHAT_ID }}",
+        "text": "=❌ *Battlecard Workflow Error*\\n\\n`{{ $json.message }}`",
+        "additionalFields": { "parse_mode": "Markdown" }
+      },
+      "id": "ee55ff66-0005-4000-8000-000000000012",
+      "name": "Telegram — Error Notify",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [900, 560]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [[{ "node": "Competitor specified?", "type": "main", "index": 0 }]]
+    },
+    "Competitor specified?": {
+      "main": [
+        [{ "node": "Prepare Request", "type": "main", "index": 0 }],
+        [{ "node": "Respond 422", "type": "main", "index": 0 }]
+      ]
+    },
+    "Prepare Request": {
+      "main": [[{ "node": "Respond 202 Accepted", "type": "main", "index": 0 }]]
+    },
+    "Respond 202 Accepted": {
+      "main": [[{ "node": "POST /tasks/battlecard", "type": "main", "index": 0 }]]
+    },
+    "POST /tasks/battlecard": {
+      "main": [[{ "node": "Quality passed?", "type": "main", "index": 0 }]]
+    },
+    "Quality passed?": {
+      "main": [
+        [{ "node": "Build Success Message", "type": "main", "index": 0 }],
+        [{ "node": "Build Quality Issue Message", "type": "main", "index": 0 }]
+      ]
+    },
+    "Build Success Message": {
+      "main": [[{ "node": "Telegram — Notify Result", "type": "main", "index": 0 }]]
+    },
+    "Build Quality Issue Message": {
+      "main": [[{ "node": "Telegram — Notify Result", "type": "main", "index": 0 }]]
+    },
+    "Error Trigger": {
+      "main": [[{ "node": "Telegram — Error Notify", "type": "main", "index": 0 }]]
+    }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1", "saveManualExecutions": true },
+  "tags": ["greennode", "battlecard"],
+  "pinData": {}
+}

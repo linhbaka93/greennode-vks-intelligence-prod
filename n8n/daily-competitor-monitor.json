@@ -1,0 +1,214 @@
+{
+  "name": "GreenNode — Daily Competitor Monitor",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [{ "field": "cronExpression", "expression": "0 23 * * *" }]
+        }
+      },
+      "id": "dd44ee55-0004-4000-8000-000000000001",
+      "name": "Schedule 06:00 ICT Daily",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [240, 300],
+      "notes": "06:00 ICT = 23:00 UTC prev day"
+    },
+    {
+      "parameters": {
+        "jsCode": "const ts = Date.now().toString(36);\nconst now = new Date();\nreturn [{ json: { request_id: `cmon-${now.toISOString().slice(0,10)}-${ts}` } }];"
+      },
+      "id": "dd44ee55-0004-4000-8000-000000000002",
+      "name": "Generate Request ID",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.AGENTBASE_BASE_URL }}/tasks/competitor-monitor",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"request_id\": \"{{ $json.request_id }}\",\n  \"source\": \"n8n-cron\",\n  \"dry_run\": false,\n  \"notify\": false,\n  \"save_output\": true\n}",
+        "options": { "timeout": 360000 }
+      },
+      "id": "dd44ee55-0004-4000-8000-000000000003",
+      "name": "POST /tasks/competitor-monitor",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [680, 300],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "id": "cond-fail",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "failed",
+              "operator": { "type": "string", "operation": "notEquals" }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "dd44ee55-0004-4000-8000-000000000004",
+      "name": "Run OK?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $env.AGENTBASE_BASE_URL }}/tasks/{{ $json.task_id }}",
+        "options": { "timeout": 15000 }
+      },
+      "id": "dd44ee55-0004-4000-8000-000000000005",
+      "name": "GET Task Detail",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1120, 200]
+    },
+    {
+      "parameters": {
+        "jsCode": "const r = $input.first().json;\nconst warns = r.warnings || [];\n// Có signal đáng chú ý nếu có warnings chứa từ khoá severity\nconst hasMeaningfulSignal = warns.some(w =>\n  /giảm giá|tăng giá|ra mắt|launch|feature|GPU|partnership|deal|alert|severity/i.test(w)\n) || (r.quality_score && r.quality_score < 0.9);\nreturn [{ json: { ...r, has_meaningful_signal: hasMeaningfulSignal } }];"
+      },
+      "id": "dd44ee55-0004-4000-8000-000000000006",
+      "name": "Detect Meaningful Signal",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1340, 200]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "id": "cond-signal",
+              "leftValue": "={{ $json.has_meaningful_signal }}",
+              "rightValue": true,
+              "operator": { "type": "boolean", "operation": "equal" }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "dd44ee55-0004-4000-8000-000000000007",
+      "name": "Has Signal?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1560, 200]
+    },
+    {
+      "parameters": {
+        "jsCode": "const r = $input.first().json;\nconst score = r.quality_score ? (r.quality_score * 100).toFixed(0) + '%' : '?';\nconst warns = (r.warnings || []).slice(0,5).join('\\n• ');\nreturn [{ json: {\n  alert_msg: `🔔 *Competitor Monitor — Signal Detected*\\n${new Date().toLocaleDateString('vi-VN')}\\n\\nQuality: ${score}\\nArtifact: ${r.artifact_path || '-'}\\n\\n📌 Details:\\n• ${warns || 'Xem artifact để biết chi tiết'}\\n\\n➡️ Mở artifact/final.md để xem đầy đủ.`\n}}];"
+      },
+      "id": "dd44ee55-0004-4000-8000-000000000008",
+      "name": "Build Alert Message",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1780, 140]
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "sendMessage",
+        "chatId": "={{ $env.TELEGRAM_OWNER_CHAT_ID }}",
+        "text": "={{ $json.alert_msg }}",
+        "additionalFields": { "parse_mode": "Markdown" }
+      },
+      "id": "dd44ee55-0004-4000-8000-000000000009",
+      "name": "Telegram — Send Alert",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [2000, 140]
+    },
+    {
+      "parameters": {},
+      "id": "dd44ee55-0004-4000-8000-000000000010",
+      "name": "No Signal — Silent End",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [1780, 280],
+      "notes": "Không có thay đổi đáng kể — run lưu artifact nhưng không gửi notification"
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "sendMessage",
+        "chatId": "={{ $env.TELEGRAM_OWNER_CHAT_ID }}",
+        "text": "=🚨 *Competitor Monitor Failed*\\n\\nStatus: {{ $json.status }}\\nWarnings: {{ ($json.warnings||[]).join(', ') }}\\n\\n{{ new Date().toISOString() }}",
+        "additionalFields": { "parse_mode": "Markdown" }
+      },
+      "id": "dd44ee55-0004-4000-8000-000000000011",
+      "name": "Telegram — Run Failed Alert",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [1120, 420]
+    },
+    {
+      "parameters": {},
+      "id": "dd44ee55-0004-4000-8000-000000000012",
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [680, 500]
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "sendMessage",
+        "chatId": "={{ $env.TELEGRAM_OWNER_CHAT_ID }}",
+        "text": "=⚠️ *Competitor Monitor Workflow Error*\\n`{{ $json.message }}`",
+        "additionalFields": { "parse_mode": "Markdown" }
+      },
+      "id": "dd44ee55-0004-4000-8000-000000000013",
+      "name": "Telegram — Workflow Error",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [900, 500]
+    }
+  ],
+  "connections": {
+    "Schedule 06:00 ICT Daily": {
+      "main": [[{ "node": "Generate Request ID", "type": "main", "index": 0 }]]
+    },
+    "Generate Request ID": {
+      "main": [[{ "node": "POST /tasks/competitor-monitor", "type": "main", "index": 0 }]]
+    },
+    "POST /tasks/competitor-monitor": {
+      "main": [[{ "node": "Run OK?", "type": "main", "index": 0 }]]
+    },
+    "Run OK?": {
+      "main": [
+        [{ "node": "GET Task Detail", "type": "main", "index": 0 }],
+        [{ "node": "Telegram — Run Failed Alert", "type": "main", "index": 0 }]
+      ]
+    },
+    "GET Task Detail": {
+      "main": [[{ "node": "Detect Meaningful Signal", "type": "main", "index": 0 }]]
+    },
+    "Detect Meaningful Signal": {
+      "main": [[{ "node": "Has Signal?", "type": "main", "index": 0 }]]
+    },
+    "Has Signal?": {
+      "main": [
+        [{ "node": "Build Alert Message", "type": "main", "index": 0 }],
+        [{ "node": "No Signal — Silent End", "type": "main", "index": 0 }]
+      ]
+    },
+    "Build Alert Message": {
+      "main": [[{ "node": "Telegram — Send Alert", "type": "main", "index": 0 }]]
+    },
+    "Error Trigger": {
+      "main": [[{ "node": "Telegram — Workflow Error", "type": "main", "index": 0 }]]
+    }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1", "saveManualExecutions": true },
+  "tags": ["greennode", "competitor", "monitor"],
+  "pinData": {}
+}

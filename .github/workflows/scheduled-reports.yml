@@ -1,0 +1,60 @@
+# Backup scheduler — fires 30 minutes after the in-runtime scheduler (15:00 ICT)
+# so the runtime's idempotency guard skips duplicates ("skipped_already_ran" = OK).
+# A red run here means the runtime did not respond — check runtime health.
+#
+# Required repository secrets:
+#   AGENT_ENDPOINT_URL      runtime endpoint base URL (no trailing slash)
+#   SCHEDULER_TRIGGER_TOKEN same value as the runtime env var
+
+name: scheduled-reports
+
+on:
+  schedule:
+    - cron: "30 8 * * *"   # daily        — 15:30 ICT
+    - cron: "30 8 * * 5"   # weekly (Fri) — 15:30 ICT
+    - cron: "30 8 1 * *"   # monthly (1st)— 15:30 ICT
+  workflow_dispatch:
+    inputs:
+      job:
+        description: "Job to trigger"
+        required: true
+        default: "daily-intelligence"
+        type: choice
+        options:
+          - daily-intelligence
+          - weekly-digest
+          - monthly-brief
+          - competitor-monitor
+          - memory-maintenance
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Resolve target jobs
+        id: resolve
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo 'jobs=${{ inputs.job }}' >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event.schedule }}" = "30 8 * * 5" ]; then
+            echo 'jobs=weekly-digest' >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event.schedule }}" = "30 8 1 * *" ]; then
+            echo 'jobs=monthly-brief' >> "$GITHUB_OUTPUT"
+          else
+            echo 'jobs=daily-intelligence' >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Trigger runtime scheduler
+        env:
+          ENDPOINT: ${{ secrets.AGENT_ENDPOINT_URL }}
+          TOKEN: ${{ secrets.SCHEDULER_TRIGGER_TOKEN }}
+        run: |
+          for job in ${{ steps.resolve.outputs.jobs }}; do
+            echo "Triggering $job"
+            response=$(curl -fsS --max-time 900 -X POST \
+              -H "X-Scheduler-Token: $TOKEN" \
+              "$ENDPOINT/scheduler/run/$job")
+            echo "$response"
+            status=$(echo "$response" | python3 -c 'import json,sys; print(json.load(sys.stdin)["status"])')
+            echo "Result: $status (skipped_already_ran = runtime scheduler already ran today, OK)"
+          done

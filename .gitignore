@@ -1,0 +1,68 @@
+# ── Python ────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# ── Virtual environments ──────────────────────────────────────────
+.venv/
+venv/
+.uv/
+
+# ── Dev tool caches ───────────────────────────────────────────────
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+*.coverage
+
+# ── Secrets — KHÔNG commit ────────────────────────────────────────
+.env
+.env.*
+!.env.example
+.greennode.json
+registry-credentials.json
+*-credentials.json
+*.key
+*.pem
+*.p12
+*.pfx
+
+# ── AgentBase / wizard state ──────────────────────────────────────
+.agentbase/
+.agentbase-state.json
+
+# ── Runtime artifacts (mount volume, không commit) ────────────────
+outputs/runs/*/
+!outputs/runs/README.md
+!outputs/runs/.gitkeep
+
+# ── Docker infra data ─────────────────────────────────────────────
+docker/.env
+docker/.n8n/
+docker/postgres-data/
+docker/caddy-data/
+
+# ── OS ────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# ── IDE ───────────────────────────────────────────────────────────
+.vscode/
+.idea/
+
+# ── Internal planning / design docs — KHÔNG đưa vào repo client ────
+# Roadmap, progress log, design/plan, brainstorm — giữ local-only
+docs/
+ROADMAP.md
+*-plan.md
+*-design.md
+*-brainstorm*.md

@@ -1,0 +1,226 @@
+{
+  "name": "GreenNode — Daily Intelligence Production",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [{ "field": "cronExpression", "expression": "0 0 * * 1-5" }]
+        }
+      },
+      "id": "aa11bb22-0001-4000-8000-000000000001",
+      "name": "Schedule 07:00 ICT (Mon–Fri)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [240, 300],
+      "notes": "07:00 ICT = 00:00 UTC. Adjust TZ in n8n settings if needed."
+    },
+    {
+      "parameters": {
+        "jsCode": "const now = new Date();\nconst pad = n => String(n).padStart(2,'0');\nconst dateStr = `${now.getUTCFullYear()}-${pad(now.getUTCMonth()+1)}-${pad(now.getUTCDate())}`;\nconst ts = Date.now().toString(36);\nreturn [{ json: { request_id: `daily-${dateStr}-${ts}`, triggered_at: now.toISOString() } }];"
+      },
+      "id": "aa11bb22-0001-4000-8000-000000000002",
+      "name": "Generate Request ID",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.AGENTBASE_BASE_URL }}/tasks/daily-intelligence",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"request_id\": \"{{ $json.request_id }}\",\n  \"source\": \"n8n-cron\",\n  \"days_window\": 1,\n  \"dry_run\": false,\n  \"notify\": true,\n  \"save_output\": true,\n  \"human_approval_required\": false\n}",
+        "options": {
+          "timeout": 240000,
+          "redirect": { "redirect": { "followRedirects": true } }
+        }
+      },
+      "id": "aa11bb22-0001-4000-8000-000000000003",
+      "name": "POST /tasks/daily-intelligence",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [680, 300],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict" },
+          "conditions": [
+            {
+              "id": "cond-quality",
+              "leftValue": "={{ $json.quality_passed }}",
+              "rightValue": true,
+              "operator": { "type": "boolean", "operation": "equal" }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "aa11bb22-0001-4000-8000-000000000004",
+      "name": "Quality passed?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "id": "cond-approval",
+              "leftValue": "={{ $json.requires_approval }}",
+              "rightValue": true,
+              "operator": { "type": "boolean", "operation": "equal" }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "aa11bb22-0001-4000-8000-000000000005",
+      "name": "Requires approval?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1120, 200]
+    },
+    {
+      "parameters": {
+        "jsCode": "const r = $input.first().json;\nconst score = r.quality_score ? (r.quality_score * 100).toFixed(0) + '%' : 'N/A';\nconst warns = (r.warnings || []).slice(0, 3).join('\\n• ');\nconst fallbacks = (r.fallbacks_used || []).join(', ') || 'none';\nreturn [{ json: {\n  caption: `📊 *Daily Intelligence* — ${new Date().toLocaleDateString('vi-VN')}\\n\\n✅ Quality: ${score}\\n🔄 Fallbacks: ${fallbacks}\\n📁 Artifact: ${r.artifact_path || '-'}${warns ? '\\n\\n⚠️ Warnings:\\n• ' + warns : ''}\\n\\n_Xem báo cáo trong artifact store._`,\n  needs_approval: false\n}}];"
+      },
+      "id": "aa11bb22-0001-4000-8000-000000000006",
+      "name": "Format Auto-publish Message",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1340, 140]
+    },
+    {
+      "parameters": {
+        "jsCode": "const r = $input.first().json;\nconst score = r.quality_score ? (r.quality_score * 100).toFixed(0) + '%' : 'N/A';\nreturn [{ json: {\n  caption: `🔍 *Daily Intelligence — Chờ duyệt* — ${new Date().toLocaleDateString('vi-VN')}\\n\\nQuality: ${score} | Cần review trước khi publish.\\n\\nArtifact: ${r.artifact_path || '-'}\\n\\n➡️ Xem artifact, approve/reject thủ công qua n8n dashboard.`\n}}];"
+      },
+      "id": "aa11bb22-0001-4000-8000-000000000007",
+      "name": "Format Approval Request",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1340, 280]
+    },
+    {
+      "parameters": {
+        "jsCode": "const r = $input.first().json;\nconst status = r.status || 'unknown';\nconst score = r.quality_score ? (r.quality_score * 100).toFixed(0) + '%' : 'N/A';\nconst failures = (r.warnings || []).slice(0, 5).join('\\n• ');\nreturn [{ json: {\n  caption: `🚨 *Daily Intelligence FAILED* — ${new Date().toLocaleDateString('vi-VN')}\\n\\nStatus: ${status}\\nQuality: ${score}\\n\\n❌ Issues:\\n• ${failures || 'Xem log n8n để biết thêm'}\\n\\nArtifact: ${r.artifact_path || '-'}`\n}}];"
+      },
+      "id": "aa11bb22-0001-4000-8000-000000000008",
+      "name": "Format Quality Failed",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1120, 420]
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "sendMessage",
+        "chatId": "={{ $env.TELEGRAM_CHAT_ID }}",
+        "text": "={{ $json.caption }}",
+        "additionalFields": { "parse_mode": "Markdown" }
+      },
+      "id": "aa11bb22-0001-4000-8000-000000000009",
+      "name": "Telegram — Publish",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [1560, 140]
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "sendMessage",
+        "chatId": "={{ $env.TELEGRAM_OWNER_CHAT_ID }}",
+        "text": "={{ $json.caption }}",
+        "additionalFields": { "parse_mode": "Markdown" }
+      },
+      "id": "aa11bb22-0001-4000-8000-000000000010",
+      "name": "Telegram — Approval Request",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [1560, 280]
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "sendMessage",
+        "chatId": "={{ $env.TELEGRAM_OWNER_CHAT_ID }}",
+        "text": "={{ $json.caption }}",
+        "additionalFields": { "parse_mode": "Markdown" }
+      },
+      "id": "aa11bb22-0001-4000-8000-000000000011",
+      "name": "Telegram — Alert Owner",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [1340, 420]
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "sendMessage",
+        "chatId": "={{ $env.TELEGRAM_OWNER_CHAT_ID }}",
+        "text": "=❌ *Daily Intelligence Error*\\n\\nWorkflow gặp lỗi:\\n`{{ $json.message }}`\\n\\nThời gian: {{ new Date().toISOString() }}",
+        "additionalFields": { "parse_mode": "Markdown" }
+      },
+      "id": "aa11bb22-0001-4000-8000-000000000012",
+      "name": "Telegram — Error Notify",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [900, 500]
+    },
+    {
+      "parameters": {},
+      "id": "aa11bb22-0001-4000-8000-000000000013",
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [680, 500]
+    }
+  ],
+  "connections": {
+    "Schedule 07:00 ICT (Mon–Fri)": {
+      "main": [[{ "node": "Generate Request ID", "type": "main", "index": 0 }]]
+    },
+    "Generate Request ID": {
+      "main": [[{ "node": "POST /tasks/daily-intelligence", "type": "main", "index": 0 }]]
+    },
+    "POST /tasks/daily-intelligence": {
+      "main": [[{ "node": "Quality passed?", "type": "main", "index": 0 }]]
+    },
+    "Quality passed?": {
+      "main": [
+        [{ "node": "Requires approval?", "type": "main", "index": 0 }],
+        [{ "node": "Format Quality Failed", "type": "main", "index": 0 }]
+      ]
+    },
+    "Requires approval?": {
+      "main": [
+        [{ "node": "Format Approval Request", "type": "main", "index": 0 }],
+        [{ "node": "Format Auto-publish Message", "type": "main", "index": 0 }]
+      ]
+    },
+    "Format Auto-publish Message": {
+      "main": [[{ "node": "Telegram — Publish", "type": "main", "index": 0 }]]
+    },
+    "Format Approval Request": {
+      "main": [[{ "node": "Telegram — Approval Request", "type": "main", "index": 0 }]]
+    },
+    "Format Quality Failed": {
+      "main": [[{ "node": "Telegram — Alert Owner", "type": "main", "index": 0 }]]
+    },
+    "Error Trigger": {
+      "main": [[{ "node": "Telegram — Error Notify", "type": "main", "index": 0 }]]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  },
+  "tags": ["greennode", "intelligence", "production"],
+  "pinData": {}
+}

@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0",
+  "description": "Eval case cho Q&A Agent — so sánh khi đổi model/prompt.",
+  "cases": [
+    {
+      "id": "qa-pricing-bizfly",
+      "question": "Bizfly BKE pricing so với GreenNode VKS thế nào?",
+      "expects": {
+        "must_cite_label": true,
+        "language": "vi",
+        "max_words": 250,
+        "should_mention": ["pricing", "Bizfly", "GreenNode VKS"]
+      }
+    },
+    {
+      "id": "qa-out-of-domain",
+      "question": "Thời tiết Hà Nội hôm nay thế nào?",
+      "expects": {
+        "should_redirect": true,
+        "language": "vi"
+      }
+    },
+    {
+      "id": "qa-unknown-data",
+      "question": "Doanh thu quý 2 của Viettel IDC là bao nhiêu?",
+      "expects": {
+        "must_say_insufficient": true,
+        "must_not_fabricate": true,
+        "language": "vi"
+      }
+    }
+  ]
+}

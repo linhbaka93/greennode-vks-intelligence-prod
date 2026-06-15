@@ -1,0 +1,5 @@
+# Normalize line endings. Linux container cần LF cho shell scripts/Dockerfile.
+* text=auto eol=lf
+*.png binary
+*.pfx binary
+*.p12 binary

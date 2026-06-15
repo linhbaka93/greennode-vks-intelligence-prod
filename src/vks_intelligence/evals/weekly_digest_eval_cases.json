@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.0",
+  "description": "Eval case cho weekly digest — kiểm tra quality gate và behavior fallback.",
+  "cases": [
+    {
+      "id": "weekly-happy-path",
+      "fixture": "fixtures/weekly_normal_inputs.json",
+      "expects": {
+        "verdict_in": ["pass", "needs_review"],
+        "has_sections": ["TL;DR", "Sources"],
+        "min_sources": 3,
+        "language": "vi"
+      }
+    },
+    {
+      "id": "weekly-missing-sources",
+      "fixture": "fixtures/weekly_no_sources.json",
+      "expects": {
+        "verdict_in": ["revise", "blocked"],
+        "reason_contains": "sources"
+      }
+    },
+    {
+      "id": "weekly-critical-agent-failed",
+      "fixture": "fixtures/weekly_market_trend_failed.json",
+      "expects": {
+        "published": false,
+        "status": "blocked"
+      }
+    }
+  ]
+}

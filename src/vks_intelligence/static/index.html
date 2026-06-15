@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GreenNode VKS Intelligence — Dashboard</title>
+  <style>
+    :root {
+      --bg: #f8f7f5;
+      --surface: #ffffff;
+      --surface-soft: #fbefef;
+      --surface-warn: #fff7df;
+      --surface-good: #edf8f2;
+      --ink: #111827;
+      --muted: #6b7280;
+      --border: #e5e1dc;
+      --green: #16784a;
+      --green-strong: #0f5f39;
+      --rose: #efa5a9;
+      --red: #b42318;
+      --amber: #9a5d00;
+      --blue: #2458a6;
+      --shadow: 0 18px 45px rgba(28, 31, 35, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family:
+        Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      line-height: 1.45;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    .shell {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 44px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 22px;
+    }
+
+    .eyebrow {
+      color: var(--green);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 4px 0 6px;
+      font-size: clamp(1.6rem, 3vw, 2.35rem);
+      line-height: 1.1;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      margin: 0;
+      max-width: 720px;
+      color: var(--muted);
+      font-size: 0.98rem;
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .button {
+      min-height: 40px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+      color: var(--ink);
+      padding: 0 14px;
+      cursor: pointer;
+      box-shadow: 0 1px 0 rgba(17, 24, 39, 0.04);
+    }
+
+    .button.primary {
+      border-color: var(--green);
+      background: var(--green);
+      color: #ffffff;
+    }
+
+    .button:disabled {
+      cursor: wait;
+      opacity: 0.65;
+    }
+
+    .timestamp {
+      color: var(--muted);
+      font-size: 0.84rem;
+      white-space: nowrap;
+    }
+
+    .overview {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .metric {
+      grid-column: span 3;
+      min-height: 118px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+      padding: 16px;
+      box-shadow: 0 1px 0 rgba(17, 24, 39, 0.03);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .metric::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto;
+      height: 5px;
+      background: #d7ddd8;
+    }
+
+    .metric.good::before {
+      background: var(--green);
+    }
+
+    .metric.warn::before {
+      background: #dda12b;
+    }
+
+    .metric.danger::before {
+      background: var(--rose);
+    }
+
+    .metric.blue::before {
+      background: #8bb7e8;
+    }
+
+    .metric .value {
+      margin-top: 14px;
+      font-size: 2rem;
+      line-height: 1;
+      font-weight: 750;
+    }
+
+    .metric .label {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .metric .hint {
+      margin-top: 8px;
+      color: #8a8f98;
+      font-size: 0.78rem;
+    }
+
+    .panel-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 320px;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, #fff, #fffafa);
+    }
+
+    .panel-title {
+      margin: 0;
+      font-size: 1.05rem;
+    }
+
+    .panel-caption {
+      margin: 2px 0 0;
+      color: var(--muted);
+      font-size: 0.84rem;
+    }
+
+    .filters {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .control {
+      height: 38px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--ink);
+      padding: 0 10px;
+      min-width: 140px;
+    }
+
+    .search {
+      min-width: 220px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 760px;
+    }
+
+    th,
+    td {
+      padding: 12px 14px;
+      border-bottom: 1px solid #eee9e4;
+      text-align: left;
+      font-size: 0.88rem;
+      vertical-align: middle;
+    }
+
+    th {
+      background: #fff;
+      color: #374151;
+      font-size: 0.76rem;
+      font-weight: 750;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+
+    tr:hover td {
+      background: #fffafa;
+    }
+
+    .run-id {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.82rem;
+      color: #111827;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 26px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      padding: 3px 9px;
+      font-size: 0.78rem;
+      font-weight: 650;
+      white-space: nowrap;
+    }
+
+    .chip.completed,
+    .chip.pass {
+      background: var(--surface-good);
+      border-color: #c7ead6;
+      color: var(--green-strong);
+    }
+
+    .chip.needs_review,
+    .chip.running {
+      background: var(--surface-warn);
+      border-color: #f0d68b;
+      color: var(--amber);
+    }
+
+    .chip.blocked,
+    .chip.failed {
+      background: #fdecec;
+      border-color: #f4b7b7;
+      color: var(--red);
+    }
+
+    .chip.pending {
+      background: #eef4ff;
+      border-color: #cddcfb;
+      color: var(--blue);
+    }
+
+    .side {
+      display: grid;
+      gap: 14px;
+    }
+
+    .side-section {
+      padding: 16px;
+    }
+
+    .health-band {
+      height: 160px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, #fbf7f7 0 34%, #fff1f0 34% 62%, #f9dada 62% 81%, #efa5a9 81%);
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding: 14px;
+    }
+
+    .health-label {
+      max-width: 160px;
+      font-size: 0.86rem;
+      color: #5e3b3d;
+      font-weight: 650;
+    }
+
+    .quality-pill {
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.72);
+      padding: 7px 10px;
+      font-weight: 750;
+    }
+
+    .breakdown {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .bar-row {
+      display: grid;
+      grid-template-columns: minmax(98px, 1fr) minmax(90px, 2fr) 34px;
+      gap: 8px;
+      align-items: center;
+      font-size: 0.83rem;
+    }
+
+    .bar-track {
+      height: 8px;
+      border-radius: 999px;
+      background: #ece7e1;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: inherit;
+      background: var(--green);
+    }
+
+    .empty,
+    .error {
+      padding: 28px 18px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .error {
+      color: var(--red);
+    }
+
+    @media (max-width: 980px) {
+      .metric {
+        grid-column: span 6;
+      }
+
+      .panel-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .shell {
+        width: min(100% - 20px, 1180px);
+        padding-top: 18px;
+      }
+
+      .topbar,
+      .panel-header {
+        display: grid;
+        align-items: stretch;
+      }
+
+      .actions,
+      .filters {
+        justify-content: stretch;
+      }
+
+      .button,
+      .control,
+      .search {
+        width: 100%;
+        min-width: 0;
+      }
+
+      .metric {
+        grid-column: span 12;
+      }
+    }
+    .tabs {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 18px;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+
+    .tab {
+      border: none;
+      background: transparent;
+      padding: 10px 16px;
+      cursor: pointer;
+      color: var(--muted);
+      font-weight: 650;
+      border-bottom: 2px solid transparent;
+      border-radius: 8px 8px 0 0;
+    }
+
+    .tab:hover {
+      color: var(--ink);
+    }
+
+    .tab.active {
+      color: var(--green-strong);
+      border-bottom-color: var(--green);
+      background: var(--surface);
+    }
+
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: block;
+      animation: fade 0.15s ease;
+    }
+
+    @keyframes fade {
+      from { opacity: 0.4; }
+      to { opacity: 1; }
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      align-items: start;
+    }
+
+    @media (max-width: 760px) {
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .chat-box {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-height: 320px;
+      max-height: 55vh;
+      overflow-y: auto;
+      padding: 12px 4px;
+    }
+
+    .chat-msg {
+      max-width: 85%;
+      padding: 10px 14px;
+      border-radius: 14px;
+      font-size: 0.92rem;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .chat-msg.user {
+      align-self: flex-end;
+      background: var(--green);
+      color: #fff;
+      border-bottom-right-radius: 4px;
+    }
+
+    .chat-msg.bot {
+      align-self: flex-start;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-bottom-left-radius: 4px;
+    }
+
+    .chat-msg.bot.streaming::after {
+      content: "▍";
+      animation: blink 1s steps(1) infinite;
+      color: var(--green-strong);
+    }
+
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+
+    .chat-form {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .chat-input {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      font: inherit;
+      background: var(--surface);
+      color: var(--ink);
+    }
+
+    .chat-input:focus {
+      outline: 2px solid var(--green);
+      border-color: transparent;
+    }
+
+    .chat-send {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      background: var(--green-strong);
+      color: #fff;
+      font-weight: 650;
+      cursor: pointer;
+    }
+
+    .chat-send:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+
+    .run-row {
+      cursor: pointer;
+    }
+
+    .drawer-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(17, 24, 39, 0.4);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+      z-index: 50;
+    }
+
+    .drawer-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      height: 100%;
+      width: min(560px, 92vw);
+      background: var(--surface);
+      box-shadow: -10px 0 40px rgba(0, 0, 0, 0.18);
+      transform: translateX(100%);
+      transition: transform 0.22s ease;
+      z-index: 51;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .drawer.open {
+      transform: translateX(0);
+    }
+
+    .drawer-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .drawer-body {
+      padding: 18px 20px;
+      overflow-y: auto;
+    }
+
+    .drawer-close {
+      border: none;
+      background: transparent;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--muted);
+      line-height: 1;
+    }
+
+    .kv {
+      display: grid;
+      grid-template-columns: 110px 1fr;
+      gap: 6px 12px;
+      font-size: 0.88rem;
+      margin: 0;
+    }
+
+    .kv dt {
+      color: var(--muted);
+    }
+
+    .kv dd {
+      margin: 0;
+    }
+
+    .detail-section {
+      margin-top: 18px;
+    }
+
+    .detail-section h4 {
+      margin: 0 0 8px;
+      font-size: 0.92rem;
+    }
+
+    .agent-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid #eee9e4;
+      font-size: 0.85rem;
+    }
+
+    .fail-item {
+      color: var(--red);
+      font-size: 0.83rem;
+      margin: 3px 0;
+    }
+
+    .warn-item {
+      color: var(--amber);
+      font-size: 0.83rem;
+      margin: 3px 0;
+    }
+
+    .preview {
+      white-space: pre-wrap;
+      font-size: 0.82rem;
+      background: #faf8f6;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px;
+      max-height: 280px;
+      overflow: auto;
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div>
+        <div class="eyebrow">Production Observability</div>
+        <h1>GreenNode VKS Intelligence</h1>
+        <p class="subtitle">
+          Theo dõi run multi-agent từ artifact store: publish, review, block, quality, token và fallback.
+        </p>
+      </div>
+      <div class="actions">
+        <span class="timestamp" id="last-updated">Chưa tải dữ liệu</span>
+        <button class="button primary" id="refresh-button" type="button">Refresh</button>
+      </div>
+    </header>
+
+    <nav class="tabs" id="tabs" role="tablist" aria-label="Dashboard sections">
+      <button class="tab active" data-tab="overview" type="button">Overview</button>
+      <button class="tab" data-tab="runs" type="button">Runs</button>
+      <button class="tab" data-tab="qa" type="button">QA &amp; Routing</button>
+      <button class="tab" data-tab="cost" type="button">Cost</button>
+      <button class="tab" data-tab="chat" type="button">💬 Chat</button>
+    </nav>
+
+    <!-- ── OVERVIEW ── -->
+    <div class="tab-panel active" data-panel="overview">
+      <section class="overview" id="summary" aria-label="Tổng quan"></section>
+      <div class="grid-2">
+        <section class="panel side-section">
+          <div class="health-band">
+            <div class="health-label">Quality trung bình của các run có score</div>
+            <div class="quality-pill" id="quality-pill">0.00</div>
+          </div>
+        </section>
+        <section class="panel side-section">
+          <h2 class="panel-title">Phân bố task</h2>
+          <p class="panel-caption">Số run theo từng task type.</p>
+          <div class="breakdown" id="task-breakdown"></div>
+        </section>
+      </div>
+    </div>
+
+    <!-- ── RUNS ── -->
+    <div class="tab-panel" data-panel="runs">
+      <section class="panel">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title">Run gần nhất</h2>
+            <p class="panel-caption" id="run-count">Đang tải dữ liệu run...</p>
+          </div>
+          <div class="filters" aria-label="Bộ lọc run">
+            <input class="control search" id="search-input" type="search" placeholder="Tìm run hoặc task..." />
+            <select class="control" id="status-filter">
+              <option value="">Tất cả trạng thái</option>
+              <option value="completed">Completed</option>
+              <option value="needs_review">Needs review</option>
+              <option value="blocked">Blocked</option>
+              <option value="failed">Failed</option>
+              <option value="running">Running</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table id="runs">
+            <thead>
+              <tr>
+                <th>Run</th>
+                <th>Task</th>
+                <th>Trạng thái</th>
+                <th>Quality</th>
+                <th>Tokens</th>
+                <th>Fallback</th>
+                <th>Publish</th>
+                <th>Hoàn tất</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div class="empty" id="empty-state" hidden>Chưa có run phù hợp với bộ lọc hiện tại.</div>
+      </section>
+    </div>
+
+    <!-- ── QA & ROUTING ── -->
+    <div class="tab-panel" data-panel="qa">
+      <div class="grid-2">
+        <section class="panel side-section">
+          <h2 class="panel-title">QA Activity (Telegram)</h2>
+          <p class="panel-caption" id="qa-caption">QA streaming + research, 14 ngày gần nhất.</p>
+          <div class="breakdown" id="qa-breakdown"></div>
+        </section>
+
+        <section class="panel side-section">
+          <h2 class="panel-title">Orchestration (P1)</h2>
+          <p class="panel-caption">Routing engine + phân bố research task.</p>
+          <div class="muted" style="font-size: 0.8rem; margin-bottom: 6px;">Routed by (llm vs keyword)</div>
+          <div class="breakdown" id="routed-by"></div>
+          <div class="muted" style="font-size: 0.8rem; margin: 12px 0 6px;">Research task type</div>
+          <div class="breakdown" id="task-mix"></div>
+        </section>
+      </div>
+    </div>
+
+    <!-- ── COST ── -->
+    <div class="tab-panel" data-panel="cost">
+      <section class="panel side-section">
+        <h2 class="panel-title">Cost trend</h2>
+        <p class="panel-caption">Token mỗi ngày (14 ngày gần nhất).</p>
+        <div class="breakdown" id="cost-trend"></div>
+      </section>
+    </div>
+
+    <!-- ── CHAT ── -->
+    <div class="tab-panel" data-panel="chat">
+      <section class="panel side-section">
+        <h2 class="panel-title">💬 Hỏi nhanh Lin Lin</h2>
+        <p class="panel-caption">Trả lời streaming từ memory workspace — cùng engine với bot Telegram.</p>
+        <div class="chat-box" id="chat-box">
+          <div class="chat-msg bot">Chào bạn! Hỏi mình về VKS, đối thủ, pricing, thị trường K8s/GPU Việt Nam nhé. 🌼</div>
+        </div>
+        <form class="chat-form" id="chat-form">
+          <input class="chat-input" id="chat-input" type="text" autocomplete="off"
+                 placeholder="Ví dụ: So sánh giá VKS với FKE của FPT?" />
+          <button class="chat-send" id="chat-send" type="submit">Gửi</button>
+        </form>
+      </section>
+    </div>
+  </main>
+
+  <div class="drawer-overlay" id="drawer-overlay"></div>
+  <aside class="drawer" id="drawer" aria-hidden="true" aria-label="Chi tiết run">
+    <div class="drawer-head">
+      <div>
+        <div class="eyebrow">Run detail</div>
+        <h2 class="panel-title run-id" id="drawer-title">—</h2>
+      </div>
+      <button class="drawer-close" id="drawer-close" type="button" aria-label="Đóng">&times;</button>
+    </div>
+    <div class="drawer-body" id="drawer-body"></div>
+  </aside>
+
+  <script>
+    const state = {
+      summary: null,
+      runs: [],
+      qa: null,
+      cost: [],
+      query: "",
+      status: "",
+    };
+
+    const els = {
+      summary: document.getElementById("summary"),
+      runsBody: document.querySelector("#runs tbody"),
+      empty: document.getElementById("empty-state"),
+      refresh: document.getElementById("refresh-button"),
+      updated: document.getElementById("last-updated"),
+      search: document.getElementById("search-input"),
+      status: document.getElementById("status-filter"),
+      runCount: document.getElementById("run-count"),
+      qualityPill: document.getElementById("quality-pill"),
+      breakdown: document.getElementById("task-breakdown"),
+      qaBreakdown: document.getElementById("qa-breakdown"),
+      costTrend: document.getElementById("cost-trend"),
+      routedBy: document.getElementById("routed-by"),
+      taskMix: document.getElementById("task-mix"),
+      drawer: document.getElementById("drawer"),
+      drawerOverlay: document.getElementById("drawer-overlay"),
+      drawerBody: document.getElementById("drawer-body"),
+      drawerTitle: document.getElementById("drawer-title"),
+      drawerClose: document.getElementById("drawer-close"),
+    };
+
+    const fmt = new Intl.NumberFormat("vi-VN");
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function formatNumber(value) {
+      return fmt.format(Number(value ?? 0));
+    }
+
+    function formatQuality(value) {
+      if (value === null || value === undefined) return "-";
+      return Number(value).toFixed(2);
+    }
+
+    function formatDate(value) {
+      if (!value) return "-";
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return value;
+      return date.toLocaleString("vi-VN", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    }
+
+    function statusClass(status) {
+      return String(status || "pending").toLowerCase();
+    }
+
+    function metric(value, label, hint, tone = "") {
+      return `
+        <article class="metric ${tone}">
+          <div class="value">${escapeHtml(value)}</div>
+          <div class="label">${escapeHtml(label)}</div>
+          <div class="hint">${escapeHtml(hint)}</div>
+        </article>
+      `;
+    }
+
+    function renderSummary() {
+      const s = state.summary || {};
+      const tokenTotal = Number(s.total_input_tokens ?? 0) + Number(s.total_output_tokens ?? 0);
+      const published = Number(s.runs_published ?? 0);
+      const total = Number(s.total_runs ?? 0);
+      const publishRate = total ? `${Math.round((published / total) * 100)}% publish rate` : "Chưa có dữ liệu";
+
+      const qa = state.qa || {};
+      const qaLatency = qa.avg_latency_ms ? `${formatNumber(Math.round(qa.avg_latency_ms))}ms trung bình` : "Chưa có QA";
+
+      els.summary.innerHTML = [
+        metric(formatNumber(total), "Tổng run", "Tất cả task đã ghi metadata", "blue"),
+        metric(formatNumber(published), "Đã publish", publishRate, "good"),
+        metric(formatNumber(s.runs_needs_review ?? 0), "Chờ review", "Cần owner/approver xem lại", "warn"),
+        metric(formatNumber(s.runs_blocked ?? 0), "Bị block", "Không publish vì quality hoặc lỗi", "danger"),
+        metric(formatQuality(s.avg_quality_score), "Quality trung bình", "Tính trên run có score", "good"),
+        metric(formatNumber(s.fallback_runs ?? 0), "Run có fallback", `${formatNumber(tokenTotal)} token đã dùng`, ""),
+        metric(formatNumber(qa.total_qa ?? 0), "QA Telegram", qaLatency, "blue"),
+      ].join("");
+
+      els.qualityPill.textContent = formatQuality(s.avg_quality_score ?? 0);
+    }
+
+    function renderQA() {
+      const qa = state.qa || {};
+      const rows = [
+        ["Memory lookup", qa.memory_lookup ?? 0],
+        ["Current research", qa.current_research ?? 0],
+        ["Fallback", qa.fallback_count ?? 0],
+      ];
+      const total = Number(qa.total_qa ?? 0);
+      if (!total) {
+        els.qaBreakdown.innerHTML = '<div class="muted">Chưa có QA activity.</div>';
+        return;
+      }
+      const max = Math.max(...rows.map(([, v]) => v), 1);
+      els.qaBreakdown.innerHTML = rows
+        .map(([label, value]) => {
+          const width = Math.max(6, Math.round((value / max) * 100));
+          return `
+            <div class="bar-row">
+              <span>${escapeHtml(label)}</span>
+              <span class="bar-track"><span class="bar-fill" style="width: ${width}%"></span></span>
+              <strong>${formatNumber(value)}</strong>
+            </div>
+          `;
+        })
+        .join("");
+    }
+
+    function renderCost() {
+      const points = state.cost || [];
+      if (!points.length) {
+        els.costTrend.innerHTML = '<div class="muted">Chưa có dữ liệu token.</div>';
+        return;
+      }
+      const max = Math.max(...points.map((p) => (p.input_tokens ?? 0) + (p.output_tokens ?? 0)), 1);
+      els.costTrend.innerHTML = points
+        .map((p) => {
+          const total = (p.input_tokens ?? 0) + (p.output_tokens ?? 0);
+          const width = Math.max(6, Math.round((total / max) * 100));
+          const day = String(p.date ?? "").slice(5);
+          return `
+            <div class="bar-row">
+              <span>${escapeHtml(day)}</span>
+              <span class="bar-track"><span class="bar-fill" style="width: ${width}%"></span></span>
+              <strong>${formatNumber(total)}</strong>
+            </div>
+          `;
+        })
+        .join("");
+    }
+
+    function renderBars(el, obj, emptyMsg) {
+      const entries = Object.entries(obj || {}).sort((a, b) => b[1] - a[1]);
+      if (!entries.length) {
+        el.innerHTML = `<div class="muted">${escapeHtml(emptyMsg)}</div>`;
+        return;
+      }
+      const max = Math.max(...entries.map(([, v]) => v), 1);
+      el.innerHTML = entries
+        .map(([label, value]) => {
+          const width = Math.max(6, Math.round((value / max) * 100));
+          return `
+            <div class="bar-row">
+              <span>${escapeHtml(label)}</span>
+              <span class="bar-track"><span class="bar-fill" style="width: ${width}%"></span></span>
+              <strong>${formatNumber(value)}</strong>
+            </div>
+          `;
+        })
+        .join("");
+    }
+
+    function renderOrchestration() {
+      const qa = state.qa || {};
+      renderBars(els.routedBy, qa.by_routed_by, "Chưa có routing data.");
+      renderBars(els.taskMix, qa.by_task_type, "Chưa có research task.");
+    }
+
+    function renderBreakdown() {
+      const byType = state.summary?.by_task_type || {};
+      const entries = Object.entries(byType).sort((a, b) => b[1] - a[1]);
+      if (!entries.length) {
+        els.breakdown.innerHTML = '<div class="muted">Chưa có dữ liệu task.</div>';
+        return;
+      }
+      const max = Math.max(...entries.map(([, count]) => count), 1);
+      els.breakdown.innerHTML = entries
+        .map(([type, count]) => {
+          const width = Math.max(8, Math.round((count / max) * 100));
+          return `
+            <div class="bar-row">
+              <span>${escapeHtml(type)}</span>
+              <span class="bar-track"><span class="bar-fill" style="width: ${width}%"></span></span>
+              <strong>${formatNumber(count)}</strong>
+            </div>
+          `;
+        })
+        .join("");
+    }
+
+    function filteredRuns() {
+      const query = state.query.trim().toLowerCase();
+      return state.runs.filter((run) => {
+        const matchesStatus = !state.status || run.status === state.status;
+        const haystack = `${run.run_id} ${run.task_id} ${run.task_type} ${run.status}`.toLowerCase();
+        const matchesQuery = !query || haystack.includes(query);
+        return matchesStatus && matchesQuery;
+      });
+    }
+
+    function renderRuns() {
+      const runs = filteredRuns();
+      els.runCount.textContent = `${formatNumber(runs.length)} run đang hiển thị trong ${formatNumber(state.runs.length)} run gần nhất`;
+      els.empty.hidden = runs.length > 0;
+      els.runsBody.innerHTML = runs
+        .map((run) => {
+          const tokens = Number(run.input_tokens ?? 0) + Number(run.output_tokens ?? 0);
+          const status = escapeHtml(run.status || "pending");
+          return `
+            <tr class="run-row" data-run-id="${escapeHtml(run.run_id)}">
+              <td><span class="run-id">${escapeHtml(run.run_id)}</span><div class="muted">${escapeHtml(run.task_id || "")}</div></td>
+              <td>${escapeHtml(run.task_type || "-")}</td>
+              <td><span class="chip ${statusClass(run.status)}">${status}</span></td>
+              <td>${formatQuality(run.quality_score)}</td>
+              <td>${formatNumber(tokens)}</td>
+              <td>${formatNumber(run.fallback_count ?? 0)}</td>
+              <td>${run.published ? '<span class="chip pass">Published</span>' : '<span class="muted">-</span>'}</td>
+              <td>${escapeHtml(formatDate(run.finished_at))}</td>
+            </tr>
+          `;
+        })
+        .join("");
+    }
+
+    function renderAll() {
+      renderSummary();
+      renderBreakdown();
+      renderQA();
+      renderCost();
+      renderOrchestration();
+      renderRuns();
+    }
+
+    async function load() {
+      els.refresh.disabled = true;
+      els.refresh.textContent = "Loading";
+      try {
+        const [summary, runs, qa, cost] = await Promise.all([
+          fetch("/dashboard/summary").then((r) => {
+            if (!r.ok) throw new Error(`summary ${r.status}`);
+            return r.json();
+          }),
+          fetch("/dashboard/runs").then((r) => {
+            if (!r.ok) throw new Error(`runs ${r.status}`);
+            return r.json();
+          }),
+          fetch("/dashboard/qa-activity").then((r) => (r.ok ? r.json() : null)).catch(() => null),
+          fetch("/dashboard/cost-trend").then((r) => (r.ok ? r.json() : [])).catch(() => []),
+        ]);
+        state.summary = summary;
+        state.runs = Array.isArray(runs) ? runs : [];
+        state.qa = qa;
+        state.cost = Array.isArray(cost) ? cost : [];
+        els.updated.textContent = `Cập nhật ${new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}`;
+        renderAll();
+      } catch (error) {
+        els.summary.innerHTML = `<div class="error">Không tải được dashboard API: ${escapeHtml(error.message)}</div>`;
+        els.runsBody.innerHTML = "";
+        els.empty.hidden = false;
+        els.empty.textContent = "Chưa có dữ liệu hoặc API chưa sẵn sàng.";
+      } finally {
+        els.refresh.disabled = false;
+        els.refresh.textContent = "Refresh";
+      }
+    }
+
+    els.refresh.addEventListener("click", load);
+    els.search.addEventListener("input", (event) => {
+      state.query = event.target.value;
+      renderRuns();
+    });
+    els.status.addEventListener("change", (event) => {
+      state.status = event.target.value;
+      renderRuns();
+    });
+
+    function renderRunDetail(d) {
+      const tokens = (d.input_tokens ?? 0) + (d.output_tokens ?? 0);
+      const agentsHtml =
+        (d.agents || [])
+          .map((a) => {
+            const atok = (a.input_tokens ?? 0) + (a.output_tokens ?? 0);
+            const badParse =
+              a.json_parse_status && a.json_parse_status !== "valid"
+                ? `<span class="fail-item">(${escapeHtml(a.json_parse_status)})</span>`
+                : "";
+            return `
+              <div class="agent-row">
+                <span><strong>${escapeHtml(a.agent)}</strong> <span class="muted">${escapeHtml(a.model_used || "")}</span> ${badParse}</span>
+                <span><span class="chip ${statusClass(a.status)}">${escapeHtml(a.status || "-")}</span> ${formatNumber(atok)} tok</span>
+              </div>`;
+          })
+          .join("") || '<div class="muted">Không có agent.</div>';
+      const failHtml = (d.quality_failures || []).map((f) => `<div class="fail-item">✗ ${escapeHtml(f)}</div>`).join("");
+      const warnHtml = (d.quality_warnings || []).map((w) => `<div class="warn-item">⚠ ${escapeHtml(w)}</div>`).join("");
+      const fbHtml = (d.fallbacks || []).length ? escapeHtml(d.fallbacks.join(", ")) : "Không";
+
+      els.drawerTitle.textContent = d.run_id;
+      els.drawerBody.innerHTML = `
+        <dl class="kv">
+          <dt>Task</dt><dd>${escapeHtml(d.task_type || "-")}</dd>
+          <dt>Trạng thái</dt><dd><span class="chip ${statusClass(d.status)}">${escapeHtml(d.status || "-")}</span></dd>
+          <dt>Quality</dt><dd>${formatQuality(d.quality_score)} ${d.quality_verdict ? `(${escapeHtml(d.quality_verdict)})` : ""}</dd>
+          <dt>Tokens</dt><dd>${formatNumber(tokens)} <span class="muted">(in ${formatNumber(d.input_tokens)} / out ${formatNumber(d.output_tokens)})</span></dd>
+          <dt>Fallback</dt><dd>${fbHtml}</dd>
+          <dt>Hoàn tất</dt><dd>${escapeHtml(formatDate(d.finished_at))}</dd>
+        </dl>
+        <div class="detail-section"><h4>Agents (${(d.agents || []).length})</h4>${agentsHtml}</div>
+        ${failHtml || warnHtml ? `<div class="detail-section"><h4>Quality issues</h4>${failHtml}${warnHtml}</div>` : ""}
+        ${d.synthesis_preview ? `<div class="detail-section"><h4>Preview</h4><div class="preview">${escapeHtml(d.synthesis_preview)}</div></div>` : ""}
+      `;
+    }
+
+    async function openDrawer(runId) {
+      els.drawerTitle.textContent = runId;
+      els.drawerBody.innerHTML = '<div class="muted">Đang tải chi tiết...</div>';
+      els.drawerOverlay.classList.add("open");
+      els.drawer.classList.add("open");
+      els.drawer.setAttribute("aria-hidden", "false");
+      try {
+        const d = await fetch(`/dashboard/runs/${encodeURIComponent(runId)}`).then((r) => {
+          if (!r.ok) throw new Error(`HTTP ${r.status}`);
+          return r.json();
+        });
+        renderRunDetail(d);
+      } catch (e) {
+        els.drawerBody.innerHTML = `<div class="error">Không tải được chi tiết run (${escapeHtml(String(e.message || e))}).</div>`;
+      }
+    }
+
+    function closeDrawer() {
+      els.drawerOverlay.classList.remove("open");
+      els.drawer.classList.remove("open");
+      els.drawer.setAttribute("aria-hidden", "true");
+    }
+
+    function setupTabs() {
+      const tabs = Array.from(document.querySelectorAll(".tab"));
+      const panels = Array.from(document.querySelectorAll(".tab-panel"));
+      const names = tabs.map((t) => t.dataset.tab);
+      function activate(name) {
+        tabs.forEach((t) => t.classList.toggle("active", t.dataset.tab === name));
+        panels.forEach((p) => p.classList.toggle("active", p.dataset.panel === name));
+      }
+      tabs.forEach((t) =>
+        t.addEventListener("click", () => {
+          location.hash = t.dataset.tab;
+        }),
+      );
+      window.addEventListener("hashchange", () => {
+        const name = location.hash.replace("#", "") || "overview";
+        if (names.includes(name)) activate(name);
+      });
+      const initial = location.hash.replace("#", "") || "overview";
+      activate(names.includes(initial) ? initial : "overview");
+    }
+
+    els.runsBody.addEventListener("click", (event) => {
+      const row = event.target.closest("tr[data-run-id]");
+      if (row) openDrawer(row.dataset.runId);
+    });
+    els.drawerOverlay.addEventListener("click", closeDrawer);
+    els.drawerClose.addEventListener("click", closeDrawer);
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") closeDrawer();
+    });
+
+    function setupChat() {
+      const box = document.getElementById("chat-box");
+      const form = document.getElementById("chat-form");
+      const input = document.getElementById("chat-input");
+      const send = document.getElementById("chat-send");
+      const history = [];
+
+      function addMsg(role, text) {
+        const div = document.createElement("div");
+        div.className = "chat-msg " + role;
+        div.textContent = text;
+        box.appendChild(div);
+        box.scrollTop = box.scrollHeight;
+        return div;
+      }
+
+      async function ask(message) {
+        addMsg("user", message);
+        history.push({ role: "user", text: message });
+        const bubble = addMsg("bot", "");
+        bubble.classList.add("streaming");
+        send.disabled = true;
+        let answer = "";
+        try {
+          const resp = await fetch("/dashboard/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message, history: history.slice(0, -1).slice(-6) }),
+          });
+          if (!resp.ok) throw new Error("HTTP " + resp.status);
+          const reader = resp.body.getReader();
+          const decoder = new TextDecoder();
+          let buffer = "";
+          for (;;) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            buffer += decoder.decode(value, { stream: true });
+            const events = buffer.split("\n\n");
+            buffer = events.pop();
+            for (const evt of events) {
+              const line = evt.split("\n").find((l) => l.startsWith("data: "));
+              if (!line) continue;
+              const payload = JSON.parse(line.slice(6));
+              if (payload.delta) {
+                answer += payload.delta;
+                bubble.textContent = answer;
+                box.scrollTop = box.scrollHeight;
+              } else if (payload.error) {
+                throw new Error(payload.error);
+              }
+            }
+          }
+          if (!answer.trim()) answer = "(không có phản hồi — thử lại nhé)";
+        } catch (err) {
+          answer = answer || "⚠️ Lỗi: " + err.message;
+        }
+        bubble.textContent = answer;
+        bubble.classList.remove("streaming");
+        history.push({ role: "assistant", text: answer });
+        send.disabled = false;
+        input.focus();
+      }
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const message = input.value.trim();
+        if (!message || send.disabled) return;
+        input.value = "";
+        ask(message);
+      });
+    }
+
+    setupTabs();
+    setupChat();
+    load();
+  </script>
+</body>
+</html>

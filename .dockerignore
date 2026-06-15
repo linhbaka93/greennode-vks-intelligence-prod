@@ -1,0 +1,70 @@
+# ── Secrets — KHÔNG bake vào image ───────────────────────────────
+.env
+.env.*
+.greennode.json
+registry-credentials.json
+*-credentials.json
+*.key
+*.pem
+*.p12
+*.pfx
+
+# ── Python artifacts ──────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+.uv/
+
+# ── Dev & test ────────────────────────────────────────────────────
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+tests/
+
+# ── AgentBase / wizard state ──────────────────────────────────────
+.agentbase/
+.agentbase-state.json
+
+# ── Runtime artifacts (mount volume ngoài container) ──────────────
+outputs/runs/
+
+# ── Git ───────────────────────────────────────────────────────────
+.git/
+.gitignore
+
+# ── IDE ───────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ── OS ────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── Docker meta ───────────────────────────────────────────────────
+Dockerfile*
+.dockerignore
+
+# ── n8n exports (không cần trong image) ──────────────────────────
+n8n/
+
+# ── Docs ──────────────────────────────────────────────────────────
+docs/
+*.md
+!CLAUDE.md
+!README.md
+
+# ── Claude Code ───────────────────────────────────────────────────
+.claude/
+
+# ── Docker infra data ─────────────────────────────────────────────
+docker/

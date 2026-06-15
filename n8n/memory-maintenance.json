@@ -1,0 +1,190 @@
+{
+  "name": "GreenNode — Memory Maintenance",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [{ "field": "cronExpression", "expression": "0 3 * * 0" }]
+        }
+      },
+      "id": "ff66aa77-0006-4000-8000-000000000001",
+      "name": "Schedule Sunday 10:00 ICT",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [240, 300],
+      "notes": "Sun 10:00 ICT = 03:00 UTC Sunday. Chạy sau weekly digest."
+    },
+    {
+      "parameters": {
+        "jsCode": "const ts = Date.now().toString(36);\nreturn [{ json: { request_id: `mem-${new Date().toISOString().slice(0,10)}-${ts}` } }];"
+      },
+      "id": "ff66aa77-0006-4000-8000-000000000002",
+      "name": "Generate Request ID",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.AGENTBASE_BASE_URL }}/tasks/memory-maintenance",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"request_id\": \"{{ $json.request_id }}\",\n  \"source\": \"n8n-cron\",\n  \"dry_run\": false,\n  \"save_output\": true,\n  \"human_approval_required\": false\n}",
+        "options": { "timeout": 420000 }
+      },
+      "id": "ff66aa77-0006-4000-8000-000000000003",
+      "name": "POST /tasks/memory-maintenance",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [680, 300],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "id": "cond-ok",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "failed",
+              "operator": { "type": "string", "operation": "notEquals" }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "ff66aa77-0006-4000-8000-000000000004",
+      "name": "Run OK?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "id": "cond-approval",
+              "leftValue": "={{ $json.requires_approval }}",
+              "rightValue": true,
+              "operator": { "type": "boolean", "operation": "equal" }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "ff66aa77-0006-4000-8000-000000000005",
+      "name": "Patches need review?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1120, 200]
+    },
+    {
+      "parameters": {
+        "jsCode": "const r = $input.first().json;\nconst score = r.quality_score ? (r.quality_score * 100).toFixed(0) + '%' : 'N/A';\nconst warns = (r.warnings || []).slice(0, 5).join('\\n• ');\nreturn [{ json: {\n  msg: `🧠 *Memory Maintenance — Cần Review*\\n${new Date().toLocaleDateString('vi-VN')}\\n\\nQuality: ${score}\\nArtifact: ${r.artifact_path || '-'}\\n\\n📋 Proposed patches (chờ duyệt):\\n• ${warns || 'Xem artifact/final.md'}\\n\\n➡️ Review rồi approve thủ công qua n8n dashboard.`\n}}];"
+      },
+      "id": "ff66aa77-0006-4000-8000-000000000006",
+      "name": "Build Approval Request",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1340, 140]
+    },
+    {
+      "parameters": {
+        "jsCode": "const r = $input.first().json;\nconst score = r.quality_score ? (r.quality_score * 100).toFixed(0) + '%' : 'N/A';\nreturn [{ json: {\n  msg: `✅ *Memory Maintenance Done*\\n${new Date().toLocaleDateString('vi-VN')}\\n\\nQuality: ${score}\\nArtifact: ${r.artifact_path || '-'}\\n\\nAll high-confidence patches auto-applied.`\n}}];"
+      },
+      "id": "ff66aa77-0006-4000-8000-000000000007",
+      "name": "Build Auto-Applied Message",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1340, 280]
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "sendMessage",
+        "chatId": "={{ $env.TELEGRAM_OWNER_CHAT_ID }}",
+        "text": "={{ $json.msg }}",
+        "additionalFields": { "parse_mode": "Markdown" }
+      },
+      "id": "ff66aa77-0006-4000-8000-000000000008",
+      "name": "Telegram — Notify Owner",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [1560, 200]
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "sendMessage",
+        "chatId": "={{ $env.TELEGRAM_OWNER_CHAT_ID }}",
+        "text": "=❌ *Memory Maintenance Failed*\\n\\nStatus: {{ $json.status }}\\nWarnings: {{ ($json.warnings||[]).join(', ') }}\\n\\n{{ new Date().toISOString() }}",
+        "additionalFields": { "parse_mode": "Markdown" }
+      },
+      "id": "ff66aa77-0006-4000-8000-000000000009",
+      "name": "Telegram — Run Failed",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [1120, 420]
+    },
+    {
+      "parameters": {},
+      "id": "ff66aa77-0006-4000-8000-000000000010",
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [680, 500]
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "sendMessage",
+        "chatId": "={{ $env.TELEGRAM_OWNER_CHAT_ID }}",
+        "text": "=⚠️ *Memory Maintenance Workflow Error*\\n`{{ $json.message }}`",
+        "additionalFields": { "parse_mode": "Markdown" }
+      },
+      "id": "ff66aa77-0006-4000-8000-000000000011",
+      "name": "Telegram — Workflow Error",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [900, 500]
+    }
+  ],
+  "connections": {
+    "Schedule Sunday 10:00 ICT": {
+      "main": [[{ "node": "Generate Request ID", "type": "main", "index": 0 }]]
+    },
+    "Generate Request ID": {
+      "main": [[{ "node": "POST /tasks/memory-maintenance", "type": "main", "index": 0 }]]
+    },
+    "POST /tasks/memory-maintenance": {
+      "main": [[{ "node": "Run OK?", "type": "main", "index": 0 }]]
+    },
+    "Run OK?": {
+      "main": [
+        [{ "node": "Patches need review?", "type": "main", "index": 0 }],
+        [{ "node": "Telegram — Run Failed", "type": "main", "index": 0 }]
+      ]
+    },
+    "Patches need review?": {
+      "main": [
+        [{ "node": "Build Approval Request", "type": "main", "index": 0 }],
+        [{ "node": "Build Auto-Applied Message", "type": "main", "index": 0 }]
+      ]
+    },
+    "Build Approval Request": {
+      "main": [[{ "node": "Telegram — Notify Owner", "type": "main", "index": 0 }]]
+    },
+    "Build Auto-Applied Message": {
+      "main": [[{ "node": "Telegram — Notify Owner", "type": "main", "index": 0 }]]
+    },
+    "Error Trigger": {
+      "main": [[{ "node": "Telegram — Workflow Error", "type": "main", "index": 0 }]]
+    }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1", "saveManualExecutions": true },
+  "tags": ["greennode", "memory", "maintenance"],
+  "pinData": {}
+}

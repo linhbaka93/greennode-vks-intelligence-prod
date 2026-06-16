@@ -67,3 +67,11 @@ Mỗi `key_findings` item phải dùng **markdown link** với full https:// URL
 
 URL lấy từ `evidence_bundle.items[*].url` — luôn là full https:// URL đã resolve.
 Nếu `url` rỗng, dùng tên publisher không có link. Không dùng bare domain.
+
+## Dữ liệu cũ (STALE)
+
+File workspace đánh dấu `⚠️ [STALE — ...]` có nghĩa dữ liệu đã quá hạn làm mới.
+
+- **Không** dùng làm `key_findings` hoặc `claims`
+- **Không** bịa nội dung thay thế
+- **Phải** đưa vào `gaps`: `"Cần cập nhật: <tên-file> — dữ liệu cũ, chưa dùng được"`

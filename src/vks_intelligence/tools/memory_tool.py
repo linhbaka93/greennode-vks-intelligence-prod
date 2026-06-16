@@ -96,13 +96,14 @@ def load_memory(workspace_path: Path, context_cap: int = 12_000) -> str:
             if used >= context_cap:
                 break
             stale = _is_stale(f)
-            raw = f.read_text(encoding="utf-8", errors="ignore")[:per_file_cap]
-            prefix = (
-                f"\n⚠️ [Dữ liệu cũ — {folder_name}/{f.name}]\n"
-                if stale
-                else f"\n[{folder_name}/{f.name}]\n"
-            )
-            chunk = prefix + raw
+            if stale:
+                chunk = (
+                    f"\n⚠️ [STALE — {folder_name}/{f.name} — cần cập nhật, "
+                    f"KHÔNG dùng cho key_findings hoặc claims]\n"
+                )
+            else:
+                raw = f.read_text(encoding="utf-8", errors="ignore")[:per_file_cap]
+                chunk = f"\n[{folder_name}/{f.name}]\n" + raw
             chunks.append(chunk)
             used += len(chunk)
 

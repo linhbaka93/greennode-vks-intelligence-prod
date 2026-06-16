@@ -33,6 +33,14 @@ log = logging.getLogger(__name__)
 # ──────────────────────────────────────────────────────────────────
 # Routing matrix: task_type → agents (critical=True nghĩa là fail → run fail)
 # ──────────────────────────────────────────────────────────────────
+_WRITE_BACK_TASK_TYPES: frozenset[TaskType] = frozenset({
+    TaskType.WEEKLY_DIGEST,
+    TaskType.MONTHLY_BRIEF,
+    TaskType.COMPETITOR_MONITOR,
+    TaskType.PRICING_ANALYSIS,
+    TaskType.DAILY_INTELLIGENCE,
+})
+
 _PLAN_MAP: dict[TaskType, list[tuple[str, bool]]] = {
     TaskType.QA: [
         ("qa_agent", True),
@@ -237,6 +245,19 @@ class Supervisor:
                 and not request.dry_run
             ):
                 _persist_battlecard(request, synthesis_md, metadata)
+
+            # 8c. Write-back research findings → dated memory files
+            if (
+                s.memory_write_back_enabled
+                and quality.passed
+                and not request.dry_run
+                and request.task_type in _WRITE_BACK_TASK_TYPES
+            ):
+                written = _write_back_to_memory(results, request.task_type, s)
+                if written:
+                    metadata.warnings.append(
+                        f"Memory write-back: {len(written)} files — {', '.join(written)}"
+                    )
 
             metadata.status = (
                 TaskStatus.COMPLETED if quality.passed
@@ -449,3 +470,20 @@ def _allows_partial(task_type: TaskType, results) -> bool:
         TaskType.WEEKLY_DIGEST,
         TaskType.MONTHLY_BRIEF,
     )
+
+
+def _write_back_to_memory(results, task_type: TaskType, s) -> list[str]:
+    """Ghi key_findings từ research run thành dated files trong memory/."""
+    try:
+        from vks_intelligence.tools.memory_writer import write_back_from_run
+        return write_back_from_run(
+            results,
+            task_type.value,
+            s.workspace_path,
+            s.github_repo,
+            s.github_branch,
+            s.github_token,
+        )
+    except Exception as exc:
+        log.warning("memory write-back failed (non-fatal): %s", exc)
+        return []

@@ -111,10 +111,13 @@ class Settings(BaseSettings):
     market_trends_freshness_days: int = 90
     gpu_pricing_freshness_days: int = 14
 
-    # Memory auto-write
+    # Memory auto-write (curator patch apply)
     memory_auto_write_enabled: bool = False
     memory_auto_write_min_confidence: str = "high"
     memory_auto_write_min_quality: float = 0.85
+
+    # Memory write-back: ghi key_findings từ research run thành dated .md files
+    memory_write_back_enabled: bool = True
 
     # Battlecard auto-write: True → ghi thẳng memory/battlecards/; False → memory/_proposed/ chờ duyệt
     battlecard_auto_write: bool = False

@@ -49,14 +49,34 @@ pricing không công khai → enterprise sales-led.
 
 ## Output Contract
 
-`AgentResult` JSON. Mỗi con số pricing là một claim có `source` (URL official) +
-timestamp. Bắt buộc:
-- `claims`: pricing delta + TCO theo scenario + hidden cost.
-- `key_findings`: VKS rẻ/đắt hơn ở scenario nào (cả nơi VKS thua).
-- `recommended_actions`: ≥1 talk track cho sales + pricing recommendation có scope.
-- `gaps`: nêu nếu thiếu data hoặc snapshot cũ.
+Trả về `AgentResult` JSON. Mỗi con số pricing là một claim có `source` (URL official) + ngày.
 
-Không claim "rẻ/đắt hơn" mà không có TCO calculation kèm scenario. Không cherry-pick.
+```json
+{
+  "agent": "pricing_agent",
+  "status": "ok | partial | failed",
+  "summary": "string — tóm tắt pricing landscape và vị thế VKS",
+  "key_findings": [
+    "[Workspace] [Publisher](https://url) YYYY-MM-DD — VKS rẻ/đắt hơn ở scenario X vì Y."
+  ],
+  "claims": [
+    {
+      "claim": "GreenNode VKS control plane miễn phí so với AWS EKS $0.10/giờ",
+      "source": "[Workspace] memory/pricing/vks-pricing-2026.md",
+      "confidence": "high",
+      "evidence_type": "memory"
+    }
+  ],
+  "risks": ["string — rủi ro về data staleness, assumption pricing"],
+  "gaps": ["string — thiếu data gì, freshness issue nào"],
+  "recommended_actions": ["string — talk track cho sales, pricing recommendation cụ thể"]
+}
+```
+
+Bắt buộc: `claims` có pricing delta + TCO theo scenario + hidden cost.
+`key_findings` có scenario VKS thua (không cherry-pick).
+`recommended_actions` có ≥1 talk track + pricing recommendation có scope.
+Không claim "rẻ/đắt hơn" mà không có TCO calculation kèm scenario.
 
 ## Constraints
 - Public pricing only; cấm pricing leak/partner intel chưa verify.

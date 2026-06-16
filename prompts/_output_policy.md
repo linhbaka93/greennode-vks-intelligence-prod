@@ -55,3 +55,15 @@ Mỗi `claims[].source` phải theo một trong các format sau (tùy loại evi
 **Không** để source chỉ là ngày (`"2026-06-15"`) hoặc thiếu URL/label. Nếu thiếu URL,
 ghi ít nhất: nhãn + tên nguồn + ngày. Nếu không có thông tin nguồn đủ, đặt
 `confidence: low` và đưa claim vào `gaps` thay vì `claims`.
+
+## Format inline citation trong `key_findings`
+
+Mỗi `key_findings` item phải dùng **markdown link** với full https:// URL khi cite nguồn:
+
+✅ ĐÚNG: `[RSS] [Vietnam.vn](https://vietnam.vn/article-slug) 2026-06-14 — nội dung finding.`
+✅ ĐÚNG: `[RSS] [AWS Blog](https://aws.amazon.com/blogs/machine-learning/...) 2026-06-15 — ...`
+❌ SAI:  `[RSS] Vietnam.vn | news.google.com | published_at=2026-06-14 — ...` (bare domain, không có https://)
+❌ SAI:  Bỏ URL ra khỏi text finding
+
+URL lấy từ `evidence_bundle.items[*].url` — luôn là full https:// URL đã resolve.
+Nếu `url` rỗng, dùng tên publisher không có link. Không dùng bare domain.

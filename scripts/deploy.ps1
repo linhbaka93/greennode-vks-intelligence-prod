@@ -66,11 +66,14 @@ if (-not $SkipTests) {
 if (-not $SkipBuild) {
     Write-Step "3. Docker build (linux/amd64)"
     Write-Host "    Image: $ImageFull"
+    $ErrorActionPreference = "Continue"
     & docker build --platform linux/amd64 `
         --build-arg APP_BUILD_TAG=$Tag `
         --build-arg APP_BUILD_TIME=$(Get-Date -Format 'yyyy-MM-ddTHH:mm:ssZ') `
         -t $ImageFull .
-    if ($LASTEXITCODE -ne 0) { Write-Fail "docker build failed" }
+    $buildExit = $LASTEXITCODE
+    $ErrorActionPreference = "Stop"
+    if ($buildExit -ne 0) { Write-Fail "docker build failed" }
     Write-Ok "Build done: $ImageFull"
 } else {
     Write-Host "`n>>> 3. Build: skipped (-SkipBuild)" -ForegroundColor Yellow
@@ -86,14 +89,20 @@ if ($DryRun) {
 Write-Step "4. Docker login vCR"
 # Logout trước để xóa cached credentials cũ (tránh unauthorized với password stale)
 docker logout $Registry 2>&1 | Out-Null
+$ErrorActionPreference = "Continue"
 & docker login $Registry -u $regCreds.username -p $regCreds.password
-if ($LASTEXITCODE -ne 0) { Write-Fail "docker login failed" }
+$loginExit = $LASTEXITCODE
+$ErrorActionPreference = "Stop"
+if ($loginExit -ne 0) { Write-Fail "docker login failed" }
 Write-Ok "Login OK"
 
 if (-not $SkipBuild) {
     Write-Step "5. Docker push"
+    $ErrorActionPreference = "Continue"
     & docker push $ImageFull
-    if ($LASTEXITCODE -ne 0) { Write-Fail "docker push failed" }
+    $pushExit = $LASTEXITCODE
+    $ErrorActionPreference = "Stop"
+    if ($pushExit -ne 0) { Write-Fail "docker push failed" }
     Write-Ok "Push done"
 } else {
     Write-Host "`n>>> 5. Push: skipped (-SkipBuild)" -ForegroundColor Yellow

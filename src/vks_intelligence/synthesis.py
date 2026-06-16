@@ -278,7 +278,6 @@ def _weekly_digest(
         f"# GreenNode VKS Intelligence — Weekly Digest\n\n📅 {now}\n",
         _tldr(findings, risks),
         _findings_section(findings),
-        _agent_summaries(ok),
         _risks_section(risks),
         _actions_section(actions),
         _gaps_section(gaps),

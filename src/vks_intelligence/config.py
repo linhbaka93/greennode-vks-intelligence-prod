@@ -97,7 +97,7 @@ class Settings(BaseSettings):
     max_agents_weekly: int = 5
     max_agents_qa_escalated: int = 3
     max_input_tokens_worker: int = 80_000
-    max_output_tokens_worker: int = 4_000
+    max_output_tokens_worker: int = 6_000
     max_output_tokens_synthesis: int = 6_000
 
     # Quality gate

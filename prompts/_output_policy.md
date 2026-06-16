@@ -39,3 +39,19 @@ Tin không có "so-what" thì không đưa vào output.
 - Phân tích "vì sao", không chỉ liệt kê sự kiện.
 - Không tính từ marketing rỗng ("tốt nhất", "vượt trội") nếu không có evidence.
 - Giữ thuật ngữ kỹ thuật tiếng Anh (Kubernetes, control plane, egress, TCO).
+
+## Format bắt buộc cho `claims[].source`
+
+Mỗi `claims[].source` phải theo một trong các format sau (tùy loại evidence):
+
+```
+[RSS] Publisher | URL | published_at=YYYY-MM-DD
+[Scrape] Provider | URL | fetched_at=YYYY-MM-DD
+[Social] Account/Channel | URL | fetched_at=YYYY-MM-DD
+[Search] Publisher | URL | retrieved_at=YYYY-MM-DD
+[Workspace] path/to/memory/file.md
+```
+
+**Không** để source chỉ là ngày (`"2026-06-15"`) hoặc thiếu URL/label. Nếu thiếu URL,
+ghi ít nhất: nhãn + tên nguồn + ngày. Nếu không có thông tin nguồn đủ, đặt
+`confidence: low` và đưa claim vào `gaps` thay vì `claims`.

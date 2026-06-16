@@ -68,6 +68,9 @@ def synthesize(
     if evidence_warnings:
         gaps.extend(_clean_items(evidence_warnings))
 
+    if task_type in (TaskType.WEEKLY_DIGEST, TaskType.MONTHLY_BRIEF):
+        findings = _dedup_findings(findings)
+
     if task_type == TaskType.DAILY_INTELLIGENCE:
         return _daily_intelligence(ok, claims, findings, actions, risks, gaps, sources, now)
     if task_type == TaskType.WEEKLY_DIGEST:
@@ -99,6 +102,30 @@ def _clean_items(items: list[str]) -> list[str]:
             continue
         cleaned.append(item.strip())
     return cleaned
+
+
+def _word_ngrams(text: str, n: int) -> set[tuple[str, ...]]:
+    words = text.lower().split()
+    if len(words) < n:
+        return set()
+    return {tuple(words[i : i + n]) for i in range(len(words) - n + 1)}
+
+
+def _dedup_findings(items: list[str], ngram_size: int = 5) -> list[str]:
+    """Loại finding trùng nội dung: giữ lần đầu, drop item sau nếu chia sẻ ≥1 n-gram.
+
+    n=5 vì functional boilerplate ("tác động tới GreenNode") thường ≤4 từ;
+    5 từ liên tiếp xác định unique event phrase từ cùng một bản tin RSS.
+    """
+    kept: list[str] = []
+    kept_ngrams: list[set[tuple[str, ...]]] = []
+    for item in items:
+        item_ngrams = _word_ngrams(item, ngram_size)
+        if any(item_ngrams and item_ngrams & existing for existing in kept_ngrams):
+            continue
+        kept.append(item)
+        kept_ngrams.append(item_ngrams)
+    return kept
 
 
 def _claim_line(claim: Claim) -> str:
@@ -274,10 +301,11 @@ def _weekly_digest(
     sources: list[str],
     now: str,
 ) -> str:
+    remaining = findings[3:]
     sections = [
         f"# GreenNode VKS Intelligence — Weekly Digest\n\n📅 {now}\n",
         _tldr(findings, risks),
-        _findings_section(findings),
+        _findings_section(remaining) if remaining else "",
         _risks_section(risks),
         _actions_section(actions),
         _gaps_section(gaps),

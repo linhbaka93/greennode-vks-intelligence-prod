@@ -72,6 +72,13 @@ def _stringify_item(value) -> str:
                 f"GreenNode nên: {value.get('recommendation', '')}" if value.get("recommendation") else "",
             ]
             return " — ".join(p for p in parts if p)
+        # competitor_agent claim format: {claim, severity, so_what, comparison}
+        if "claim" in value:
+            parts = [
+                value.get("claim", ""),
+                value.get("so_what", ""),
+            ]
+            return " — ".join(p for p in parts if p)
         return json.dumps(value, ensure_ascii=False)
     return str(value)
 

@@ -65,7 +65,7 @@ def synthesize(
         risks.extend(_clean_items(r.risks))
         gaps.extend(_clean_items(r.gaps))
         if r.json_parse_status != "valid":
-            gaps.append(f"{r.agent}: output JSON không hợp lệ; chỉ dùng claim đã parse được.")
+            pass  # logged in metadata.warnings by supervisor; không đưa vào report user
         for c in r.claims:
             claims.append(c)
             if c.source and c.source not in sources:

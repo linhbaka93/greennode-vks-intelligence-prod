@@ -1,14 +1,34 @@
-"""Provider cho endpoint OpenAI-compatible (VNG AI Platform) — Gemma/Qwen.
+"""Provider cho endpoint OpenAI-compatible (VNG AI Platform) — Gemma/Qwen/MiniMax.
 
 Dùng `openai` client trỏ base_url về AI Platform. Map LLMRequest sang
 chat.completions và trích token usage từ response.usage.
+
+Xử lý thinking models:
+- Qwen3 (qwen/qwen3-*): disable thinking qua chat_template_kwargs → content bình thường
+- MiniMax (minimax/*): strip <think>...</think> khỏi content
+- Gemma (google/gemma-*): chuẩn, không cần xử lý thêm
 """
 
 from __future__ import annotations
 
+import re
 from collections.abc import Iterator
 
 from vks_intelligence.llm.base import LLMRequest, LLMResponse
+
+# Regex strip <think>...</think> blocks (MiniMax reasoning traces)
+_THINK_RE = re.compile(r"<think>.*?</think>\s*", re.DOTALL)
+
+
+def _strip_thinking(text: str) -> str:
+    return _THINK_RE.sub("", text).strip()
+
+
+def _extra_body(model: str) -> dict | None:
+    """Qwen3 thinking models cần disable thinking để content không bị null."""
+    if "qwen3" in model.lower():
+        return {"chat_template_kwargs": {"enable_thinking": False}}
+    return None
 
 
 class OpenAICompatibleProvider:
@@ -46,9 +66,15 @@ class OpenAICompatibleProvider:
             kwargs["response_format"] = {"type": "json_object"}
         if request.stop:
             kwargs["stop"] = request.stop
+        extra = _extra_body(request.model)
+        if extra:
+            kwargs["extra_body"] = extra
 
         resp = client.chat.completions.create(**kwargs)
-        text = resp.choices[0].message.content or ""
+        msg = resp.choices[0].message
+        # content=None xảy ra khi thinking model trả reasoning field thay vì content
+        content = msg.content or getattr(msg, "reasoning", None) or ""
+        text = _strip_thinking(content)
         usage = resp.usage
 
         return LLMResponse(
@@ -59,7 +85,11 @@ class OpenAICompatibleProvider:
         )
 
     def stream_complete(self, request: LLMRequest) -> Iterator[str]:
-        """Yield text deltas as they arrive; không hỗ trợ response_json mode."""
+        """Yield text deltas as they arrive; không hỗ trợ response_json mode.
+
+        Thinking models không nên dùng với stream_complete (QA path dùng gemma).
+        Nếu gặp <think> delta thì skip cho đến khi gặp </think>.
+        """
         client = self._client_instance()
         kwargs: dict = {
             "model": request.model,
@@ -74,6 +104,33 @@ class OpenAICompatibleProvider:
         }
         if request.stop:
             kwargs["stop"] = request.stop
+        extra = _extra_body(request.model)
+        if extra:
+            kwargs["extra_body"] = extra
+
+        in_think = False
+        buf = ""
         for chunk in client.chat.completions.create(**kwargs):
-            if chunk.choices and chunk.choices[0].delta.content:
-                yield chunk.choices[0].delta.content
+            if not (chunk.choices and chunk.choices[0].delta.content):
+                continue
+            delta = chunk.choices[0].delta.content
+            buf += delta
+            # Drain buffer yielding only content outside <think> blocks
+            while True:
+                if in_think:
+                    end = buf.find("</think>")
+                    if end == -1:
+                        buf = ""
+                        break
+                    buf = buf[end + len("</think>"):].lstrip()
+                    in_think = False
+                else:
+                    start = buf.find("<think>")
+                    if start == -1:
+                        yield buf
+                        buf = ""
+                        break
+                    if start > 0:
+                        yield buf[:start]
+                    buf = buf[start + len("<think>"):]
+                    in_think = True

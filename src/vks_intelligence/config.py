@@ -52,7 +52,7 @@ class Settings(BaseSettings):
     scheduler_timezone: str = "Asia/Ho_Chi_Minh"
     scheduler_trigger_token: str = ""
     # Day-of-week dùng TÊN (fri/sun...) — APScheduler đếm 0=Monday, khác cron chuẩn 0=Sunday
-    cron_daily_intelligence: str = "0 15 * * *"
+    cron_daily_intelligence: str = "0 8 * * *"
     cron_weekly_digest: str = "0 15 * * fri"
     cron_monthly_brief: str = "0 15 1 * *"
     cron_competitor_monitor: str = "0 6 * * *"

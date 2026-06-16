@@ -40,7 +40,7 @@ def test_attach_noop_when_disabled(monkeypatch):
     assert sched_mod._scheduler is None
 
 
-def test_cron_defaults_fire_at_15_ict_weekly_friday():
+def test_cron_defaults_fire_at_correct_times():
     from apscheduler.triggers.cron import CronTrigger
 
     s = _settings()
@@ -50,9 +50,10 @@ def test_cron_defaults_fire_at_15_ict_weekly_friday():
     nxt = trigger.get_next_fire_time(None, now)
     assert nxt == datetime(2026, 6, 12, 15, 0, tzinfo=_ICT)
 
+    # Daily intelligence chạy lúc 08:00 ICT
     daily = CronTrigger.from_crontab(s.cron_daily_intelligence, timezone=_ICT)
     nxt_daily = daily.get_next_fire_time(None, now)
-    assert (nxt_daily.hour, nxt_daily.minute) == (15, 0)
+    assert (nxt_daily.hour, nxt_daily.minute) == (8, 0)
 
     monthly = CronTrigger.from_crontab(s.cron_monthly_brief, timezone=_ICT)
     nxt_monthly = monthly.get_next_fire_time(None, now)

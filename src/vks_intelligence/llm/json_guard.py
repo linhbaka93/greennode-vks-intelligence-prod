@@ -101,6 +101,26 @@ def _coerce_schema_data(data, schema: type[BaseModel]):
         coerced.setdefault("key_findings", [])
         coerced["key_findings"].extend(_stringify_list(strategic))
 
+    # memory_curator trả {"patches": [...]} — map sang key_findings để synthesis đọc được
+    patches = coerced.pop("patches", None)
+    if patches and isinstance(patches, list):
+        coerced.setdefault("key_findings", [])
+        coerced.setdefault("recommended_actions", [])
+        for patch in patches:
+            if not isinstance(patch, dict):
+                continue
+            op = patch.get("op", "update")
+            path = patch.get("path", "")
+            reason = patch.get("reason", "")
+            confidence = patch.get("confidence", "medium")
+            if reason or path:
+                coerced["key_findings"].append(
+                    f"[Patch {op}] {path} (confidence: {confidence}) — {reason}"
+                )
+                coerced["recommended_actions"].append(
+                    f"Áp dụng patch {op} cho {path}: {reason[:120]}"
+                )
+
     for field in ("key_findings", "risks", "gaps", "recommended_actions"):
         if field in coerced:
             coerced[field] = _stringify_list(coerced[field])

@@ -107,9 +107,9 @@ class Settings(BaseSettings):
     # Freshness threshold (ngày) — memory_tool flag dữ liệu cũ
     tier1_freshness_days: int = 7
     tier2_freshness_days: int = 7
-    tier3_freshness_days: int = 30
-    market_trends_freshness_days: int = 90
-    gpu_pricing_freshness_days: int = 14
+    tier3_freshness_days: int = 7
+    market_trends_freshness_days: int = 7
+    gpu_pricing_freshness_days: int = 7
 
     # Memory auto-write (curator patch apply)
     memory_auto_write_enabled: bool = False

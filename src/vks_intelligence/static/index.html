@@ -673,6 +673,11 @@
       margin: 3px 0;
     }
 
+    .chart-wrap {
+      margin-top: 8px;
+      line-height: 0;
+    }
+
     .preview {
       white-space: pre-wrap;
       font-size: 0.82rem;
@@ -725,6 +730,11 @@
           <div class="breakdown" id="task-breakdown"></div>
         </section>
       </div>
+      <section class="panel side-section" style="margin-top:18px">
+        <h2 class="panel-title">Phân bố quality score</h2>
+        <p class="panel-caption">Histogram tất cả run có score — cột xanh đậm = score ≥ 0.9.</p>
+        <div class="chart-wrap" id="quality-chart"></div>
+      </section>
     </div>
 
     <!-- ── RUNS ── -->
@@ -792,9 +802,9 @@
     <!-- ── COST ── -->
     <div class="tab-panel" data-panel="cost">
       <section class="panel side-section">
-        <h2 class="panel-title">Cost trend</h2>
-        <p class="panel-caption">Token mỗi ngày (14 ngày gần nhất).</p>
-        <div class="breakdown" id="cost-trend"></div>
+        <h2 class="panel-title">Cost trend — Token theo ngày</h2>
+        <p class="panel-caption">Tổng token (input + output) mỗi ngày, 14 ngày gần nhất.</p>
+        <div class="chart-wrap" id="cost-chart"></div>
       </section>
     </div>
 
@@ -849,7 +859,8 @@
       qualityPill: document.getElementById("quality-pill"),
       breakdown: document.getElementById("task-breakdown"),
       qaBreakdown: document.getElementById("qa-breakdown"),
-      costTrend: document.getElementById("cost-trend"),
+      costChart: document.getElementById("cost-chart"),
+      qualityChart: document.getElementById("quality-chart"),
       routedBy: document.getElementById("routed-by"),
       taskMix: document.getElementById("task-mix"),
       drawer: document.getElementById("drawer"),
@@ -956,27 +967,76 @@
         .join("");
     }
 
-    function renderCost() {
-      const points = state.cost || [];
-      if (!points.length) {
-        els.costTrend.innerHTML = '<div class="muted">Chưa có dữ liệu token.</div>';
+    function fmtK(n) {
+      return n >= 1000 ? (n / 1000).toFixed(0) + "k" : String(n);
+    }
+
+    function drawAreaChart(container, data) {
+      if (!data || !data.length) {
+        container.innerHTML = '<div class="muted" style="padding:12px 0">Chưa có dữ liệu token.</div>';
         return;
       }
-      const max = Math.max(...points.map((p) => (p.input_tokens ?? 0) + (p.output_tokens ?? 0)), 1);
-      els.costTrend.innerHTML = points
-        .map((p) => {
-          const total = (p.input_tokens ?? 0) + (p.output_tokens ?? 0);
-          const width = Math.max(6, Math.round((total / max) * 100));
-          const day = String(p.date ?? "").slice(5);
-          return `
-            <div class="bar-row">
-              <span>${escapeHtml(day)}</span>
-              <span class="bar-track"><span class="bar-fill" style="width: ${width}%"></span></span>
-              <strong>${formatNumber(total)}</strong>
-            </div>
-          `;
-        })
-        .join("");
+      const W = 580, H = 160, PL = 52, PR = 12, PT = 12, PB = 28;
+      const iW = W - PL - PR, iH = H - PT - PB;
+      const totals = data.map((d) => (d.input_tokens ?? 0) + (d.output_tokens ?? 0));
+      const maxVal = Math.max(...totals, 1);
+      const labels = data.map((d) => String(d.date ?? "").slice(5));
+      const n = data.length;
+      const xStep = n > 1 ? iW / (n - 1) : iW;
+      const pts = totals.map((v, i) => [
+        PL + (n > 1 ? i * xStep : iW / 2),
+        PT + iH - (v / maxVal) * iH,
+      ]);
+      const lineD = pts.map(([x, y], i) => `${i ? "L" : "M"}${x.toFixed(1)} ${y.toFixed(1)}`).join(" ");
+      const areaD = `${lineD} L${pts[pts.length - 1][0].toFixed(1)} ${(PT + iH).toFixed(1)} L${PL} ${(PT + iH).toFixed(1)} Z`;
+      const yTicks = [0, 0.5, 1].map((f) => ({ y: PT + iH - f * iH, label: fmtK(Math.round(maxVal * f)) }));
+      const showEvery = n <= 7 ? 1 : n <= 14 ? 2 : 3;
+      container.innerHTML = `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:${H}px">
+        <defs><linearGradient id="ga" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#16784a" stop-opacity=".18"/><stop offset="100%" stop-color="#16784a" stop-opacity=".01"/></linearGradient></defs>
+        ${yTicks.map((t) => `<line x1="${PL}" y1="${t.y.toFixed(1)}" x2="${(W - PR).toFixed(1)}" y2="${t.y.toFixed(1)}" stroke="#ece7e1"/><text x="${(PL - 6).toFixed(1)}" y="${(t.y + 4).toFixed(1)}" text-anchor="end" font-size="10" fill="#9ca3af">${escapeHtml(t.label)}</text>`).join("")}
+        <path d="${areaD}" fill="url(#ga)"/>
+        <path d="${lineD}" fill="none" stroke="#16784a" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+        ${pts.map(([x, y]) => `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3" fill="#16784a"/>`).join("")}
+        ${labels.map((l, i) => i % showEvery ? "" : `<text x="${pts[i][0].toFixed(1)}" y="${H - 6}" text-anchor="middle" font-size="10" fill="#9ca3af">${escapeHtml(l)}</text>`).join("")}
+      </svg>`;
+    }
+
+    function drawQualityHistogram(container, runs) {
+      const scored = (runs || []).filter((r) => r.quality_score != null);
+      if (!scored.length) {
+        container.innerHTML = '<div class="muted" style="padding:12px 0">Chưa có dữ liệu score.</div>';
+        return;
+      }
+      const bins = Array.from({ length: 10 }, (_, i) => ({ label: (i * 0.1).toFixed(1), count: 0 }));
+      for (const r of scored) {
+        bins[Math.min(9, Math.floor(r.quality_score * 10))].count++;
+      }
+      const maxCount = Math.max(...bins.map((b) => b.count), 1);
+      const W = 580, H = 110, PL = 20, PR = 8, PT = 16, PB = 20;
+      const iW = W - PL - PR, iH = H - PT - PB;
+      const bW = iW / 10;
+      const gap = 3;
+      const bars = bins.map((b, i) => {
+        const bH = (b.count / maxCount) * iH;
+        const x = PL + i * bW + gap;
+        const y = PT + iH - bH;
+        const w = bW - gap * 2;
+        const fill = i >= 8 ? "#16784a" : "#a7c9b5";
+        return [
+          bH > 0 ? `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${bH.toFixed(1)}" fill="${fill}" rx="2"/>` : "",
+          b.count ? `<text x="${(x + w / 2).toFixed(1)}" y="${Math.max(PT + 12, y - 3).toFixed(1)}" text-anchor="middle" font-size="10" fill="#374151">${b.count}</text>` : "",
+          `<text x="${(x + w / 2).toFixed(1)}" y="${H - 4}" text-anchor="middle" font-size="9" fill="#9ca3af">${b.label}</text>`,
+        ].join("");
+      }).join("");
+      container.innerHTML = `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:${H}px">${bars}</svg>`;
+    }
+
+    function renderCost() {
+      drawAreaChart(els.costChart, state.cost || []);
+    }
+
+    function renderQualityHistogram() {
+      drawQualityHistogram(els.qualityChart, state.runs || []);
     }
 
     function renderBars(el, obj, emptyMsg) {
@@ -1069,6 +1129,7 @@
       renderCost();
       renderOrchestration();
       renderRuns();
+      renderQualityHistogram();
     }
 
     async function load() {

@@ -24,6 +24,8 @@ _CURRENT_KEYWORDS = (
     "just", "today", "this week", "current", "update",
     "research", "tìm hiểu", "tim hieu", "mở research", "mo research",
     "cập nhật", "cap nhat",
+    "refresh", "chạy lại", "chay lai",
+    "đào sâu", "dao sau", "phân tích sâu", "phan tich sau",
 )
 
 

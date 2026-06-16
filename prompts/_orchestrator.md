@@ -42,3 +42,7 @@ CHỈ trả về một JSON object hợp lệ, KHÔNG giải thích ngoài JSON.
 - "Động thái mới nhất của FPT về AI infra?" → `{"intent":"current_research","task_type":"competitor-monitor","force_refresh":false,"reasoning":"cần dữ liệu mới về đối thủ"}`
 - "Mở research về Nghị định 356 để cập nhật battlecard" → `{"intent":"current_research","task_type":"battlecard","force_refresh":true,"reasoning":"yêu cầu rõ research + battlecard"}`
 - "So sánh giá GKE vs EKS hiện tại" → `{"intent":"current_research","task_type":"pricing-analysis","force_refresh":false,"reasoning":"so sánh pricing cập nhật"}`
+- "cập nhật pricing Viettel so với GreenNode" → `{"intent":"current_research","task_type":"pricing-analysis","force_refresh":true,"reasoning":"cập nhật = yêu cầu data mới; pricing → pricing-analysis"}`
+- "mở research về đối thủ FPT Cloud tháng này" → `{"intent":"current_research","task_type":"competitor-monitor","force_refresh":true,"reasoning":"mở research = force refresh; FPT → competitor-monitor"}`
+- "cập nhật thông tin về Bizfly BKE" → `{"intent":"current_research","task_type":"competitor-monitor","force_refresh":false,"reasoning":"cập nhật = research mới; Bizfly → competitor-monitor"}`
+- "refresh thông tin đối thủ" → `{"intent":"current_research","task_type":"competitor-monitor","force_refresh":true,"reasoning":"refresh = force new data; đối thủ → competitor-monitor"}`

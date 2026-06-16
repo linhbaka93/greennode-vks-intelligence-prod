@@ -455,18 +455,26 @@ def task_qa(body: QARequestBody) -> QAResponse:
         answer, confidence, escalated, sources = agent.answer(body.question, ctx)
 
         if escalated:
-            # Low confidence → run supervisor research nhẹ
+            # Low confidence → detect research type from question and run full pipeline
+            research_task_type, days_window = _research_task_for_question(body.question)
             run_id = f"qa-esc-{_uuid.uuid4().hex[:8]}"
             if actor_id:
-                state.upsert(actor_id, session_id, run_id, "qa",
+                state.upsert(actor_id, session_id, run_id, research_task_type.value,
                              stage="run_agents",
                              artifact_path=str(s.workspace_path / s.artifact_root / run_id))
             try:
-                meta = _supervisor().run(req)
+                research_req = req.__class__(
+                    request_id=run_id,
+                    task_type=research_task_type,
+                    source="qa-escalated",
+                    payload={**req.payload, "days_window": days_window, "interactive": True},
+                    dry_run=False,
+                    save_output=True,
+                )
+                meta = _supervisor().run(research_req)
                 artifact_path = str(s.workspace_path / s.artifact_root / meta.run_id)
                 if actor_id:
                     state.complete(run_id, artifact_path)
-                # Nếu supervisor có summary tốt hơn, dùng thay thế
                 sup_summary = state.get_run_summary(artifact_path)
                 if sup_summary and len(sup_summary) > len(answer or ""):
                     answer = sup_summary

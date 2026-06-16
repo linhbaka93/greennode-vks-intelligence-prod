@@ -1228,6 +1228,7 @@
         bubble.classList.add("streaming");
         send.disabled = true;
         let answer = "";
+        let firstDelta = true;
         try {
           const resp = await fetch("/dashboard/chat", {
             method: "POST",
@@ -1248,7 +1249,10 @@
               const line = evt.split("\n").find((l) => l.startsWith("data: "));
               if (!line) continue;
               const payload = JSON.parse(line.slice(6));
-              if (payload.delta) {
+              if (payload.thinking) {
+                bubble.textContent = "Đang suy nghĩ...";
+              } else if (payload.delta) {
+                if (firstDelta) { bubble.textContent = ""; firstDelta = false; }
                 answer += payload.delta;
                 bubble.textContent = answer;
                 box.scrollTop = box.scrollHeight;

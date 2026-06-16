@@ -755,6 +755,7 @@ def dashboard_chat(body: _ChatRequestBody):
 
     def _gen():
         ok = True
+        yield 'data: {"thinking": true}\n\n'
         try:
             for chunk in qa_agent.stream_answer_text(body.message, session_history=session_history):
                 yield f"data: {json.dumps({'delta': chunk}, ensure_ascii=False)}\n\n"
@@ -1011,12 +1012,58 @@ async def telegram_webhook(request: Request) -> dict:
                     )
                     return {"ok": True}
 
-        send_message(
+        placeholder_id = send_message(
             s.telegram_bot_token,
             chat_id,
             "🔍 🌼 Lin Lin 🌼 đang collect dữ liệu mới nhất và chạy research. Mình sẽ gửi kết quả ở tin nhắn tiếp theo.",
             reply_to=msg_id,
         )
+
+        import threading
+
+        _done = [False]
+        _start_ts = _time.time()
+
+        _STAGE_LABELS = {
+            "starting": "khởi động",
+            "collect_evidence": "thu thập dữ liệu",
+            "run_agents": "chạy agents",
+            "quality_gate": "kiểm tra chất lượng",
+        }
+
+        def _typing_loop() -> None:
+            if _done[0]:
+                return
+            try:
+                send_action(s.telegram_bot_token, chat_id)
+            except Exception:
+                pass
+            threading.Timer(4.0, _typing_loop).start()
+
+        def _heartbeat() -> None:
+            if _done[0]:
+                return
+            try:
+                from vks_intelligence.tools.telegram_tool import edit_message as _edit
+                elapsed = int(_time.time() - _start_ts)
+                m, sr = divmod(elapsed, 60)
+                active = state.get_by_actor(actor_id) if actor_id else None
+                stage = _STAGE_LABELS.get((active or {}).get("stage", ""), "đang xử lý")
+                elapsed_str = f"{m} phút {sr}s" if m else f"{elapsed}s"
+                if placeholder_id:
+                    _edit(
+                        s.telegram_bot_token, chat_id, placeholder_id,
+                        f"🔄 🌼 Lin Lin 🌼 đang nghiên cứu...\n\n"
+                        f"⏱️ Đã chạy: {elapsed_str}\n"
+                        f"📋 Giai đoạn: {stage}\n\n"
+                        "_Nhắn \"xong chưa?\" để xem tiến độ chi tiết_",
+                    )
+            except Exception:
+                pass
+            threading.Timer(60.0, _heartbeat).start()
+
+        threading.Timer(2.0, _typing_loop).start()
+        threading.Timer(45.0, _heartbeat).start()
 
         def _run_research_reply() -> None:
             _research_start = _time.monotonic()
@@ -1060,8 +1107,8 @@ async def telegram_webhook(request: Request) -> dict:
                     task_type=_decision.task_type.value,
                     routed_by=_decision.routed_by,
                 )
-
-        import threading
+            finally:
+                _done[0] = True
 
         threading.Thread(target=_run_research_reply, daemon=True).start()
         return {"ok": True}

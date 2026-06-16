@@ -181,22 +181,49 @@ class Supervisor:
                     f"Critical agent(s) failed: {[r.agent for r in failed_critical]}"
                 )
 
-            # 5. Synthesize
-            synthesis_md = synthesize(
-                request.task_type,
-                results,
-                evidence_warnings=evidence.warnings if evidence else None,
-            )
+            # 5. Synthesize + revise loop (max 1 lần khi verdict == REVISE)
+            from vks_intelligence.contracts import QualityVerdict
+            revise_count = 0
+            revise_hint: list[str] | None = None
+            while True:
+                synthesis_md = synthesize(
+                    request.task_type,
+                    results,
+                    evidence_warnings=evidence.warnings if evidence else None,
+                    revise_hint=revise_hint,
+                )
+                quality = validate_output(synthesis_md, request.task_type)
+                if quality.verdict != QualityVerdict.REVISE or revise_count >= 1:
+                    break
+                revise_count += 1
+                revise_hint = quality.failures
+                log.info(
+                    "Revise attempt %d for run %s — failures: %s",
+                    revise_count, run_id, quality.failures,
+                )
+
+            # 5b. Citation grader (optional, chạy một lần trên synthesis cuối)
+            if s.citation_grader_enabled:
+                from vks_intelligence.tools.citation_grader import grade_citations
+                dead_links = grade_citations(synthesis_md)
+                if dead_links:
+                    metadata.warnings.append(
+                        f"Citation grader: {len(dead_links)} link chết — {dead_links[:3]}"
+                    )
+
             store.save_synthesis(synthesis_md)
 
-            # 6. Quality gate
-            quality = validate_output(synthesis_md, request.task_type)
+            # 6. Quality gate result
             store.save_quality(quality)
             metadata.quality_score = quality.score
             metadata.warnings.extend(quality.failures + quality.warnings)
+            if revise_count:
+                metadata.warnings.append(f"Revise loop: {revise_count} lần thử lại")
 
             # 7. Publish / approval decision
-            published, approval_required = self._decide_publish(request, quality, context)
+            published, approval_required = self._decide_publish(
+                request, quality, context, revise_count=revise_count
+            )
             metadata.published = published and not request.dry_run
             metadata.approval_required = approval_required
 
@@ -237,6 +264,8 @@ class Supervisor:
         request: TaskRequest,
         quality,
         context: RunContext,
+        *,
+        revise_count: int = 0,
     ) -> tuple[bool, bool]:
         """Áp publish/approval policy; trả (published, approval_required)."""
         from vks_intelligence.contracts import QualityVerdict
@@ -252,7 +281,10 @@ class Supervisor:
             return False, True
         if verdict == QualityVerdict.NEEDS_REVIEW:
             return False, True
-        # revise / blocked
+        if verdict == QualityVerdict.REVISE:
+            # Sau revise loop: escalate lên needs_review thay vì silent block
+            return False, revise_count > 0
+        # BLOCKED
         return False, False
 
 

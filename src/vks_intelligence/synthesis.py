@@ -42,8 +42,13 @@ def synthesize(
     results: list[AgentResult],
     *,
     evidence_warnings: list[str] | None = None,
+    revise_hint: list[str] | None = None,
 ) -> str:
-    """Sinh markdown theo template TL;DR → ... → Sources, output tiếng Việt."""
+    """Sinh markdown theo template TL;DR → ... → Sources, output tiếng Việt.
+
+    revise_hint: danh sách failures từ quality gate lần trước → prepend vào gaps
+    để output lần revise rõ ràng hơn về giới hạn dữ liệu.
+    """
     now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
     ok = [r for r in results if r.status != AgentStatus.FAILED]
 
@@ -67,6 +72,8 @@ def synthesize(
                 sources.append(c.source)
     if evidence_warnings:
         gaps.extend(_clean_items(evidence_warnings))
+    if revise_hint:
+        gaps = [f"[Cần sửa] {h}" for h in revise_hint] + gaps
 
     if task_type in (TaskType.WEEKLY_DIGEST, TaskType.MONTHLY_BRIEF):
         findings = _dedup_findings(findings)

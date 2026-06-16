@@ -119,6 +119,9 @@ class Settings(BaseSettings):
     # Battlecard auto-write: True → ghi thẳng memory/battlecards/; False → memory/_proposed/ chờ duyệt
     battlecard_auto_write: bool = False
 
+    # Citation grader: HEAD-check URLs sau synthesis, đánh dấu dead links vào warnings
+    citation_grader_enabled: bool = False
+
     # Dashboard
     dashboard_enabled: bool = True
 

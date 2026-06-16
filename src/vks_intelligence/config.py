@@ -33,12 +33,12 @@ class Settings(BaseSettings):
     ai_platform_api_key: str = ""
     anthropic_api_key: str = ""
 
-    # Model routing
+    # Model routing — 2 self-hosted models: gemma-4-31b-it (fast) | qwen3-5-27b (reasoning)
     model_qa: str = "google/gemma-4-31b-it"
-    model_research: str = "qwen/qwen-2.5-72b-instruct"
+    model_research: str = "qwen/qwen3-5-27b"
     model_synthesis: str = "google/gemma-4-31b-it"
-    model_critic: str = "qwen/qwen-2.5-72b-instruct"
-    model_premium: str = "claude-sonnet-4-6"
+    model_critic: str = "qwen/qwen3-5-27b"
+    model_premium: str = "qwen/qwen3-5-27b"
     model_fallback: str = "google/gemma-4-31b-it"
 
     # Telegram

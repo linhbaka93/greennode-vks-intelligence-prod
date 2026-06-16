@@ -164,9 +164,9 @@ def _make_qa_context(question: str, session_id: str):
 def health() -> HealthResponse:
     from vks_intelligence.config import get_settings
     s = get_settings()
-    models = [s.model_qa, s.model_research, s.model_synthesis]
-    if s.anthropic_api_key:
-        models.append(s.model_premium)
+    models = list(dict.fromkeys([
+        s.model_qa, s.model_research, s.model_synthesis, s.model_critic, s.model_premium,
+    ]))
     return HealthResponse(
         status="ok",
         timestamp=datetime.now(timezone.utc).isoformat(),

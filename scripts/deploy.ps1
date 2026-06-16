@@ -52,7 +52,9 @@ Write-Ok "Token OK (len=$($TOKEN.Length))"
 # -- 2. Tests --
 if (-not $SkipTests) {
     Write-Step "2. Run local tests"
-    $result = & uv run pytest tests/ -q 2>&1
+    $pytestExe = Join-Path $PSScriptRoot "..\\.venv\\Scripts\\python.exe"
+    if (-not (Test-Path $pytestExe)) { $pytestExe = "python" }
+    $result = & $pytestExe -m pytest tests/ -q 2>&1
     if ($LASTEXITCODE -ne 0) {
         Write-Host ($result | Out-String) -ForegroundColor Red
         Write-Fail "Tests failed -- stopping deploy"

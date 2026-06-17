@@ -2,7 +2,7 @@
 
 ## Mô tả use case
 
-Đội ngũ sản phẩm và kinh doanh tại GreenNode cần theo dõi liên tục thị trường Managed Kubernetes Việt Nam — pricing, tính năng mới, chiến lược GTM và động thái đối thủ (Dịch vụ Kubernetes của Viettel IDC, FPT FKE, Bizfly BKE, CMC Cloud, AWS/GCP/Azure). Thu thập thủ công từ nhiều nguồn mỗi ngày tốn 2–3 giờ, dễ bỏ sót tín hiệu quan trọng, và kết quả không nhất quán giữa các thành viên.
+Đội ngũ sản phẩm và kinh doanh tại GreenNode cần theo dõi liên tục thị trường Managed Kubernetes Việt Nam — pricing, tính năng mới, chiến lược GTM và động thái đối thủ (dịch vụ Kubernetes của Viettel IDC, FPT, Bizfly, CMC Cloud, AWS, GCP, Azure). Thu thập thủ công từ nhiều nguồn mỗi ngày tốn 2–3 giờ, dễ bỏ sót tín hiệu quan trọng, và kết quả không nhất quán giữa các thành viên.
 
 Hệ thống multi-agent tự động chạy trên GreenNode AgentBase giải quyết vấn đề này. Mỗi ngày, Supervisor Core kích hoạt các specialist agent song song: `competitor_agent` theo dõi động thái đối thủ, `pricing_agent` phân tích TCO, `regulatory_agent` cập nhật chính sách pháp lý, `market_trend_agent` bám sát xu hướng AI/GPU cloud Việt Nam. Kết quả được tổng hợp qua quality gate tự động (score ≥ 0.80 với deterministic check + LLM critic + citation grader) trước khi phân phối.
 

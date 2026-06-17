@@ -60,8 +60,8 @@ git config user.email "linhbaka93@gmail.com"
 ## Runtime đang chạy (2026-06-03)
 
 ```
-Endpoint : https://endpoint-b314a16e-88d5-419f-a76c-e549c4ba6e50.agentbase-runtime.aiplatform.vngcloud.vn
-Image    : vcr.vngcloud.vn/98510-greennode-vks-intelligence/vks-intelligence:v20260603085356
+Endpoint : https://endpoint-c55e9dec-fbc3-4621-a921-d31c349c3002.agentbase-runtime.aiplatform.vngcloud.vn
+Image    : vcr.vngcloud.vn/98510-greennode-vks-intelligence/vks-intelligence:v20260617104425
 Status   : ACTIVE — /health trả ok, Telegram token + chat_id đã set
 ```
 

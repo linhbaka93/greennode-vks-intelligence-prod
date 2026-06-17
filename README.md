@@ -86,6 +86,7 @@ GET  /dashboard/summary | /dashboard/runs | /dashboard/evaluation | /dashboard/u
 - **QA agent bound bởi memory** — trả lời từ knowledge base; nếu memory stale, câu trả lời stale. Không có cơ chế tự phát hiện khi knowledge base lỗi thời.
 - **Không học từ feedback** — hệ thống không ghi nhận báo cáo nào được approve vs reject để điều chỉnh style/depth tự động theo thời gian.
 - **Revise loop tối đa 1 lần** — nếu lần revise cũng fail, output chuyển `needs_review` chứ không có thêm vòng tự động.
+- **Tốc độ research chưa tối ưu** — query yêu cầu cào dữ liệu và research mới (intent `current_research`) thường mất 60–120 giây do các specialist agent chạy tuần tự theo plan, mỗi agent phải fetch RSS/news rồi tổng hợp qua LLM. Chưa có streaming response hay progress update chi tiết trong khi chờ.
 
 ## Trạng thái
 

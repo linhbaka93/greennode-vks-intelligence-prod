@@ -1,161 +1,202 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="560" viewBox="0 0 1700 560">
+<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="545" viewBox="0 0 1700 545">
   <defs>
-    <marker id="a" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
-      <path d="M0,0 L10,4 L0,8Z" fill="#aaaaaa"/>
+    <marker id="arr" markerWidth="12" markerHeight="9" refX="10" refY="4.5" orient="auto">
+      <path d="M0,0 L12,4.5 L0,9Z" fill="#c0c0c0"/>
     </marker>
     <style>
       text { font-family: Arial, Helvetica, sans-serif; }
-      .node  { fill: #ffffff; stroke: #c4c4c4; stroke-width: 2.5; }
-      .node-hi { fill: #f8f800; stroke: #c0c000; stroke-width: 3.5; }
-      .lbl  { font-weight: bold; font-size: 20px; fill: #111111; }
-      .sub  { font-size: 13px; fill: #666666; }
-      .albl { font-size: 12px; fill: #555555; }
+      .lbl  { font-weight: 900; font-size: 22px; fill: #111111; }
+      .sub  { font-size: 13px; fill: #888888; }
+      .albl { font-size: 12.5px; fill: #909090; }
+      .arr  { stroke: #c8c8c8; stroke-width: 2.5; fill: none; marker-end: url(#arr); }
     </style>
   </defs>
 
-  <rect width="1700" height="560" fill="#ffffff"/>
-
-  <!-- ======================================================
-       TRIGGER  (far left, person icon)
-       center x=108, y=252
-  ====================================================== -->
-  <circle cx="108" cy="196" r="28" fill="none" stroke="#1a1a1a" stroke-width="3"/>
-  <path d="M56,252 Q56,232 108,232 Q160,232 160,252" fill="none" stroke="#1a1a1a" stroke-width="3"/>
-  <text class="lbl" text-anchor="middle" x="108" y="286">Trigger</text>
-  <text class="sub" text-anchor="middle" x="108" y="308">Telegram</text>
-  <text class="sub" text-anchor="middle" x="108" y="326">n8n Scheduler</text>
+  <!-- White background -->
+  <rect width="1700" height="545" fill="#ffffff"/>
 
 
-  <!-- ── arrow: Trigger → Orchestrator ── -->
-  <line x1="174" y1="240" x2="296" y2="240" stroke="#aaaaaa" stroke-width="2" marker-end="url(#a)"/>
-  <text class="albl" text-anchor="middle" x="235" y="231">Câu hỏi / Tác vụ</text>
+  <!-- ═══════════════════════════════════════════════════
+       1.  TRIGGER  (person silhouette + dark badge)
+           person center-x = 116
+  ═══════════════════════════════════════════════════ -->
 
-  <!-- ── arrow: Orchestrator → Trigger ── -->
-  <line x1="296" y1="270" x2="174" y2="270" stroke="#aaaaaa" stroke-width="2" marker-end="url(#a)"/>
-  <text class="albl" text-anchor="middle" x="235" y="290">Phản hồi / Báo cáo</text>
+  <!-- dark badge "Trigger" -->
+  <rect x="56" y="158" width="118" height="36" rx="18" fill="#1a1a1a"/>
+  <text font-weight="bold" font-size="16" fill="#ffffff" text-anchor="middle" x="115" y="182">Trigger</text>
 
+  <!-- person head (solid) -->
+  <circle cx="115" cy="218" r="24" fill="#1a1a1a"/>
 
-  <!-- ======================================================
-       ORCHESTRATOR  (left-center)
-       rect (298, 214)  w=196  h=116    right=494   center=(396,272)
-  ====================================================== -->
-  <rect class="node" x="298" y="214" width="196" height="116" rx="14"/>
-  <rect x="316" y="226" width="44" height="32" rx="5" fill="none" stroke="#bbbbbb" stroke-width="2"/>
-  <text font-family="monospace" font-size="13" fill="#aaaaaa" x="320" y="248">&lt;/&gt;</text>
-  <text class="lbl" text-anchor="middle" x="394" y="268">Orchestrator</text>
-  <text class="sub" text-anchor="middle" x="394" y="290">intent classifier</text>
-  <text class="sub" text-anchor="middle" x="394" y="310">memory_lookup · research</text>
+  <!-- person body (solid) -->
+  <path d="M65,264 Q65,244 115,244 Q165,244 165,264 L165,272 Q165,275 115,275 Q65,275 65,272 Z" fill="#1a1a1a"/>
 
-
-  <!-- ── arrow: Orchestrator → Supervisor ── -->
-  <line x1="496" y1="254" x2="594" y2="254" stroke="#aaaaaa" stroke-width="2" marker-end="url(#a)"/>
-  <text class="albl" text-anchor="middle" x="545" y="245">Request</text>
-
-  <!-- ── arrow: Supervisor → Orchestrator ── -->
-  <line x1="594" y1="282" x2="496" y2="282" stroke="#aaaaaa" stroke-width="2" marker-end="url(#a)"/>
-  <text class="albl" text-anchor="middle" x="545" y="300">Progress</text>
+  <!-- subtitles -->
+  <text class="sub" text-anchor="middle" x="115" y="298">Telegram</text>
+  <text class="sub" text-anchor="middle" x="115" y="316">n8n Scheduler</text>
 
 
-  <!-- ======================================================
-       QUALITY GATE  (top)
-       rect (568, 18)  w=284  h=92    bottom=110   center=(710,64)
-  ====================================================== -->
-  <rect class="node" x="568" y="18" width="284" height="92" rx="14"/>
-  <path d="M594,64 L612,82 L648,46" fill="none" stroke="#1a1a1a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <text class="lbl" text-anchor="middle" x="728" y="58">Quality Gate</text>
-  <text class="sub" text-anchor="middle" x="728" y="80">PASS · REVISE · BLOCK</text>
+  <!-- ─── arrow: Trigger → Orchestrator ─── -->
+  <line class="arr" x1="178" y1="246" x2="304" y2="246"/>
+  <text class="albl" text-anchor="middle" x="241" y="237">Câu hỏi / Tác vụ</text>
+
+  <!-- ─── arrow: Orchestrator → Trigger ─── -->
+  <line class="arr" x1="304" y1="272" x2="178" y2="272"/>
+  <text class="albl" text-anchor="middle" x="241" y="291">Phản hồi / Báo cáo</text>
 
 
-  <!-- ── arrow: Supervisor → Quality Gate (up, left lane x=686) ── -->
-  <line x1="686" y1="184" x2="686" y2="112" stroke="#aaaaaa" stroke-width="2" marker-end="url(#a)"/>
-  <text class="albl" text-anchor="end" x="682" y="152">Propose output</text>
+  <!-- ═══════════════════════════════════════════════════
+       2.  ORCHESTRATOR  (browser/interface icon, no border)
+           center-x = 385
+  ═══════════════════════════════════════════════════ -->
 
-  <!-- ── arrow: Quality Gate → Supervisor (down, right lane x=742) ── -->
-  <line x1="742" y1="112" x2="742" y2="184" stroke="#aaaaaa" stroke-width="2" marker-end="url(#a)"/>
-  <text class="albl" text-anchor="start" x="746" y="152">Allow / Revise / Block</text>
+  <!-- monitor outline (reference style: outlined, not solid) -->
+  <rect x="328" y="222" width="72" height="54" rx="6" fill="none" stroke="#1a1a1a" stroke-width="3"/>
+  <line x1="328" y1="237" x2="400" y2="237" stroke="#1a1a1a" stroke-width="2.5"/>
+  <text font-family="monospace" font-weight="bold" font-size="15" fill="#1a1a1a" text-anchor="middle" x="364" y="258">&lt;/&gt;</text>
+  <line x1="356" y1="276" x2="372" y2="276" stroke="#1a1a1a" stroke-width="2.5"/>
+  <line x1="364" y1="276" x2="364" y2="284" stroke="#1a1a1a" stroke-width="2.5"/>
 
-
-  <!-- ======================================================
-       SUPERVISOR CORE  (center, yellow highlight)
-       rect (596, 184)  w=284  h=200   right=880   bottom=384   center=(738,284)
-  ====================================================== -->
-  <rect class="node-hi" x="596" y="184" width="284" height="200" rx="16"/>
-  <circle cx="738" cy="246" r="32" fill="none" stroke="#333333" stroke-width="2.8"/>
-  <polygon points="738,210 730,224 746,224" fill="#333333"/>
-  <polygon points="738,282 746,268 730,268" fill="#333333"/>
-  <text class="lbl" font-size="23" text-anchor="middle" x="738" y="316">Supervisor</text>
-  <text class="sub" font-size="16" text-anchor="middle" x="738" y="342">Core</text>
+  <!-- label -->
+  <text class="lbl" text-anchor="middle" x="385" y="310">Orchestrator</text>
+  <text class="sub" text-anchor="middle" x="385" y="330">intent classifier</text>
 
 
-  <!-- ── arrow: Supervisor → Specialist Agents ── -->
-  <line x1="882" y1="258" x2="990" y2="258" stroke="#aaaaaa" stroke-width="2" marker-end="url(#a)"/>
-  <text class="albl" text-anchor="middle" x="936" y="248">Dispatch agents</text>
+  <!-- ─── arrow: Orchestrator → Supervisor ─── -->
+  <line class="arr" x1="450" y1="248" x2="534" y2="248"/>
+  <text class="albl" text-anchor="middle" x="492" y="239">Request</text>
 
-  <!-- ── arrow: Specialist Agents → Supervisor ── -->
-  <line x1="990" y1="290" x2="882" y2="290" stroke="#aaaaaa" stroke-width="2" marker-end="url(#a)"/>
-  <text class="albl" text-anchor="middle" x="936" y="310">Agent results</text>
-
-
-  <!-- ======================================================
-       SPECIALIST AGENTS  (right)
-       rect (992, 104)  w=236  h=320   right=1228  center=(1110,264)
-  ====================================================== -->
-  <rect class="node" x="992" y="104" width="236" height="320" rx="14"/>
-  <path d="M1012,132 L1012,152 L1028,152 L1028,132" fill="none" stroke="#aaaaaa" stroke-width="2"/>
-  <line x1="1006" y1="132" x2="1034" y2="132" stroke="#aaaaaa" stroke-width="3.5"/>
-  <line x1="1020" y1="152" x2="1020" y2="166" stroke="#aaaaaa" stroke-width="2"/>
-  <text class="lbl" font-size="18" text-anchor="middle" x="1110" y="170">Specialist</text>
-  <text class="lbl" font-size="18" text-anchor="middle" x="1110" y="194">Agents</text>
-  <text class="sub" text-anchor="middle" x="1110" y="224">competitor · pricing</text>
-  <text class="sub" text-anchor="middle" x="1110" y="246">regulatory · market trend</text>
-  <text class="sub" text-anchor="middle" x="1110" y="268">positioning · battlecard</text>
-  <text class="sub" text-anchor="middle" x="1110" y="290">memory curator</text>
-  <text class="sub" text-anchor="middle" x="1110" y="312">quality critic</text>
-  <text class="sub" text-anchor="middle" x="1110" y="334">qa agent</text>
+  <!-- ─── arrow: Supervisor → Orchestrator ─── -->
+  <line class="arr" x1="534" y1="274" x2="450" y2="274"/>
+  <text class="albl" text-anchor="middle" x="492" y="293">Progress</text>
 
 
-  <!-- ── arrow: Specialists → LLM Router ── -->
-  <line x1="1230" y1="256" x2="1330" y2="264" stroke="#aaaaaa" stroke-width="2" marker-end="url(#a)"/>
-  <text class="albl" text-anchor="middle" x="1280" y="248">LLM call</text>
+  <!-- ═══════════════════════════════════════════════════
+       3.  QUALITY GATE  (bold label + checkmark, no border)
+           top-center above Supervisor
+  ═══════════════════════════════════════════════════ -->
 
-  <!-- ── arrow: LLM Router → Specialists ── -->
-  <line x1="1330" y1="296" x2="1230" y2="292" stroke="#aaaaaa" stroke-width="2" marker-end="url(#a)"/>
-  <text class="albl" text-anchor="middle" x="1280" y="316">Response</text>
+  <text class="lbl" text-anchor="middle" x="620" y="56">Quality</text>
+  <text class="lbl" text-anchor="middle" x="620" y="84">Gate</text>
 
+  <!-- large solid checkmark -->
+  <path d="M660,54 L678,78 L722,32" fill="none" stroke="#1a1a1a" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
 
-  <!-- ======================================================
-       LLM ROUTER  (far right)
-       rect (1332, 196)  w=264  h=176   center=(1464,284)
-  ====================================================== -->
-  <rect class="node" x="1332" y="196" width="264" height="176" rx="14"/>
-  <path d="M1356,224 L1382,214 L1408,224 L1408,250 L1382,260 L1356,250Z" fill="none" stroke="#aaaaaa" stroke-width="2"/>
-  <line x1="1382" y1="214" x2="1382" y2="260" stroke="#aaaaaa" stroke-width="1.5"/>
-  <line x1="1356" y1="237" x2="1382" y2="245" stroke="#aaaaaa" stroke-width="1.5"/>
-  <text class="lbl" text-anchor="middle" x="1464" y="278">LLM Router</text>
-  <text class="sub" text-anchor="middle" x="1464" y="302">Gemma · Qwen · Claude</text>
-  <text class="sub" text-anchor="middle" x="1464" y="324">JSON guard · retry · budget</text>
-  <text class="sub" text-anchor="middle" x="1464" y="346">timeout · fallback</text>
+  <text class="sub" text-anchor="middle" x="640" y="106">PASS · REVISE · BLOCK</text>
 
 
-  <!-- ── arrow: Supervisor → Memory (down, left lane x=712) ── -->
-  <line x1="712" y1="386" x2="712" y2="432" stroke="#aaaaaa" stroke-width="2" marker-end="url(#a)"/>
-  <text class="albl" text-anchor="end" x="708" y="414">Persist</text>
+  <!-- ─── arrow: Supervisor → Quality Gate (up, left lane) ─── -->
+  <line class="arr" x1="624" y1="178" x2="624" y2="116"/>
+  <text class="albl" text-anchor="end" x="619" y="152">Propose output</text>
 
-  <!-- ── arrow: Memory → Supervisor (up, right lane x=764) ── -->
-  <line x1="764" y1="432" x2="764" y2="386" stroke="#aaaaaa" stroke-width="2" marker-end="url(#a)"/>
-  <text class="albl" text-anchor="start" x="768" y="414">Load memory</text>
+  <!-- ─── arrow: Quality Gate → Supervisor (down, right lane) ─── -->
+  <line class="arr" x1="680" y1="116" x2="680" y2="178"/>
+  <text class="albl" text-anchor="start" x="685" y="152">Allow / Revise / Block</text>
 
 
-  <!-- ======================================================
-       MEMORY & STORAGE  (bottom)
-       rect (568, 434)  w=284  h=100   center=(710,484)
-  ====================================================== -->
-  <rect class="node" x="568" y="434" width="284" height="100" rx="14"/>
-  <ellipse cx="606" cy="452" rx="24" ry="9" fill="none" stroke="#aaaaaa" stroke-width="2"/>
-  <path d="M582,452 L582,484 Q582,494 606,494 Q630,494 630,484 L630,452" fill="none" stroke="#aaaaaa" stroke-width="2"/>
-  <ellipse cx="606" cy="468" rx="24" ry="9" fill="none" stroke="#aaaaaa" stroke-width="1.5"/>
-  <ellipse cx="606" cy="482" rx="24" ry="8" fill="none" stroke="#aaaaaa" stroke-width="1" stroke-dasharray="3 3"/>
-  <text class="lbl" font-size="18" text-anchor="middle" x="724" y="466">Memory &amp; Storage</text>
-  <text class="sub" text-anchor="middle" x="724" y="490">workspace · artifacts · GitHub</text>
+  <!-- ═══════════════════════════════════════════════════
+       4.  SUPERVISOR CORE  (YELLOW background — center node)
+           rect x=536 y=178  w=232 h=188
+  ═══════════════════════════════════════════════════ -->
+
+  <rect x="536" y="178" width="232" height="188" rx="18"
+        fill="#f8f800" stroke="#c0c000" stroke-width="4"/>
+
+  <!-- circular arrows icon -->
+  <circle cx="652" cy="238" r="32" fill="none" stroke="#1a1a1a" stroke-width="3.5"/>
+  <polygon points="652,202 644,216 660,216" fill="#1a1a1a"/>
+  <polygon points="652,274 660,260 644,260" fill="#1a1a1a"/>
+
+  <text class="lbl" font-size="24" text-anchor="middle" x="652" y="330">Supervisor</text>
+  <text class="lbl" font-size="16" text-anchor="middle" x="652" y="352">Core</text>
+
+
+  <!-- ─── arrow: Supervisor → Specialist Agents ─── -->
+  <line class="arr" x1="770" y1="250" x2="870" y2="250"/>
+  <text class="albl" text-anchor="middle" x="820" y="241">Dispatch agents</text>
+
+  <!-- ─── arrow: Specialist Agents → Supervisor ─── -->
+  <line class="arr" x1="870" y1="276" x2="770" y2="276"/>
+  <text class="albl" text-anchor="middle" x="820" y="295">Agent results</text>
+
+
+  <!-- ═══════════════════════════════════════════════════
+       5.  SPECIALIST AGENTS  (hammer icon + bold label, no border)
+           center-x = 970
+  ═══════════════════════════════════════════════════ -->
+
+  <!-- solid hammer icon -->
+  <g transform="translate(910,124)">
+    <!-- handle -->
+    <rect x="22" y="18" width="16" height="48" rx="4" fill="#1a1a1a"/>
+    <!-- head -->
+    <rect x="6" y="6" width="48" height="24" rx="6" fill="#1a1a1a"/>
+  </g>
+
+  <text class="lbl" text-anchor="middle" x="970" y="200">Specialist</text>
+  <text class="lbl" text-anchor="middle" x="970" y="228">Agents</text>
+  <text class="sub" text-anchor="middle" x="970" y="258">competitor · pricing</text>
+  <text class="sub" text-anchor="middle" x="970" y="278">regulatory · market trend</text>
+  <text class="sub" text-anchor="middle" x="970" y="298">positioning · battlecard</text>
+  <text class="sub" text-anchor="middle" x="970" y="318">memory curator · critic</text>
+
+
+  <!-- ─── arrow: Specialists → LLM Router ─── -->
+  <line class="arr" x1="1062" y1="252" x2="1168" y2="258"/>
+  <text class="albl" text-anchor="middle" x="1115" y="244">LLM call</text>
+
+  <!-- ─── arrow: LLM Router → Specialists ─── -->
+  <line class="arr" x1="1168" y1="282" x2="1062" y2="278"/>
+  <text class="albl" text-anchor="middle" x="1115" y="300">Response</text>
+
+
+  <!-- ═══════════════════════════════════════════════════
+       6.  LLM ROUTER  (3D cube icon + bold label, no border)
+           center-x = 1290
+  ═══════════════════════════════════════════════════ -->
+
+  <!-- isometric cube (solid, 3 faces) -->
+  <g transform="translate(1184,218)">
+    <!-- top face -->
+    <path d="M30,0 L60,16 L30,32 L0,16 Z" fill="#444444"/>
+    <!-- left face -->
+    <path d="M0,16 L30,32 L30,56 L0,40 Z" fill="#111111"/>
+    <!-- right face -->
+    <path d="M30,32 L60,16 L60,40 L30,56 Z" fill="#777777"/>
+  </g>
+
+  <text class="lbl" text-anchor="middle" x="1290" y="298">LLM Router</text>
+  <text class="sub" text-anchor="middle" x="1290" y="320">Gemma · Qwen · Claude</text>
+  <text class="sub" text-anchor="middle" x="1290" y="340">JSON guard · budget · retry</text>
+
+
+  <!-- ═══════════════════════════════════════════════════
+       7.  MEMORY & STORAGE  (solid database icon + bold label)
+           bottom-center below Supervisor
+  ═══════════════════════════════════════════════════ -->
+
+  <!-- ─── arrow: Supervisor → Memory (down, left lane) ─── -->
+  <line class="arr" x1="624" y1="368" x2="624" y2="396"/>
+  <text class="albl" text-anchor="end" x="619" y="388">Persist</text>
+
+  <!-- ─── arrow: Memory → Supervisor (up, right lane) ─── -->
+  <line class="arr" x1="680" y1="396" x2="680" y2="368"/>
+  <text class="albl" text-anchor="start" x="685" y="388">Load memory</text>
+
+  <!-- solid database icon — centered at x=652 -->
+  <g transform="translate(622,400)">
+    <!-- body -->
+    <rect x="0" y="10" width="60" height="38" fill="#1a1a1a"/>
+    <!-- top disc -->
+    <ellipse cx="30" cy="10" rx="30" ry="10" fill="#1a1a1a"/>
+    <!-- middle divider -->
+    <line x1="0" y1="29" x2="60" y2="29" stroke="#ffffff" stroke-width="2"/>
+    <!-- bottom disc -->
+    <ellipse cx="30" cy="48" rx="30" ry="10" fill="#1a1a1a"/>
+  </g>
+
+  <text class="lbl" text-anchor="middle" x="652" y="478">Memory &amp;</text>
+  <text class="lbl" text-anchor="middle" x="652" y="502">Storage</text>
+  <text class="sub" text-anchor="middle" x="652" y="522">workspace · artifacts · GitHub</text>
 
 </svg>

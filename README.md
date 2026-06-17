@@ -2,13 +2,17 @@
 
 ## Mô tả use case
 
-**Vấn đề:** Đội ngũ sản phẩm và kinh doanh tại GreenNode cần theo dõi liên tục thị trường Managed Kubernetes Việt Nam — bao gồm pricing, tính năng mới, chiến lược GTM và động thái đối thủ (Viettel IDC VKS/vOKS, FPT FKE, Bizfly BKE, CMC Cloud và các hyperscaler AWS/GCP/Azure). Việc thu thập thủ công từ nhiều nguồn mỗi ngày tốn hàng giờ, dễ bỏ sót tín hiệu quan trọng, và kết quả không nhất quán giữa các thành viên.
+Đội ngũ sản phẩm và kinh doanh tại GreenNode cần theo dõi liên tục thị trường Managed Kubernetes Việt Nam — pricing, tính năng mới, chiến lược GTM và động thái đối thủ (Viettel IDC VKS/vOKS, FPT FKE, Bizfly BKE, CMC Cloud, AWS/GCP/Azure). Thu thập thủ công từ nhiều nguồn mỗi ngày tốn 2–3 giờ, dễ bỏ sót tín hiệu quan trọng, và kết quả không nhất quán giữa các thành viên.
 
-**Người dùng:** Product manager, business development và ban lãnh đạo kỹ thuật tại GreenNode — những người cần insight nhanh để ra quyết định về định giá, ưu tiên roadmap và định vị sản phẩm, nhưng không có thời gian tự research mỗi ngày.
+Hệ thống multi-agent tự động chạy trên GreenNode AgentBase giải quyết vấn đề này. Mỗi ngày, Supervisor Core kích hoạt các specialist agent song song: `competitor_agent` theo dõi động thái đối thủ, `pricing_agent` phân tích TCO, `regulatory_agent` cập nhật chính sách pháp lý, `market_trend_agent` bám sát xu hướng AI/GPU cloud Việt Nam. Kết quả được tổng hợp qua quality gate tự động (score ≥ 0.80 với deterministic check + LLM critic + citation grader) trước khi phân phối.
 
-**Giải pháp:** Hệ thống multi-agent tự động chạy trên GreenNode AgentBase. Mỗi ngày lúc 8 giờ sáng, Supervisor Core kích hoạt các specialist agent song song — `competitor_agent` theo dõi profile và tín hiệu đối thủ, `pricing_agent` phân tích cấu trúc giá và TCO, `regulatory_agent` cập nhật chính sách pháp lý, `market_trend_agent` theo dõi xu hướng AI/GPU trên cloud Việt Nam. Kết quả được tổng hợp, kiểm tra quality tự động (score ≥ 0.80), rồi gửi báo cáo về Telegram. Ngoài báo cáo định kỳ, người dùng có thể nhắn trực tiếp cho Lin Lin — QA agent — để hỏi bất kỳ câu hỏi nào về thị trường và nhận câu trả lời trong vài giây từ knowledge base, hoặc kích hoạt research mới nếu cần dữ liệu cập nhật.
+**Hai giao diện — người dùng chọn tùy sở thích:**
 
-**Giá trị mang lại:** Tiết kiệm 2–3 giờ research thủ công mỗi ngày. Không bỏ sót động thái cạnh tranh quan trọng. Mọi claim đều có nguồn và timestamp rõ ràng, có thể audit qua artifact store. Toàn bộ dữ liệu xử lý trong hạ tầng GreenNode, tuân thủ data sovereignty theo Luật BVDLCN 2025 — không có thông tin nào ra ngoài lãnh thổ Việt Nam.
+**Telegram** là kênh tương tác chính, phù hợp cho người dùng di động và muốn nhận thông tin ngay lập tức. Báo cáo tự động gửi vào 8h sáng mỗi ngày, thứ 6 và mùng 1 hàng tháng. Người dùng nhắn trực tiếp cho Lin Lin — QA agent — để hỏi bất kỳ câu hỏi nào về thị trường và nhận trả lời trong vài giây, hoặc ra lệnh research mới. Memory Curator gửi đề xuất cập nhật knowledge base qua Telegram để human review và approve.
+
+**Dashboard web** (`/dashboard/ui`) dành cho người dùng muốn nhìn tổng quan và audit sâu. Tab Overview hiển thị số run, tỷ lệ thành công, tổng claim; tab Runs liệt kê lịch sử từng pipeline với agent results; tab QA Activity theo dõi câu hỏi và câu trả lời; tab Cost Trend hiển thị token usage theo ngày; tab Evaluation tổng hợp revise rate và citation warnings.
+
+Toàn bộ dữ liệu xử lý trên hạ tầng GreenNode — không có thông tin nào ra ngoài lãnh thổ Việt Nam, tuân thủ data sovereignty theo Luật BVDLCN 2025.
 
 ---
 

@@ -57,11 +57,11 @@ git config user.email "linhbaka93@gmail.com"
 5. **Không publish im lặng.** Output phải qua quality gate. Điểm thấp → `needs_review`/`blocked`, không tự gửi.
 6. **Mọi run sinh artifact.** Lưu dưới `outputs/runs/<run_id>/` để audit.
 
-## Runtime đang chạy (2026-06-03)
+## Runtime đang chạy (2026-06-17)
 
 ```
 Endpoint : https://endpoint-c55e9dec-fbc3-4621-a921-d31c349c3002.agentbase-runtime.aiplatform.vngcloud.vn
-Image    : vcr.vngcloud.vn/98510-greennode-vks-intelligence/vks-intelligence:v20260617104425
+Image    : vcr.vngcloud.vn/98510-greennode-vks-intelligence/vks-intelligence:v20260617112511
 Status   : ACTIVE — /health trả ok, Telegram token + chat_id đã set
 ```
 

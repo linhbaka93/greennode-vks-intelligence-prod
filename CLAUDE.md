@@ -44,7 +44,7 @@ git config user.email "linhbaka93@gmail.com"
 |---|---|
 | `.env`, `.env.*` (trừ `.env.example`) | Secrets runtime |
 | `*-credentials.json`, `registry-credentials.json` | vCR / API credentials |
-| `docs/` | Planning docs — giữ local-only, không vào repo |
+| `docs/ROADMAP.md`, `docs/deploy-workflow.md`, `docs/agent-redesign.md`, `docs/*-plan.md` | Planning/progress docs — giữ local-only |
 | `outputs/runs/*/` | Runtime artifacts — ephemeral |
 | `docker/.n8n/`, `docker/postgres-data/`, `docker/caddy-data/` | Data volumes |
 
@@ -109,7 +109,7 @@ n8n không chứa reasoning. Reasoning nằm trong Python/AgentBase.
 
 ## Kiến trúc hệ thống
 
-Xem **[`docs/architecture.md`](docs/architecture.md)** để có bản đồ đầy đủ:
+Xem **[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)** để có bản đồ đầy đủ:
 - Layer map (9 tầng từ entry point → delivery)
 - Supervisor pipeline + `_PLAN_MAP` per task type
 - Agent registry + prompt file mapping

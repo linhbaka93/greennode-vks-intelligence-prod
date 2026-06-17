@@ -73,10 +73,10 @@ Runtime ACTIVE — `v20260617`. Quality gate, revise loop, citation grader, Tele
 
 ## Tài liệu
 
-> Thư mục `docs/` là local-only (gitignored).
-
 | File | Nội dung |
 |---|---|
-| `docs/architecture-visual.html` | Sơ đồ kiến trúc tương tác — 7-node flow diagram (mở bằng browser) |
-| `docs/architecture.md` | Bản đồ đầy đủ: layer map, supervisor pipeline, agent registry, LLM router, data contracts |
+| `docs/ARCHITECTURE.md` | Bản đồ đầy đủ: layer map, supervisor pipeline, agent registry, LLM router, data contracts |
+| `docs/ARCHITECTURE-VISUAL.html` | Sơ đồ kiến trúc tương tác — 7-node flow diagram (mở bằng browser) |
+| `docs/SOURCES.md` | Allowlist social/scrape sources cho evidence collection |
 | `CLAUDE.md` | Quy ước repo, deploy workflow, commit policy |
+| `BUILD.md` | Build checkpoint, runtime info, incidents |

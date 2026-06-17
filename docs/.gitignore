@@ -1,0 +1,15 @@
+# Local-only: planning, progress logs, incident docs
+ROADMAP.md
+deploy-workflow.md
+agent-redesign.md
+ke-hoach-*.md
+production-multi-agent-*.md
+archive-*.md
+brainstorm-*.md
+performance-*.md
+plan-*.md
+*-plan.md
+*-design.md
+*-brainstorm*.md
+.archive/
+*.svg

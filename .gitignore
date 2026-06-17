@@ -60,8 +60,7 @@ Thumbs.db
 .idea/
 
 # ── Internal planning / design docs — KHÔNG đưa vào repo client ────
-# Roadmap, progress log, design/plan, brainstorm — giữ local-only
-docs/
+# Architecture reference (ARCHITECTURE.md, SOURCES.md) tracked via docs/.gitignore
 ROADMAP.md
 *-plan.md
 *-design.md

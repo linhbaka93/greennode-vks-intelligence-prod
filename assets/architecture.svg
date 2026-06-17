@@ -86,12 +86,12 @@
 
 
   <!-- ─── arrow: Supervisor → Quality Gate (up, left lane) ─── -->
-  <line class="arr" x1="624" y1="178" x2="624" y2="116"/>
-  <text class="albl" text-anchor="end" x="619" y="152">Propose output</text>
+  <line class="arr" x1="624" y1="178" x2="624" y2="132"/>
+  <text class="albl" text-anchor="end" x="619" y="158">Propose output</text>
 
   <!-- ─── arrow: Quality Gate → Supervisor (down, right lane) ─── -->
-  <line class="arr" x1="680" y1="116" x2="680" y2="178"/>
-  <text class="albl" text-anchor="start" x="685" y="152">Allow / Revise / Block</text>
+  <line class="arr" x1="680" y1="132" x2="680" y2="178"/>
+  <text class="albl" text-anchor="start" x="685" y="158">Allow / Revise / Block</text>
 
 
   <!-- ═══════════════════════════════════════════════════
@@ -125,8 +125,8 @@
            center-x = 970
   ═══════════════════════════════════════════════════ -->
 
-  <!-- solid hammer icon -->
-  <g transform="translate(910,124)">
+  <!-- solid hammer icon — raised so handle ends at y≈150, clear of text at y=178 -->
+  <g transform="translate(910,84)">
     <!-- handle -->
     <rect x="22" y="18" width="16" height="48" rx="4" fill="#1a1a1a"/>
     <!-- head -->

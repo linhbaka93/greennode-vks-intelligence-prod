@@ -6,9 +6,9 @@
 
 **Người dùng:** Product manager, business development và ban lãnh đạo kỹ thuật tại GreenNode — những người cần insight nhanh để ra quyết định về định giá, ưu tiên roadmap và định vị sản phẩm, nhưng không có thời gian tự research mỗi ngày.
 
-**Giải pháp:** Hệ thống multi-agent tự động chạy trên VNG Cloud AgentBase. Mỗi ngày lúc 8 giờ sáng, Supervisor Core kích hoạt các specialist agent song song — `competitor_agent` theo dõi profile và tín hiệu đối thủ, `pricing_agent` phân tích cấu trúc giá và TCO, `regulatory_agent` cập nhật chính sách pháp lý, `market_trend_agent` theo dõi xu hướng AI/GPU trên cloud Việt Nam. Kết quả được tổng hợp, kiểm tra quality tự động (score ≥ 0.80), rồi gửi báo cáo về Telegram. Ngoài báo cáo định kỳ, người dùng có thể nhắn trực tiếp cho Lin Lin — QA agent — để hỏi bất kỳ câu hỏi nào về thị trường và nhận câu trả lời trong vài giây từ knowledge base, hoặc kích hoạt research mới nếu cần dữ liệu cập nhật.
+**Giải pháp:** Hệ thống multi-agent tự động chạy trên GreenNode AgentBase. Mỗi ngày lúc 8 giờ sáng, Supervisor Core kích hoạt các specialist agent song song — `competitor_agent` theo dõi profile và tín hiệu đối thủ, `pricing_agent` phân tích cấu trúc giá và TCO, `regulatory_agent` cập nhật chính sách pháp lý, `market_trend_agent` theo dõi xu hướng AI/GPU trên cloud Việt Nam. Kết quả được tổng hợp, kiểm tra quality tự động (score ≥ 0.80), rồi gửi báo cáo về Telegram. Ngoài báo cáo định kỳ, người dùng có thể nhắn trực tiếp cho Lin Lin — QA agent — để hỏi bất kỳ câu hỏi nào về thị trường và nhận câu trả lời trong vài giây từ knowledge base, hoặc kích hoạt research mới nếu cần dữ liệu cập nhật.
 
-**Giá trị mang lại:** Tiết kiệm 2–3 giờ research thủ công mỗi ngày. Không bỏ sót động thái cạnh tranh quan trọng. Mọi claim đều có nguồn và timestamp rõ ràng, có thể audit qua artifact store. Toàn bộ dữ liệu xử lý trong hạ tầng VNG Cloud, tuân thủ data sovereignty theo Luật BVDLCN 2025 — không có thông tin nào ra ngoài lãnh thổ Việt Nam.
+**Giá trị mang lại:** Tiết kiệm 2–3 giờ research thủ công mỗi ngày. Không bỏ sót động thái cạnh tranh quan trọng. Mọi claim đều có nguồn và timestamp rõ ràng, có thể audit qua artifact store. Toàn bộ dữ liệu xử lý trong hạ tầng GreenNode, tuân thủ data sovereignty theo Luật BVDLCN 2025 — không có thông tin nào ra ngoài lãnh thổ Việt Nam.
 
 ---
 

@@ -5,7 +5,7 @@
 - **Sản phẩm:** GreenNode VKS (GreenNode Kubernetes Service)
 - **Công ty:** GreenNode — thuộc VNG Corporation
 - **URL:** https://vngcloud.vn/product/vks | https://docs.vngcloud.vn/vng-cloud-document/vks
-- **Lưu ý:** GreenNode và VNG Cloud là cùng một công ty. Luôn dùng tên "GreenNode" trong mọi tài liệu.
+- **Lưu ý:** VNG Cloud đã chính thức đổi tên thành GreenNode (rebrand). Đây là sản phẩm của GreenNode — luôn dùng tên "GreenNode VKS" trong mọi tài liệu.
 - **Profile date:** 2026-05-20
 - **Last updated:** 2026-05-20
 
@@ -133,9 +133,11 @@ GreenNode VKS là managed Kubernetes service của GreenNode (thuộc VNG Corpor
 
 ---
 
-## 7. SWOT (Góc Nhìn GreenNode)
+## 7. SWOT (Tự đánh giá GreenNode VKS)
 
-### Strengths của VNG VKS (so với GreenNode)
+> **Lưu ý:** Phần này ban đầu viết khi nhầm "VNG VKS" là đối thủ riêng. Sau rebrand, VNG Cloud = GreenNode — đây là tự đánh giá GreenNode VKS, không phải so sánh với đối thủ.
+
+### Strengths của GreenNode VKS
 - **Scale infrastructure VN lớn:** 2 region VN + 1 SEA region (BKK)
 - **CNI flexibility:** 3 lựa chọn (Calico, Cilium Overlay, Cilium VPC Native)
 - **Fleet management:** Multi-cluster federation — feature enterprise
@@ -143,7 +145,7 @@ GreenNode VKS là managed Kubernetes service của GreenNode (thuộc VNG Corpor
 - **Terraform mature:** Provider chính thức v1.2.2
 - **Velero migration playbook:** Aggressive về switching deal
 
-### Weaknesses của VNG VKS (so với GreenNode — cần verify)
+### Weaknesses của GreenNode VKS (cần verify)
 - **GPU / AI capability không rõ:** Docs không nêu GPU node pool prominent
 - **SLA uptime không công bố công khai:** Khác với hyperscaler (99.95%)
 - **Compliance certification chưa thấy rõ:** ISO 27001, SOC2 — không xuất hiện trong docs search
@@ -156,12 +158,12 @@ GreenNode VKS là managed Kubernetes service của GreenNode (thuộc VNG Corpor
 - **AI-native templating (vLLM, KServe ready):** Pre-installed cho AI startup
 - **VAT pricing transparency:** Pricing VND đã VAT, không cần FX risk
 
-### Threats từ VNG VKS
-- **Brand recognition cao:** VNG là tên tuổi lớn tại VN (game, fintech)
-- **VCCorp ecosystem cross-sell:** Nếu khách dùng dịch vụ VCCorp khác, dễ adopt VKS
-- **Aggressive về migration deal:** Velero playbook → cạnh tranh trực tiếp migration từ EKS/GKE
-- **Terraform-first developer love:** Dev nhanh chóng prefer cloud có Terraform mature
-- **Fleet management chiếm pole position multi-cluster:** Nếu GreenNode chưa có, lose deals multi-region
+### Threats từ đối thủ (hyperscaler + local)
+- **Brand recognition hyperscaler:** AWS/GCP/Azure dominance
+- **Viettel/FPT/Bizfly ecosystem:** Local cloud players với customer base lớn
+- **Aggressive về migration deal:** Cạnh tranh trực tiếp migration từ EKS/GKE
+- **Terraform-first developer love:** Dev prefer cloud có Terraform mature
+- **Fleet management gap:** Nếu thiếu multi-cluster, lose enterprise deals
 
 ---
 
@@ -169,28 +171,27 @@ GreenNode VKS là managed Kubernetes service của GreenNode (thuộc VNG Corpor
 
 | Finding | Impact | Cần action? | Bộ phận |
 |---|---|---|---|
-| VNG có Fleet multi-cluster mà GreenNode chưa rõ trạng thái | High | Có — assess capability gap | Product |
-| Compliance certifications của VNG không rõ → GreenNode có thể leverage | Medium | Có — publish cert của GreenNode rõ | Marketing |
-| VKS thiếu AI/GPU positioning → cơ hội cho GreenNode | High | Có — push AI positioning aggressive | Product Marketing |
-| Brand "GreenNode" appear trong docs VNG → cần clarify | High | Có — escalate Product/Legal | Legal/Product |
-| VNG có Terraform mature → GreenNode cần parity | Medium | Có — check Terraform provider của GreenNode | Engineering |
+| GreenNode VKS Fleet multi-cluster — trạng thái chưa rõ | High | Có — assess capability gap | Product |
+| Compliance certifications (ISO 27001, SOC2) chưa công bố rõ | Medium | Có — publish cert rõ ràng | Marketing |
+| GreenNode VKS thiếu AI/GPU positioning rõ ràng | High | Có — push AI positioning aggressive | Product Marketing |
+| Terraform provider — cần xác minh mức độ mature | Medium | Có — check Terraform provider | Engineering |
+| SLA uptime chưa công bố công khai | Medium | Có — publish SLA % chính thức | Product |
 
 ---
 
 ## 9. Recommendations
 
 **P0 (must do):**
-- Clarify mention "GreenNode" trong docs VNG VKS — escalate Legal/Product team
 - Verify GreenNode SLA và compliance certification và publish công khai
 - Push AI/GPU differentiator nếu GreenNode có lợi thế (H100, MIG, etc.)
 
 **P1 (should do):**
 - Assess feature gap: Fleet management multi-cluster, 3 CNI options, Container-Optimized OS
-- Develop migration playbook (đáp ứng Velero playbook của VNG)
-- Verify Terraform provider của GreenNode có mature không
+- Develop migration playbook (cạnh tranh với switching deal từ hyperscaler)
+- Verify Terraform provider của GreenNode VKS có mature không
 
 **P2 (nice to do):**
-- Search case study công khai của VNG VKS để hiểu customer segment thật
+- Search case study công khai của GreenNode VKS để hiểu customer segment thật
 - Track Bangkok region expansion → assess SEA strategy
 
 ---

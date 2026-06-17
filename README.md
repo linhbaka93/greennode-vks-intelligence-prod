@@ -6,13 +6,33 @@ code/schema/API.
 
 ## Kiến trúc
 
-```text
-n8n / Docker        control plane: schedule, retry, approval, notification
-AgentBase (Python)  runtime multi-agent: supervisor + specialist + model router
-Model pool          Gemma / Qwen (OpenAI-compatible) + Claude (fallback/premium)
-GitHub repo         versioned memory + audit trail
-Telegram            delivery, Q&A, approval
 ```
+                          ┌─────────────────┐
+                          │   Quality Gate  │  score ≥ 0.80
+                          │       ✓         │  Publish / Hold
+                          └───────┬─────────┘
+                       Propose ↑  │ ↓ Allow / Hold
+                                  │
+Người dùng          Giao diện     │      Supervisor Core        Specialist Agents    Evidence Sources
+(Telegram  ──Prompt──▶ (Telegram  ──Request──▶  ┌──────────┐ ──Task Plan──▶  (competitor        ──Fetch──▶  (RSS · Web
+ Scheduler    Cron ──▶  Bot · REST  ◀─Progress─  │    ↻     │ ◀─Results───   pricing · regulatory  ◀─Evidence─  News API)
+ API)                   API)                     │Supervise │                market · positioning
+                                                 └──────────┘                battlecard)
+                                       Persist ↓  │ ↑ Load
+                                  ┌──────────────────────────┐
+                                  │    Memory & Storage      │
+                                  │  memory/ · outputs/ · GitHub repo │
+                                  └──────────────────────────┘
+```
+
+**Luồng chính:**
+- **Người dùng** gửi câu hỏi qua Telegram hoặc REST API; **Scheduler** (APScheduler) trigger tự động 8h sáng / thứ 6 / mùng 1 hàng tháng
+- **Orchestrator** (Gemma) phân loại `intent`: `memory_lookup` → Lin Lin Q&A trả lời nhanh; `current_research` → Supervisor pipeline
+- **Supervisor Core** lập plan, dispatch specialist agents song song, collect evidence, synthesize, gọi Quality Gate
+- **Quality Gate** kiểm score deterministic (≥ 0.80 publish; < 0.80 → `needs_review` alert)
+- **Memory & Storage**: load workspace memory trước mỗi run; write-back kết quả mới dưới `outputs/runs/<run_id>/` và commit dated `.md` lên GitHub
+
+**Model pool:** Gemma-4-31b-it (fast — QA, orchestrator, synthesis) · Qwen3-5-27b (reasoning — research, critic)
 
 n8n không chứa reasoning — reasoning nằm trong AgentBase.
 
@@ -66,6 +86,10 @@ queue đầy đủ, auth/approval production, source registry mở rộng và ev
 
 ## Tài liệu
 
-- [Kế hoạch xây dựng multi-agent production](docs/ke-hoach-xay-dung-multi-agent-production.md)
-- [Production multi-agent AgentBase plan](docs/production-multi-agent-agentbase-plan.md)
-- [Sơ đồ kiến trúc (SVG)](docs/production-multi-agent-architecture-sample.svg)
+> Thư mục `docs/` là local-only (gitignored). Mở các file dưới đây trực tiếp trên máy.
+
+| File | Nội dung |
+|---|---|
+| `docs/architecture-visual.html` | Sơ đồ kiến trúc tương tác — white-background, 7-node flow diagram (mở bằng browser) |
+| `docs/architecture.md` | Bản đồ đầy đủ: layer map, supervisor pipeline, agent registry, LLM router, data contracts |
+| `CLAUDE.md` | Quy ước repo, deploy workflow, commit policy (trong repo) |

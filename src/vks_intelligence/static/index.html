@@ -536,6 +536,16 @@
       animation: blink 1s steps(1) infinite;
       color: var(--green-strong);
     }
+    .chat-msg.bot p  { margin: 0.3em 0; }
+    .chat-msg.bot ul { margin: 0.3em 0; padding-left: 1.3em; }
+    .chat-msg.bot li { margin: 0.15em 0; }
+    .chat-msg.bot h2, .chat-msg.bot h3, .chat-msg.bot h4 {
+      margin: 0.6em 0 0.2em; font-size: 0.9rem;
+    }
+    .chat-msg.bot code {
+      background: rgba(201,112,112,0.12); border-radius: 3px; padding: 1px 4px;
+    }
+    .chat-msg.bot a { color: var(--green-strong); }
 
     @keyframes blink {
       50% { opacity: 0; }
@@ -691,15 +701,34 @@
     }
 
     .preview {
-      white-space: pre-wrap;
-      font-size: 0.82rem;
-      background: #faf8f6;
+      font-size: 0.84rem;
+      background: var(--surface-soft);
       border: 1px solid var(--border);
       border-radius: 8px;
-      padding: 10px;
-      max-height: 280px;
+      padding: 14px 16px;
+      max-height: 380px;
       overflow: auto;
+      line-height: 1.6;
     }
+    .preview h2, .preview h3, .preview h4 {
+      margin: 1em 0 0.3em;
+      color: var(--ink);
+    }
+    .preview h2 { font-size: 1rem; }
+    .preview h3 { font-size: 0.92rem; }
+    .preview h4 { font-size: 0.87rem; }
+    .preview p  { margin: 0.4em 0; }
+    .preview ul { margin: 0.3em 0; padding-left: 1.4em; }
+    .preview li { margin: 0.2em 0; }
+    .preview code {
+      background: rgba(201,112,112,0.1);
+      border-radius: 3px;
+      padding: 1px 4px;
+      font-size: 0.9em;
+    }
+    .preview hr { border: none; border-top: 1px solid var(--border); margin: 0.8em 0; }
+    .preview a  { color: var(--green-strong); }
+    .preview strong { color: var(--ink); }
   </style>
 </head>
 <body>
@@ -921,6 +950,62 @@
         .replaceAll(">", "&gt;")
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#039;");
+    }
+
+    function renderMarkdown(md) {
+      if (!md) return "";
+      // Extract links before escaping so href survives
+      const links = [];
+      let src = String(md).replace(/\[([^\]]*)\]\(([^)]*)\)/g, (_, txt, href) => {
+        links.push({ txt, href });
+        return `\x00L${links.length - 1}\x00`;
+      });
+      // Escape HTML
+      src = src.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      // Restore links
+      src = src.replace(/\x00L(\d+)\x00/g, (_, i) => {
+        const { txt, href } = links[+i];
+        const st = txt.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        return `<a href="${href}" target="_blank" rel="noopener noreferrer">${st}</a>`;
+      });
+      // Inline formatting
+      const inl = (s) => s
+        .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+        .replace(/\*(.+?)\*/g, "<em>$1</em>")
+        .replace(/`([^`]+)`/g, "<code>$1</code>");
+      // Line-by-line
+      const lines = src.split("\n");
+      let out = "";
+      let inList = false;
+      for (const raw of lines) {
+        const t = raw.trimEnd();
+        const hm = t.match(/^(#{1,4})\s+(.*)/);
+        if (hm) {
+          if (inList) { out += "</ul>"; inList = false; }
+          const lv = Math.min(hm[1].length + 1, 5);
+          out += `<h${lv}>${inl(hm[2])}</h${lv}>`;
+          continue;
+        }
+        const lm = t.match(/^[-*]\s+(.*)/);
+        if (lm) {
+          if (!inList) { out += "<ul>"; inList = true; }
+          out += `<li>${inl(lm[1])}</li>`;
+          continue;
+        }
+        if (/^---+$/.test(t)) {
+          if (inList) { out += "</ul>"; inList = false; }
+          out += "<hr>";
+          continue;
+        }
+        if (!t) {
+          if (inList) { out += "</ul>"; inList = false; }
+          continue;
+        }
+        if (inList) { out += "</ul>"; inList = false; }
+        out += `<p>${inl(t)}</p>`;
+      }
+      if (inList) out += "</ul>";
+      return out;
     }
 
     function formatNumber(value) {
@@ -1295,7 +1380,7 @@
         </dl>
         <div class="detail-section"><h4>Agents (${(d.agents || []).length})</h4>${agentsHtml}</div>
         ${failHtml || warnHtml ? `<div class="detail-section"><h4>Quality issues</h4>${failHtml}${warnHtml}</div>` : ""}
-        ${d.synthesis_preview ? `<div class="detail-section"><h4>Preview</h4><div class="preview">${escapeHtml(d.synthesis_preview)}</div></div>` : ""}
+        ${d.synthesis_preview ? `<div class="detail-section"><h4>Preview</h4><div class="preview">${renderMarkdown(d.synthesis_preview)}</div></div>` : ""}
       `;
     }
 
@@ -1413,7 +1498,7 @@
         } catch (err) {
           answer = answer || "⚠️ Lỗi: " + err.message;
         }
-        bubble.textContent = answer;
+        bubble.innerHTML = renderMarkdown(answer);
         bubble.classList.remove("streaming");
         history.push({ role: "assistant", text: answer });
         send.disabled = false;

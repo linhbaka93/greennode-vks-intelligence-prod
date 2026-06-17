@@ -5,21 +5,38 @@ thừa. Mọi tham chiếu tới prototype chỉ tồn tại ở đây, không n
 
 Module path dưới đây tương đối với package `src/vks_intelligence/`.
 
-## 0. Trạng thái hiện tại — Checkpoint 2026-06-03
+## 0. Trạng thái hiện tại — Checkpoint 2026-06-17
 
-Đang ở checkpoint **runtime production đang chạy**. Image đã deploy lên AgentBase, endpoint
-ACTIVE, `/health` trả OK, Telegram token + chat_id đã set. Deploy workflow có script tự động.
+Đang ở checkpoint **production hoàn chỉnh — deadline project**. Toàn bộ tính năng core đã
+implement và deploy. Dashboard có 6 tab, citation grader bật, evaluation loop hoạt động,
+Telegram bot streaming + research pipeline đầy đủ.
 
-### Runtime info (cập nhật 2026-06-03)
+### Runtime info (cập nhật 2026-06-17)
 
-- **Runtime ID:** `runtime-dab75afc-7889-405b-b216-b0746e721743`
-- **Endpoint URL:** `https://endpoint-b314a16e-88d5-419f-a76c-e549c4ba6e50.agentbase-runtime.aiplatform.vngcloud.vn`
-- **Image hiện tại:** `vcr.vngcloud.vn/98510-greennode-vks-intelligence/vks-intelligence:v20260603085356`
+- **Runtime ID:** `runtime-0e2018c3-4cd4-420a-a3aa-14c80b76183b`
+- **Endpoint URL:** `https://endpoint-c55e9dec-fbc3-4621-a921-d31c349c3002.agentbase-runtime.aiplatform.vngcloud.vn`
+- **Image hiện tại:** `vcr.vngcloud.vn/98510-greennode-vks-intelligence/vks-intelligence:v20260617104425`
 - **vCR repo:** `98510-greennode-vks-intelligence` / robot: `98510-vks-intelligence-deploy` (uuid: `ra-1d54750b-9311-44c4-abba-67606ec2756b`)
 - **Flavor:** `runtime-s2-general-2x4` (2 vCPU / 4 GB)
 - **Scripts:** `scripts/deploy.ps1`, `scripts/runtime-status.ps1`, `scripts/refresh-vcr-credentials.ps1`
 
-### Deploy workflow (session 2026-06-03)
+### Đã hoàn thành trong session 2026-06-17
+
+| # | Tính năng | Files |
+|---|---|---|
+| M2b | Citation grader enabled (`citation_grader_enabled = True`) | `config.py` |
+| D5 | Eval dashboard tab — revise rate, citation warnings, recent failures | `dashboard.py`, `schemas.py`, `api.py` |
+| D4 | Auto-refresh toggle 30s + time-range selector 7/14/30d | `static/index.html` |
+| UX | Pink color theme (#FCF8F8 → #F5AFAF) + markdown rendering (preview + chat) | `static/index.html` |
+| DOC | Architecture docs promoted to committed: `ARCHITECTURE.md`, `ARCHITECTURE-VISUAL.html`, `SOURCES.md` | `docs/`, `.gitignore`, `docs/.gitignore` |
+| DOC | `ARCHITECTURE.md` updated: 4 dashboard endpoints, citation grader, revise loop | `docs/ARCHITECTURE.md` |
+| DOC | Architecture diagram nâng cấp 4-lane (1800×1180) | `assets/architecture.svg` |
+| DOC | README: use case description tiếng Việt (Vấn đề / Người dùng / Giải pháp / Giá trị) | `README.md` |
+| FIX | Brand naming: VNG Cloud → GreenNode throughout codebase + memory files | `README.md`, `memory/` |
+| FIX | SWOT section trong product overview reframed từ competitor profile thành self-assessment | `memory/greennode/` |
+| CLN | api.py: xóa dead code `if resp is not None: pass`, thêm module logger, bỏ narrative comments | `api.py` |
+
+### Deploy workflow
 
 ```
 uv run pytest tests/ -q

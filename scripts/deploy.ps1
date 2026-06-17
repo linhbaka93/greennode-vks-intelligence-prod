@@ -1,8 +1,8 @@
-# deploy.ps1 -- Build, push, update AgentBase runtime
+﻿# deploy.ps1 -- Build, push, update AgentBase runtime
 # Usage: .\scripts\deploy.ps1 [-SkipTests] [-SkipBuild] [-DryRun]
 
 param(
-    [string]$RuntimeId = "runtime-dab75afc-7889-405b-b216-b0746e721743",
+    [string]$RuntimeId = "runtime-0e2018c3-4cd4-420a-a3aa-14c80b76183b",
     [string]$EnvFile   = ".env",
     [switch]$DryRun,
     [switch]$SkipTests,
@@ -18,7 +18,7 @@ $RepoPath      = "98510-greennode-vks-intelligence/vks-intelligence"
 $ImageBase     = "$Registry/$RepoPath"
 $Tag           = "v$(Get-Date -Format 'yyyyMMddHHmmss')"
 $ImageFull     = "${ImageBase}:${Tag}"
-$EndpointUrl   = "https://endpoint-b314a16e-88d5-419f-a76c-e549c4ba6e50.agentbase-runtime.aiplatform.vngcloud.vn"
+$EndpointUrl   = "https://endpoint-c55e9dec-fbc3-4621-a921-d31c349c3002.agentbase-runtime.aiplatform.vngcloud.vn"
 $IamTokenUrl   = "https://iam.api.vngcloud.vn/accounts-api/v2/auth/token"
 $RuntimeApiUrl = "https://agentbase.api.vngcloud.vn/runtime/agent-runtimes/$RuntimeId"
 
@@ -89,7 +89,7 @@ if ($DryRun) {
 
 # -- 4. Docker login + push --
 Write-Step "4. Docker login vCR"
-# Logout trước để xóa cached credentials cũ (tránh unauthorized với password stale)
+# Logout trÆ°á»›c Ä‘á»ƒ xÃ³a cached credentials cÅ© (trÃ¡nh unauthorized vá»›i password stale)
 docker logout $Registry 2>&1 | Out-Null
 $ErrorActionPreference = "Continue"
 & docker login $Registry -u $regCreds.username -p $regCreds.password
@@ -166,7 +166,7 @@ $patchBody = @{
     args                 = @()
     environmentVariables = $envVars
     flavorId             = "runtime-s2-general-2x4"
-    # GIỮ minReplicas=maxReplicas=1: scheduler nội bộ (scheduler.py) không an toàn khi >1 replica
+    # GIá»® minReplicas=maxReplicas=1: scheduler ná»™i bá»™ (scheduler.py) khÃ´ng an toÃ n khi >1 replica
     autoscaling          = @{ minReplicas = 1; maxReplicas = 1; cpuUtilization = 70; memoryUtilization = 70 }
 } | ConvertTo-Json -Depth 5
 

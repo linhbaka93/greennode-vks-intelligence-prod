@@ -55,4 +55,4 @@ def test_new_feeds_registered():
     assert {"aws-news-blog", "aws-ml-blog", "aws-hpc-blog", "azure-blog"} <= names
     # Feed cũ giữ nguyên
     assert {"cncf-blog", "aws-containers-blog", "kubernetes-official-blog"} <= names
-    assert "site:viettelcloud.vn" in news_tool.NEWS_QUERIES
+    assert "site:viettelidc.com.vn" in news_tool.NEWS_QUERIES

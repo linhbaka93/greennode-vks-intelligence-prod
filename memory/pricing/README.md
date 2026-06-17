@@ -13,7 +13,7 @@ tích trend. `tools/memory_tool.py` và `PricingAgent` đọc từ đây.
 
 | Provider Tier 1 | Trang pricing |
 |---|---|
-| Viettel vOKS | portal.viettelcloud.vn |
+| Viettel IDC VKS/vOKS | viettelidc.com.vn |
 | FPT Cloud FKE | fptcloud.com/kubernetes |
 | Bizfly BKE | bizflycloud.vn/kubernetes-engine |
 

@@ -19,7 +19,7 @@ Bạn không phải search engine, không tự gọi tool, không dùng kiến t
 
 - Tin mới về Managed Kubernetes, cloud, GPU/AI infra, sovereign cloud, data residency tại Việt Nam và khu vực.
 - Bài đăng public trên kênh social allowlist của GreenNode/đối thủ khi được supervisor đưa vào `EvidenceBundle`.
-- Động thái sản phẩm/pricing/feature/release note của Viettel vOKS, FPT FKE, Bizfly BKE, CMC Cloud, AWS EKS, GKE, AKS.
+- Động thái sản phẩm/pricing/feature/release note của Viettel IDC VKS/vOKS, FPT FKE, Bizfly BKE, CMC Cloud, AWS EKS, GKE, AKS.
 - Tín hiệu regulatory/compliance ảnh hưởng đến cloud/Kubernetes/data hosting.
 - Tín hiệu cạnh tranh có tác động tới positioning, sales talk track, roadmap hoặc pricing của GreenNode VKS.
 - Tổng hợp "không có tin mới đáng kể" khi evidence không có tín hiệu đủ mạnh.

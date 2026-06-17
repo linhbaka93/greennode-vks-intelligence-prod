@@ -200,7 +200,7 @@ _collect_evidence(request, workspace_path)
   ├─ scrape_targets theo task type:
   │   DAILY_INTELLIGENCE  → social_scrape_targets("daily")
   │   WEEKLY_DIGEST       → social_scrape_targets("all")
-  │   COMPETITOR_MONITOR  → ["viettel-voks","fpt-fke","bizfly-bke"] + social("all")
+  │   COMPETITOR_MONITOR  → ["viettel-idc","fpt-fke","bizfly-bke"] + social("all")
   │   PRICING_ANALYSIS    → ["aws-eks-pricing","gke-pricing"] + social("hyperscalers")
   │
   └─ evidence_tool.collect() → EvidenceBundle
@@ -223,7 +223,7 @@ Stale detection: tier1 (Viettel/FPT) >7 ngày, market-trends >90 ngày, GPU pric
 
 | Key | URL | Category |
 |---|---|---|
-| `viettel-voks` | viettelcloud.vn/kubernetes | Competitor K8s |
+| `viettel-idc` | viettelidc.com.vn/viettel-kubernetes-service | Competitor K8s (VKS + vOKS) |
 | `fpt-fke` | fptcloud.com/kubernetes | Competitor K8s |
 | `bizfly-bke` | bizflycloud.vn/kubernetes | Competitor K8s |
 | `aws-eks-pricing` | aws.amazon.com/eks/pricing | Pricing |

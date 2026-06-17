@@ -2,7 +2,7 @@
 
 ## Mô tả use case
 
-**Vấn đề:** Đội ngũ sản phẩm và kinh doanh tại GreenNode cần theo dõi liên tục thị trường Managed Kubernetes Việt Nam — bao gồm pricing, tính năng mới, chiến lược GTM và động thái đối thủ (Viettel vOKS, FPT FKE, Bizfly BKE, CMC Cloud và các hyperscaler AWS/GCP/Azure). Việc thu thập thủ công từ nhiều nguồn mỗi ngày tốn hàng giờ, dễ bỏ sót tín hiệu quan trọng, và kết quả không nhất quán giữa các thành viên.
+**Vấn đề:** Đội ngũ sản phẩm và kinh doanh tại GreenNode cần theo dõi liên tục thị trường Managed Kubernetes Việt Nam — bao gồm pricing, tính năng mới, chiến lược GTM và động thái đối thủ (Viettel IDC VKS/vOKS, FPT FKE, Bizfly BKE, CMC Cloud và các hyperscaler AWS/GCP/Azure). Việc thu thập thủ công từ nhiều nguồn mỗi ngày tốn hàng giờ, dễ bỏ sót tín hiệu quan trọng, và kết quả không nhất quán giữa các thành viên.
 
 **Người dùng:** Product manager, business development và ban lãnh đạo kỹ thuật tại GreenNode — những người cần insight nhanh để ra quyết định về định giá, ưu tiên roadmap và định vị sản phẩm, nhưng không có thời gian tự research mỗi ngày.
 
@@ -66,6 +66,22 @@ GET  /tasks/{task_id}
 POST /quality/check
 GET  /dashboard/summary | /dashboard/runs | /dashboard/evaluation | /dashboard/ui
 ```
+
+## Đánh giá hệ thống
+
+**Làm tốt:**
+- **Quality gate đa tầng** — deterministic check (length, placeholder, required sections, source citation format) + LLM critic + citation grader (HEAD-check URLs) + 1 auto-revise loop trước khi leo thang. Không có output nào qua được mà không có nguồn và timestamp.
+- **Audit trail đầy đủ** — mọi run lưu request, plan, agent JSON, quality result, final markdown dưới `outputs/runs/<run_id>/`. Mọi claim trace được về nguồn.
+- **Resilient execution** — parallel agents với critical/optional phân biệt rõ; agent phụ fail không chặn run; budget + timeout cứng per task type; JSON guard + retry có chọn lọc cho LLM call.
+- **Memory-first** — tiered loading (VN Tier 1 trước hyperscaler), freshness threshold cảnh báo dữ liệu cũ, write-back có approval.
+- **Data sovereignty** — toàn bộ data xử lý trên hạ tầng GreenNode, không có thông tin nào ra ngoài lãnh thổ Việt Nam.
+
+**Còn hạn chế:**
+- **Scraping thực tế hạn chế** — RSS và Google News là nguồn chính; trang competitor trực tiếp (viettelcloud.vn, fptcloud.com) hầu hết là SPA/JS-rendered nên không scrape được real-time. Pricing tươi phụ thuộc vào tần suất cập nhật memory thủ công.
+- **Memory write-back là bán tự động** — Memory Curator đề xuất patch nhưng cần human approve qua Telegram. Memory không tự cập nhật sau mỗi run.
+- **QA agent bound bởi memory** — trả lời từ knowledge base; nếu memory stale, câu trả lời stale. Không có cơ chế tự phát hiện khi knowledge base lỗi thời.
+- **Không học từ feedback** — hệ thống không ghi nhận báo cáo nào được approve vs reject để điều chỉnh style/depth tự động theo thời gian.
+- **Revise loop tối đa 1 lần** — nếu lần revise cũng fail, output chuyển `needs_review` chứ không có thêm vòng tự động.
 
 ## Trạng thái
 

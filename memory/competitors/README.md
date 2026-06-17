@@ -6,7 +6,7 @@ Lưu competitor profile đã validate. Mỗi đối thủ có 1 file `_current.m
 
 Danh sách theo dõi (chi tiết tier trong `prompts/competitor_agent.md`):
 
-- **Tier 1 nội địa:** Viettel vOKS, FPT Cloud FKE, CMC, Bizfly BKE
+- **Tier 1 nội địa:** Viettel IDC VKS/vOKS, FPT Cloud FKE, CMC, Bizfly BKE
 - **Tier 2 hyperscale:** AWS EKS, Google GKE, Azure AKS, Alibaba ACK, Oracle OKE
 - **Tier 3 khác:** Sunteco SKS, VinCloud, VNPT Kubernetes
 
@@ -25,7 +25,7 @@ YYYY-MM-DD_<competitor-slug>_profile.md
 <competitor-slug>_current.md            # bản mới nhất
 ```
 
-Slug: `viettel-voks`, `fpt-cloud-fke`, `bizfly-bke`, `aws-eks`...
+Slug: `viettel-idc`, `fpt-cloud-fke`, `bizfly-bke`, `aws-eks`...
 
 ## Quy tắc
 

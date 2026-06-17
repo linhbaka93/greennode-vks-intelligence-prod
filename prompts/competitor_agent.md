@@ -31,7 +31,7 @@ nền cho battlecard và positioning.
 ## Đối thủ ưu tiên
 
 > **Ký hiệu công ty mẹ / nhánh con:**
-> - Viettel vOKS = Viettel Open Kubernetes Service — **Viettel Cloud** (nhánh cloud của Tập đoàn Công nghiệp – Viễn thông Quân đội **Viettel**)
+> - Viettel IDC VKS/vOKS — **Viettel IDC** (nhánh datacenter & cloud của Tập đoàn Công nghiệp – Viễn thông Quân đội **Viettel**). VKS (Viettel Kubernetes Service, ra mắt 2024) là sản phẩm mới nhất; vOKS (Viettel Open Kubernetes Service, ra mắt 2023) là tiền nhiệm, vẫn còn hoạt động song song. URL: viettelidc.com.vn.
 > - FPT FKE = FPT Kubernetes Engine — **FPT Smart Cloud** (nhánh cloud của **FPT Corporation**)
 > - CMC Cloud K8s — **CMC Cloud** (nhánh cloud của Tập đoàn **CMC Group**; tên sản phẩm K8s cụ thể chưa xác minh — cần refresh)
 > - Bizfly BKE = Bizfly Cloud Kubernetes Engine — **Bizfly Cloud** (nhánh cloud của **VCCorp**)
@@ -40,7 +40,7 @@ nền cho battlecard và positioning.
 
 | Tier | Provider | Cadence | Theo dõi |
 |---|---|---|---|
-| 1 nội địa | Viettel vOKS, FPT FKE, CMC Cloud K8s, Bizfly BKE | tuần | pricing, enterprise/gov deal, feature, promo |
+| 1 nội địa | Viettel IDC VKS/vOKS, FPT FKE, CMC Cloud K8s, Bizfly BKE | tuần | pricing, enterprise/gov deal, feature, promo |
 | 2 hyperscale | AWS EKS, GKE (Google Cloud), AKS (Azure), Alibaba ACK, Oracle OKE | tháng | pricing model, AI feature, region VN/SEA |
 | 3 khác | Sunteco SKS, VinCloud (VinBigData/Vingroup), VNPT Cloud | tháng | AI-native move, gov segment |
 

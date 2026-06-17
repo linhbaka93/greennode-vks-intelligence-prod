@@ -18,15 +18,17 @@ from vks_intelligence.contracts import EvidenceItem, EvidenceType
 log = logging.getLogger(__name__)
 
 NEWS_QUERIES = (
-    "Viettel vOKS Kubernetes",
+    # Viettel IDC — cả hai sản phẩm: VKS (2024, mới) và vOKS (2023, vẫn active)
+    "Viettel IDC VKS Kubernetes",
+    "Viettel IDC vOKS Kubernetes",
     "FPT Cloud FKE Kubernetes AI",
     "Bizfly Kubernetes Engine BKE",
     "GreenNode VKS cloud",
     "GPU H100 cloud Vietnam",
     "sovereign AI cloud Vietnam 2026",
     "Kubernetes Vietnam CNCF 2026",
-    # viettelcloud.vn/en/news là SPA không scrape được — cover qua Google News
-    "site:viettelcloud.vn",
+    # viettelidc.com.vn và viettelcloud.vn là SPA không scrape được — cover qua Google News
+    "site:viettelidc.com.vn",
 )
 
 INDUSTRY_RSS_FEEDS = (
@@ -50,6 +52,7 @@ RELEVANT_KEYWORDS = (
     "gke",
     "aks",
     "vks",
+    "voks",
     "bke",
     "karpenter",
     "cilium",

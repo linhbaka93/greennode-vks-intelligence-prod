@@ -25,6 +25,7 @@ Phục vụ trên port 8080:
 from __future__ import annotations
 
 import json
+import logging
 import os
 import uuid
 from datetime import datetime, timedelta, timezone
@@ -52,6 +53,7 @@ from vks_intelligence.schemas import (
     TaskResponse,
 )
 
+log = logging.getLogger(__name__)
 app = FastAPI(title="GreenNode VKS Intelligence", version="0.1.0")
 
 
@@ -334,7 +336,6 @@ def task_qa(body: QARequestBody) -> QAResponse:
     agent = QAAgent(_router())
     intent = agent.classify_intent(body.question)
 
-    # Enrich task.inputs với user facts nếu có
     if user_facts:
         req.payload["user_memory_context"] = "\n".join(user_facts)
 
@@ -396,10 +397,7 @@ def task_qa(body: QARequestBody) -> QAResponse:
         else:
             resp = None
 
-        if resp is not None:
-            pass
-
-        elif actor_id:
+        if resp is None and actor_id:
             state.upsert(actor_id, session_id, run_id, research_task_type.value,
                          stage="starting", artifact_path=artifact_root)
             state.update_stage(run_id, "collect_evidence")
@@ -422,7 +420,6 @@ def task_qa(body: QARequestBody) -> QAResponse:
                 if actor_id:
                     state.complete(run_id, artifact_path)
 
-                # Đọc final.md và trả nội dung thật
                 summary = state.get_run_summary(artifact_path, max_chars=6_000)
                 if not summary and meta.warnings:
                     summary = meta.warnings[0]
@@ -450,14 +447,12 @@ def task_qa(body: QARequestBody) -> QAResponse:
 
     else:
         # ── 6. Memory fast-path ─────────────────────────────────────────────
-        # Inject user facts vào context agent sẽ dùng
         if user_facts:
             ctx.request.payload["user_memory_context"] = "\n".join(user_facts)
 
         answer, confidence, escalated, sources = agent.answer(body.question, ctx)
 
         if escalated:
-            # Low confidence → detect research type from question and run full pipeline
             research_task_type, days_window = _research_task_for_question(body.question)
             run_id = f"qa-esc-{_uuid.uuid4().hex[:8]}"
             if actor_id:
@@ -505,11 +500,10 @@ def task_qa(body: QARequestBody) -> QAResponse:
     # ── 7. Save assistant event + trigger memory generation ─────────────────
     if actor_id and resp.answer:
         mem.save_event(actor_id, session_id, "assistant", resp.answer)
-        # Generate records async (best-effort)
         try:
             mem.generate_records(actor_id, session_id)
         except Exception:
-            pass
+            log.debug("memory record generation failed for actor %s", actor_id, exc_info=True)
 
     return resp
 

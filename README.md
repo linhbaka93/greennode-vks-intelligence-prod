@@ -10,7 +10,7 @@ Hệ thống multi-agent tự động chạy trên GreenNode AgentBase giải qu
 
 **Telegram** là kênh tương tác chính, phù hợp cho người dùng di động và muốn nhận thông tin ngay lập tức. Báo cáo tự động gửi vào 8h sáng mỗi ngày, thứ 6 và mùng 1 hàng tháng. Người dùng nhắn trực tiếp cho Lin Lin — QA agent — để hỏi bất kỳ câu hỏi nào về thị trường và nhận trả lời trong vài giây, hoặc ra lệnh research mới. Memory Curator gửi đề xuất cập nhật knowledge base qua Telegram để human review và approve.
 
-**Dashboard web** (`/dashboard/ui`) dành cho người dùng muốn nhìn tổng quan và audit sâu. Tab Overview hiển thị số run, tỷ lệ thành công, tổng claim; tab Runs liệt kê lịch sử từng pipeline với agent results; tab QA Activity theo dõi câu hỏi và câu trả lời; tab Cost Trend hiển thị token usage theo ngày; tab Evaluation tổng hợp revise rate và citation warnings.
+**Dashboard web** ([`/dashboard/ui`](https://endpoint-c55e9dec-fbc3-4621-a921-d31c349c3002.agentbase-runtime.aiplatform.vngcloud.vn/dashboard/ui)) dành cho người dùng muốn nhìn tổng quan và audit sâu. Tab Overview hiển thị số run, tỷ lệ thành công, tổng claim; tab Runs liệt kê lịch sử từng pipeline với agent results; tab QA Activity theo dõi câu hỏi và câu trả lời; tab Cost Trend hiển thị token usage theo ngày; tab Evaluation tổng hợp revise rate và citation warnings.
 
 Toàn bộ dữ liệu xử lý trên hạ tầng GreenNode — không có thông tin nào ra ngoài lãnh thổ Việt Nam, tuân thủ data sovereignty theo Luật BVDLCN 2025.
 

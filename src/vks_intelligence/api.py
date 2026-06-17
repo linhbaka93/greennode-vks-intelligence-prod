@@ -17,6 +17,7 @@ Phục vụ trên port 8080:
   GET  /dashboard/runs
   GET  /dashboard/cost-trend   Token usage theo ngày
   GET  /dashboard/qa-activity  QA activity từ Telegram (streaming + research)
+  GET  /dashboard/evaluation   Evaluation loop stats (revise rate, citation warnings)
   GET  /dashboard/ui/       Static HTML dashboard
   POST /telegram/webhook    Telegram bot handler (không cần n8n cho Q&A)
 """
@@ -38,6 +39,7 @@ from vks_intelligence.schemas import (
     CostTrendPoint,
     DailyIntelligenceRequestBody,
     DashboardSummary,
+    EvalSummary,
     HealthResponse,
     QAActivitySummary,
     QARequestBody,
@@ -715,6 +717,14 @@ def dashboard_qa_activity(days: int = 14) -> QAActivitySummary:
     from vks_intelligence.dashboard import qa_activity
     s = get_settings()
     return qa_activity(_qa_log_root(s), days=days)
+
+
+@app.get("/dashboard/evaluation", response_model=EvalSummary, tags=["dashboard"])
+def dashboard_evaluation() -> EvalSummary:
+    from vks_intelligence.config import get_settings
+    from vks_intelligence.dashboard import evaluation_summary
+    s = get_settings()
+    return evaluation_summary(s.workspace_path / s.artifact_root)
 
 
 @app.get("/dashboard/runs/{run_id}", response_model=RunDetail)

@@ -123,7 +123,7 @@ class Settings(BaseSettings):
     battlecard_auto_write: bool = False
 
     # Citation grader: HEAD-check URLs sau synthesis, đánh dấu dead links vào warnings
-    citation_grader_enabled: bool = False
+    citation_grader_enabled: bool = True
 
     # Dashboard
     dashboard_enabled: bool = True

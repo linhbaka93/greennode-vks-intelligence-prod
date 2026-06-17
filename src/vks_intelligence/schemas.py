@@ -152,6 +152,15 @@ class AgentRunDetail(BaseModel):
     summary: str = ""
 
 
+class EvalSummary(BaseModel):
+    """Evaluation loop statistics cho dashboard Eval tab."""
+    total_runs: int = 0
+    revise_count: int = 0
+    revise_rate: float = 0.0
+    citation_warnings: int = 0
+    recent_revise_failures: list[str] = Field(default_factory=list)
+
+
 class RunDetail(BaseModel):
     """Chi tiết drill-down một run cho dashboard."""
     run_id: str

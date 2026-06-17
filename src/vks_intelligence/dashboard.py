@@ -14,6 +14,7 @@ from vks_intelligence.schemas import (
     AgentRunDetail,
     CostTrendPoint,
     DashboardSummary,
+    EvalSummary,
     QAActivitySummary,
     RunDetail,
     RunSummary,
@@ -30,18 +31,21 @@ def _load_metadata(run_dir: Path) -> dict | None:
         return None
 
 
-def list_runs(artifact_root: Path, limit: int = 50) -> list[RunSummary]:
-    """Liệt kê các run gần nhất từ metadata.json, mới nhất trước."""
+def _sorted_run_dirs(artifact_root: Path, limit: int = 0) -> list[Path]:
+    """Trả danh sách run dirs sắp xếp mới nhất trước, giới hạn `limit` (0 = không giới hạn)."""
     if not artifact_root.exists():
         return []
-
-    run_dirs = sorted(
+    dirs = sorted(
         [d for d in artifact_root.iterdir() if d.is_dir()],
         key=lambda d: d.stat().st_mtime,
         reverse=True,
     )
+    return dirs if limit <= 0 else dirs[:limit]
 
-    selected_dirs = run_dirs if limit <= 0 else run_dirs[:limit]
+
+def list_runs(artifact_root: Path, limit: int = 50) -> list[RunSummary]:
+    """Liệt kê các run gần nhất từ metadata.json, mới nhất trước."""
+    selected_dirs = _sorted_run_dirs(artifact_root, limit=limit)
 
     summaries: list[RunSummary] = []
     for run_dir in selected_dirs:
@@ -194,6 +198,42 @@ def run_detail(artifact_root: Path, run_id: str) -> RunDetail | None:
         started_at=meta.get("started_at", ""),
         finished_at=meta.get("finished_at", ""),
         synthesis_preview=preview,
+    )
+
+
+def evaluation_summary(artifact_root: Path, limit: int = 200) -> EvalSummary:
+    """Tổng hợp evaluation loop stats (revise rate, citation warnings) từ metadata.warnings."""
+    run_dirs = _sorted_run_dirs(artifact_root, limit=limit)
+    total = 0
+    revise_count = 0
+    citation_warnings = 0
+    recent_revise_failures: list[str] = []
+
+    for run_dir in run_dirs:
+        meta = _load_metadata(run_dir)
+        if meta is None:
+            continue
+        total += 1
+        warnings = meta.get("warnings", []) or []
+        for w in warnings:
+            if isinstance(w, str) and w.startswith("Revise loop:"):
+                revise_count += 1
+                recent_revise_failures.extend(
+                    x for x in warnings
+                    if isinstance(x, str) and (
+                        "Thiếu" in x or "Placeholder" in x or "quá ngắn" in x
+                    )
+                )
+            if isinstance(w, str) and w.startswith("Citation grader:"):
+                citation_warnings += 1
+
+    deduped = list(dict.fromkeys(recent_revise_failures))[:10]
+    return EvalSummary(
+        total_runs=total,
+        revise_count=revise_count,
+        revise_rate=round(revise_count / total, 3) if total else 0.0,
+        citation_warnings=citation_warnings,
+        recent_revise_failures=deduped,
     )
 
 

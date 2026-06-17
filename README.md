@@ -4,26 +4,9 @@ Runtime multi-agent production cho competitive intelligence mảng Managed Kuber
 tại Việt Nam. Project độc lập, Vietnamese-first cho output người dùng, tiếng Anh cho
 code/schema/API.
 
-## Kiến trúc
+## Sơ đồ kiến trúc
 
-```
-                          ┌─────────────────┐
-                          │   Quality Gate  │  score ≥ 0.80
-                          │       ✓         │  Publish / Hold
-                          └───────┬─────────┘
-                       Propose ↑  │ ↓ Allow / Hold
-                                  │
-Người dùng          Giao diện     │      Supervisor Core        Specialist Agents    Evidence Sources
-(Telegram  ──Prompt──▶ (Telegram  ──Request──▶  ┌──────────┐ ──Task Plan──▶  (competitor        ──Fetch──▶  (RSS · Web
- Scheduler    Cron ──▶  Bot · REST  ◀─Progress─  │    ↻     │ ◀─Results───   pricing · regulatory  ◀─Evidence─  News API)
- API)                   API)                     │Supervise │                market · positioning
-                                                 └──────────┘                battlecard)
-                                       Persist ↓  │ ↑ Load
-                                  ┌──────────────────────────┐
-                                  │    Memory & Storage      │
-                                  │  memory/ · outputs/ · GitHub repo │
-                                  └──────────────────────────┘
-```
+![System Architecture](assets/architecture.svg)
 
 **Luồng chính:**
 - **Người dùng** gửi câu hỏi qua Telegram hoặc REST API; **Scheduler** (APScheduler) trigger tự động 8h sáng / thứ 6 / mùng 1 hàng tháng
@@ -84,9 +67,6 @@ specialist registry, model router, evidence bundle, artifact store, Telegram web
 dashboard summary và n8n workflow JSON nền đã có. Phần cần harden tiếp là async task
 queue đầy đủ, auth/approval production, source registry mở rộng và eval coverage.
 
-## Sơ đồ kiến trúc
-
-![System Architecture](assets/architecture.svg)
 
 ## Tài liệu
 

@@ -84,6 +84,10 @@ specialist registry, model router, evidence bundle, artifact store, Telegram web
 dashboard summary và n8n workflow JSON nền đã có. Phần cần harden tiếp là async task
 queue đầy đủ, auth/approval production, source registry mở rộng và eval coverage.
 
+## Sơ đồ kiến trúc
+
+![System Architecture](assets/architecture.svg)
+
 ## Tài liệu
 
 > Thư mục `docs/` là local-only (gitignored). Mở các file dưới đây trực tiếp trên máy.

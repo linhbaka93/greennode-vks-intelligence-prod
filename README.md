@@ -18,7 +18,7 @@ Toàn bộ dữ liệu xử lý trên hạ tầng GreenNode — không có thôn
 
 ## Sơ đồ kiến trúc
 
-![System Architecture](assets/architecture.svg)
+![System Architecture](assets/architecture.png)
 
 **Luồng chính:**
 - **Người dùng** gửi câu hỏi qua Telegram hoặc REST API; **Scheduler** (APScheduler) trigger tự động 8h sáng / thứ 6 / mùng 1 hàng tháng

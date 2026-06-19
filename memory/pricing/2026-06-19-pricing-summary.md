@@ -4,29 +4,30 @@ Source: competitor-monitor run | Model: qwen/qwen3-5-27b
 
 ## Key Findings
 
-- [RSS] [AWS News Blog](https://aws.amazon.com/blogs/aws/announcing-amazon-ec2-g7-instances-accelerated-by-nvidia-rtx-pro-4500-blackwell-server-edition-gpus) 2026-06-18 — AWS công bố GA EC2 G7 instances với GPU NVIDIA RTX PRO 4500 Blackwell. Tác động: ❌ Feature gap về phần cứng AI inference. AWS cung cấp ngay lập tức lợi thế hiệu năng/giá cho LLM inference nặng. GreenNode đang thua nếu khách hàng cần performance tối đa cho training/inference LLM mà không có ràng buộc data residency. GreenNode cần rà soát roadmap GPU (A100/H100/Blackwell) để tránh mất khách hàng cần performance tối đa.
-- [RSS] [AWS News Blog](https://aws.amazon.com/blogs/aws/introducing-amazon-bedrock-managed-knowledge-base-for-faster-more-accurate-enterprise-ai-applications) 2026-06-17 — AWS ra mắt Bedrock Managed Knowledge Base tích hợp sẵn, giảm chi phí vận hành RAG pipeline. Tác động: ❌ Rủi ro churn cho khách hàng Enterprise chạy GenAI nếu VKS không có giải pháp managed tương đương hoặc TCO thấp hơn đáng kể do chi phí nhân sự vận hành. AWS đang đóng gói 'AI Infrastructure' thành sản phẩm tiêu chuẩn, trong khi VKS vẫn bán hạ tầng K8s thuần.
-- [Workspace] [pricing/2026-06-17_aws-eks_pricing.md] 2026-06-17 — AWS EKS thu phí Control Plane $0.10/giờ (~73 USD/tháng). Tác động: ✅ Cơ hội định vị. GreenNode VKS có thể dùng chiến lược 'Control Plane miễn phí' để thu hút SME và các cluster nhỏ, tạo ra delta TCO rõ rệt (~$876/năm/cluster) so với AWS.
-- [Suy luận] Dựa trên [competitors/2026-06-17_fpt-cloud-fke_profile.md] và [competitors/2026-06-17_viettel-voks_profile.md] — Việc FPT và Viettel không công khai pricing chi tiết cho thấy chiến lược sales-led cho Enterprise. Tác động: ✅ Cơ hội cho VKS thu hút SME bằng bảng giá minh bạch và dễ dự báo TCO, tránh được cuộc chiến giá cả mờ ám ở phân khúc Enterprise.
+- [RSS] [AWS News Blog](https://aws.amazon.com/blogs/aws/announcing-amazon-ec2-g7-instances-accelerated-by-nvidia-rtx-pro-4500-blackwell-server-edition-gpus) 2026-06-18 — AWS ra mắt EC2 G7 instances với GPU NVIDIA RTX PRO 4500 Blackwell Server Edition. Tác động: Tăng áp lực cạnh tranh về hiệu năng/giá cho workload AI inference (S4). GreenNode chưa có thông tin pricing công khai cho GPU tương đương, gây rủi ro thua thế trong các RFP yêu cầu hiệu năng cao cấp nếu không có chiến lược giá linh hoạt. GreenNode nên: Theo dõi sát giá G7 khi công bố để cập nhật TCO S4 và chuẩn bị talk track về 'Total Cost of Ownership' (bao gồm egress, latency, và data residency).
+- [RSS] [Vietnam.vn](https://news.google.com/rss/articles/CBMikgFBVV95cUxQV2ExNGdzR1BneXhBNUhxMDNVY3dMZXhlUGlvcWFBYUk2OVZZdFJqTUZuY3NzdWUtWHZvUTJvZW1rZElGSWRzendwNlFfVEdNMjRoVUI2eExHeHQxTUtUWjJnaGxEdHlhSjdmM2UzdDhCVVlzZ3A4YldMcHZ5QmRUS0ZKWmpzWVpZX1hFVGdSd2Y0QQ) 2026-06-17 — MSB Bank hợp tác chiến lược với GreenNode để triển khai hàng trăm ứng dụng AI. Tác động: Xác nhận GreenNode là lựa chọn ưu tiên cho Enterprise Banking cần Sovereign AI. Tuy nhiên, deal này không tiết lộ pricing, nhưng cho thấy khách hàng sẵn sàng trả giá cao hơn cho compliance và data residency. GreenNode nên: Sử dụng case study MSB để định vị giá trị 'Sovereign AI Premium' thay vì cạnh tranh trực tiếp về giá list.
+- [Scrape] Viettel IDC | https://viettelcloud.vn/san-pham/kubernetes | fetched_at=2026-06-19 — Trang sản phẩm VKS/vOKS của Viettel không hiển thị bảng giá công khai (contact-only). Tác động: Khó so sánh TCO trực tiếp. Viettel thường áp dụng giá linh hoạt theo deal lớn (Enterprise/SOE). GreenNode nên: Giả định Viettel có thể cạnh tranh về giá cho các deal lớn, nhưng GreenNode có lợi thế về tính minh bạch và tốc độ triển khai cho SME/Mid-market.
+- [Scrape] FPT Cloud | https://fptcloud.com/kubernetes | fetched_at=2026-06-19 — Trang sản phẩm FKE của FPT không hiển thị bảng giá công khai (contact-only). Tác động: Tương tự Viettel, FPT tập trung vào sales-led pricing. GreenNode nên: Nhấn mạnh lợi thế 'Self-service' và 'Transparent Pricing' của VKS để thu hút khách hàng SME/Mid-market không muốn đàm phán giá phức tạp.
+- [Scrape] Bizfly Cloud | https://bizflycloud.vn/kubernetes | fetched_at=2026-06-19 — Trang sản phẩm BKE của Bizfly không hiển thị bảng giá công khai chi tiết cho K8s (chỉ có link 'Liên hệ'). Tác động: Bizfly có thể đang dùng chiến lược giá ẩn để linh hoạt cạnh tranh. GreenNode nên: Theo dõi các chương trình khuyến mãi hoặc bundle của Bizfly (thường xuất hiện trên social/blog) để điều chỉnh pricing strategy.
 
 ## Recommended Actions
 
-- Talk Track cho Sales (SME): Nhấn mạnh 'Control Plane miễn phí' của VKS so với AWS EKS ($73/tháng/cluster). Với 3 cluster SME, khách hàng tiết kiệm ~$260/tháng (~6.8 triệu VND/tháng) chỉ từ phí quản lý, chưa kể egress và billing VND.
-- Talk Track cho Sales (Enterprise AI): Thừa nhận AWS có GPU Blackwell mới nhất, nhưng nhấn mạnh lợi thế 'Data Residency' và 'Sovereign AI' của VKS cho các tổ chức bị ràng buộc bởi Luật BVDLCN 2025. Đề xuất giải pháp hybrid: Training trên AWS (nếu cho phép), Inference trên VKS (để tối ưu latency và compliance).
-- Pricing Recommendation: Giữ nguyên chiến lược 'Control Plane miễn phí' cho VKS để duy trì lợi thế cạnh tranh với AWS. Xem xét ra mắt gói 'AI Inference Bundle' với GPU A100/H100 có giá cố định (committed use) để cạnh tranh với Bizfly và FPT ở phân khúc SME/Mid-market.
-- Theo dõi thêm: Cập nhật roadmap GPU của GreenNode (A100/H100/Blackwell) và so sánh hiệu năng/giá với AWS G7 instances. Nếu không có Blackwell trong 6 tháng, cần có chiến lược định vị lại (ví dụ: tập trung vào A100/H100 với giá tốt hơn và support tiếng Việt).
-- Theo dõi thêm: Scrape lại trang pricing của FPT, Viettel, Bizfly hàng tuần để phát hiện thay đổi pricing hoặc promo mới.
+- Talk Track cho Sales: Nhấn mạnh 'Sovereign AI Premium' — GreenNode VKS không chỉ là hạ tầng K8s, mà là giải pháp AI tuân thủ Luật BVDLCN 2025, giúp khách hàng tránh rủi ro pháp lý và bảo vệ dữ liệu nhạy cảm. Sử dụng case study MSB Bank để minh chứng.
+- Pricing Recommendation: Đề xuất mô hình 'Transparent Pricing' cho SME/Mid-market — Công khai bảng giá chi tiết cho các gói tiêu chuẩn (S1, S2) để tạo lợi thế cạnh tranh so với đối thủ nội địa (contact-only).
+- Pricing Recommendation: Chuẩn bị 'TCO Calculator' cho AI Inference (S4) — Khi AWS công bố giá G7, lập tức tính toán TCO so sánh (bao gồm egress, latency, và data residency) để chứng minh GreenNode có thể rẻ hơn hoặc có giá trị tương đương cho các workload cần data residency.
+- Theo dõi thêm: Cập nhật pricing GPU của đối thủ nội địa — Liên hệ Sales/Marketing để thu thập thông tin pricing GPU từ Viettel, FPT, Bizfly (nếu có) hoặc theo dõi các chương trình khuyến mãi trên social/blog.
+- Theo dõi thêm: Giá AWS EC2 G7 — Theo dõi sát sao khi AWS công bố giá chính thức để cập nhật TCO S4 và điều chỉnh chiến lược pricing nếu cần.
 
 ## Risks
 
-- Dữ liệu pricing của AWS EKS ($0.10/giờ) có thể thay đổi theo region (ap-southeast-1 Singapore thường cao hơn us-east-1 10-15%).
-- Thiếu dữ liệu pricing mới nhất cho GPU instances của đối thủ nội địa (FPT, Viettel, Bizfly) khiến việc so sánh TCO cho workload AI chưa chính xác.
-- AWS đang thay đổi cuộc chơi bằng cách đóng gói AI infrastructure (Bedrock, SageMaker) thay vì chỉ bán hạ tầng K8s, làm giảm tính so sánh trực tiếp về giá K8s thuần.
-- Feature gap về GPU Blackwell của AWS có thể khiến GreenNode mất khách hàng AI cao cấp nếu không có roadmap phần cứng tương đương trong 6-12 tháng tới.
+- Thiếu dữ liệu pricing GPU công khai từ GreenNode và đối thủ nội địa, gây khó khăn trong việc tính toán TCO chính xác cho scenario S4 (AI Inference).
+- AWS EC2 G7 có thể công bố giá thấp hơn dự kiến, tạo áp lực cạnh tranh lớn về hiệu năng/giá cho các workload AI cao cấp.
+- Đối thủ nội địa có thể áp dụng giá linh hoạt (discount sâu) cho các deal lớn mà không công khai, gây rủi ro mất deal nếu GreenNode chỉ dựa vào giá list.
+- Dữ liệu pricing AWS EKS (2026-06-17) có thể đã thay đổi, cần xác minh lại nếu có thông tin mới.
 
 ## Gaps / Thiếu dữ liệu
 
-- Cần cập nhật: pricing/2026-06-17_aws-eks_pricing.md — Dữ liệu pricing AWS cần refresh (hạn dùng 30 ngày, hiện tại đã 2 ngày, nhưng cần kiểm tra region pricing cho VN).
-- Thiếu dữ liệu: Pricing cụ thể cho GPU instances (A100/H100/Blackwell) của FPT Cloud, Viettel Cloud, và Bizfly Cloud. Cần scrape hoặc request quote để có số liệu so sánh TCO AI.
-- Thiếu dữ liệu: Pricing cho các thành phần hidden cost (egress, LB, NAT) của đối thủ nội địa để tính toán TCO toàn diện.
-- Không fetch được trang social: Các bài đăng social của đối thủ (FPT, Viettel) không có nội dung pricing công khai, cần xác minh qua kênh sales.
+- Cần cập nhật: pricing/2026-06-17_aws-eks_pricing.md — Dữ liệu pricing AWS EKS cần được refresh để đảm bảo tính chính xác (cuối cùng cập nhật 2026-06-17).
+- Cần xác minh: Pricing GPU của GreenNode VKS — Chưa có thông tin công khai về giá GPU node pool cho VKS, cần thu thập từ Sales/Marketing hoặc trang pricing nội bộ.
+- Cần xác minh: Pricing GPU của đối thủ nội địa (Viettel, FPT, Bizfly) — Cần thu thập thông tin từ các nguồn khác (social, blog, hoặc contact sales) để so sánh TCO.
+- Cần theo dõi: Giá AWS EC2 G7 — Cần theo dõi sát sao khi AWS công bố giá chính thức để cập nhật TCO S4.

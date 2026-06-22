@@ -4,30 +4,30 @@ Source: competitor-monitor run | Model: qwen/qwen3-5-27b
 
 ## Key Findings
 
-- [RSS] [AWS News Blog](https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ny-summit-recap-local-zone-in-hanoi-grok-4-3-in-bedrock-price-reductions-and-more-june-22-2026) 2026-06-22 — AWS công bố giảm giá (price reductions) và mở rộng Local Zone tại Hà Nội. Tác động: Áp lực giá trực tiếp lên GreenNode nếu khách hàng không yêu cầu data residency nghiêm ngặt. GreenNode cần rà soát lại TCO cho các workload không bắt buộc onshore để tránh mất khách vào AWS do giá thấp hơn.
-- [RSS] [AWS Containers Blog](https://aws.amazon.com/blogs/containers/amazon-eks-now-supports-control-plane-egress-through-your-vpc) 2026-06-22 — AWS EKS hỗ trợ định tuyến control plane egress qua VPC của khách hàng. Tác động: Giảm chi phí egress ẩn (hidden cost) cho khách hàng AWS, làm giảm lợi thế giá của GreenNode trong các kiến trúc hybrid phức tạp. GreenNode cần làm rõ chính sách egress của VKS để so sánh TCO thực tế.
-- [RSS] [AWS News Blog](https://aws.amazon.com/blogs/aws/announcing-amazon-ec2-g7-instances-accelerated-by-nvidia-rtx-pro-4500-blackwell-server-edition-gpus) 2026-06-18 — AWS GA EC2 G7 với GPU Blackwell. Tác động: Feature gap về phần cứng AI inference. Nếu GreenNode chưa có Blackwell, sẽ thua về hiệu năng/giá cho các workload LLM nặng không cần data residency VN. Cần rà soát roadmap GPU để tránh mất khách hàng cần performance tối đa.
-- [Scrape] Viettel Cloud | https://viettelcloud.vn/san-pham/kubernetes | fetched_at=2026-06-22 — Trang sản phẩm vOKS không hiển thị bảng giá công khai. Tác động: Viettel vẫn giữ chiến lược 'sales-led pricing' cho Enterprise. GreenNode không thể so sánh giá trực tiếp, cần tập trung vào TCO tổng thể (bao gồm support, compliance) thay vì chỉ so sánh list price.
-- [Scrape] FPT Cloud | https://fptcloud.com/kubernetes | fetched_at=2026-06-22 — Trang sản phẩm FKE không hiển thị bảng giá công khai. Tác động: Tương tự Viettel, FPT dùng giá ẩn để linh hoạt đàm phán. GreenNode cần chuẩn bị battlecard TCO cho các scenario cụ thể (SME vs Enterprise) để đối phó khi khách hàng yêu cầu báo giá.
-- [Scrape] Bizfly Cloud | https://bizflycloud.vn/kubernetes | fetched_at=2026-06-22 — Trang sản phẩm BKE không hiển thị bảng giá công khai. Tác động: Bizfly vẫn là đối thủ mạnh ở phân khúc SME nhưng không công khai giá. GreenNode cần theo dõi các chương trình khuyến mãi hoặc gói giá cố định nếu Bizfly thay đổi chiến lược.
+- [RSS] [AWS Containers Blog](https://aws.amazon.com/blogs/containers/amazon-eks-now-supports-control-plane-egress-through-your-vpc) 2026-06-22 — AWS ra mắt tính năng định tuyến control plane egress qua VPC khách hàng cho EKS. Tác động: Tăng áp lực về compliance cho GreenNode VKS. Nếu GreenNode chưa có tính năng tương đương, khách hàng Enterprise/Gov có thể yêu cầu giảm giá hoặc từ chối chuyển đổi do lo ngại bảo mật. GreenNode cần xác nhận roadmap tính năng này ngay lập tức.
+- [RSS] [AWS News Blog](https://aws.amazon.com/blogs/aws/announcing-amazon-ec2-g7-instances-accelerated-by-nvidia-rtx-pro-4500-blackwell-server-edition-gpus) 2026-06-18 — AWS công bố instance G7 với GPU Blackwell cho AI inference. Tác động: Tạo áp lực cạnh tranh về hiệu năng/giá cho workload AI. Nếu GreenNode chưa có GPU thế hệ mới, sẽ mất lợi thế về TCO cho các dự án AI inference cao cấp. Cần rà soát lại danh mục GPU hiện có và so sánh hiệu năng/giá với G7.
+- [Scrape] Viettel IDC | https://viettelcloud.vn/san-pham/kubernetes | fetched_at=2026-06-22 — Trang sản phẩm vOKS không hiển thị bảng giá công khai. Tác động: Viettel tiếp tục chiến lược 'contact-only' pricing, gây khó khăn cho việc so sánh TCO trực tiếp. GreenNode cần chuẩn bị battlecard dựa trên giá trị (value) thay vì chỉ so sánh list price.
+- [Scrape] FPT Cloud | https://fptcloud.com/kubernetes | fetched_at=2026-06-22 — Trang FKE không có thông tin giá công khai. Tác động: FPT cũng áp dụng mô hình giá tùy chỉnh. GreenNode cần tập trung vào các yếu tố khác biệt hóa như hỗ trợ tiếng Việt, SLA, và data residency để thắng thầu.
+- [Scrape] Bizfly Cloud | https://bizflycloud.vn/kubernetes | fetched_at=2026-06-22 — Trang BKE không hiển thị bảng giá chi tiết. Tác động: Bizfly cũng không công khai giá. Thị trường VN đang thiếu minh bạch về giá K8s, khiến GreenNode khó định vị giá dựa trên đối thủ. Cần dựa vào dữ liệu win/loss nội bộ để điều chỉnh.
 
 ## Recommended Actions
 
-- Talk track cho Sales: Nhấn mạnh lợi thế Sovereign AI và data residency của GreenNode VKS, đặc biệt với khách hàng Enterprise/Gov. Giải thích rằng AWS Local Zone tại Hà Nội vẫn không thay thế được yêu cầu data residency nghiêm ngặt.
-- Pricing recommendation: Rà soát lại TCO cho các scenario SME và Enterprise, tập trung vào hidden cost (egress, support) để làm nổi bật lợi thế giá trị của GreenNode so với AWS.
-- Theo dõi thêm: Cập nhật roadmap GPU của GreenNode và so sánh với AWS G7 Blackwell để chuẩn bị chiến lược cạnh tranh cho workload AI inference.
-- Theo dõi thêm: Thu thập dữ liệu pricing thực tế từ các deal đã ký để hiểu willingness-to-pay của khách hàng và điều chỉnh chiến lược giá.
+- Talk Track cho Sales: Khi khách hàng hỏi về giá, nhấn mạnh vào 'Sovereign AI' và 'Data Residency' thay vì chỉ so sánh list price. Giải thích rằng GreenNode là lựa chọn duy nhất đáp ứng Luật BVDLCN 2025 và Luật An ninh mạng 2018 với hạ tầng AI tại VN.
+- Pricing Recommendation: Đề xuất mô hình giá 'value-based' cho các workload AI, tập trung vào TCO tổng thể (bao gồm cả chi phí egress, support, và compliance) thay vì chỉ giá compute. Xem xét giảm giá cho các gói Reserved Instances để cạnh tranh với AWS.
+- Product Roadmap: Ưu tiên phát triển tính năng 'control plane egress through VPC' cho GreenNode VKS để đáp ứng yêu cầu bảo mật của khách hàng Enterprise/Gov.
+- GPU Strategy: Rà soát lại danh mục GPU hiện có và so sánh hiệu năng/giá với AWS G7 Blackwell. Nếu chưa có GPU thế hệ mới, cần có kế hoạch nhập hàng hoặc hợp tác với nhà cung cấp GPU ngay lập tức.
+- Data Refresh: Cập nhật ngay lập tức dữ liệu pricing và cấu hình sản phẩm từ GreenNode VKS để đảm bảo tính chính xác của các phân tích TCO.
 
 ## Risks
 
-- Dữ liệu pricing của đối thủ VN (Viettel, FPT, Bizfly) không công khai, gây khó khăn cho việc so sánh TCO chính xác.
-- AWS giảm giá và mở rộng Local Zone tại Hà Nội có thể làm giảm lợi thế giá của GreenNode cho các workload không bắt buộc onshore.
-- Feature gap về GPU Blackwell so với AWS có thể làm mất khách hàng cần performance tối đa cho AI inference.
-- Dữ liệu pricing của GreenNode VKS trong workspace có thể đã cũ (last updated 2026-05-20), cần cập nhật lại để đảm bảo chính xác.
+- Thiếu dữ liệu pricing công khai từ đối thủ nội địa (Viettel, FPT, Bizfly) khiến việc so sánh TCO trực tiếp không khả thi. Phải dựa vào dữ liệu win/loss nội bộ hoặc phỏng đoán.
+- AWS đang dẫn đầu về công nghệ AI-native (Blackwell GPU, Bedrock AgentCore). Nếu GreenNode không có GPU tương đương hoặc tính năng AI-native, sẽ mất lợi thế về giá trị (value) cho các workload AI cao cấp.
+- Tính năng 'control plane egress through VPC' của AWS là yêu cầu bắt buộc cho nhiều khách hàng Enterprise/Gov. Nếu GreenNode chưa có, đây là rủi ro mất thầu lớn.
+- Dữ liệu pricing từ workspace memory (2026-05-20) có thể đã cũ. Cần cập nhật ngay lập tức nếu có thay đổi về giá hoặc cấu hình.
 
 ## Gaps / Thiếu dữ liệu
 
-- Cần cập nhật bảng giá công khai của GreenNode VKS (nếu có) hoặc chính sách giá nội bộ để so sánh với đối thủ.
-- Cần xác minh chính sách egress và hidden cost của GreenNode VKS để so sánh với AWS EKS mới.
-- Cần rà soát roadmap GPU của GreenNode để đánh giá khả năng cạnh tranh với AWS G7 Blackwell.
-- Cần thu thập dữ liệu pricing thực tế từ các deal đã ký (win/loss) để hiểu willingness-to-pay của khách hàng.
+- Cần cập nhật: greennode/2026-05-20_greennode-vks_product-overview.md — dữ liệu cũ, chưa có bảng giá mới nhất hoặc thông tin về GPU Blackwell.
+- Không có dữ liệu pricing công khai từ Viettel vOKS, FPT FKE, Bizfly BKE. Cần scrape sâu hơn hoặc liên hệ sales để lấy thông tin.
+- Không có thông tin về giá GPU hiện tại của GreenNode để so sánh với AWS G7 Blackwell.
+- Không có dữ liệu về tính năng 'control plane egress through VPC' của GreenNode VKS. Cần xác nhận roadmap.

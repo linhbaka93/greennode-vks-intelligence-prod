@@ -1,0 +1,19 @@
+# Regulatory Summary — 2026-06-22
+
+Source: competitor-monitor run | Model: qwen/qwen3-5-27b
+
+## Key Findings
+
+- [RSS] Vietnam.vn | https://news.google.com/rss/articles/CBMipgFBVV95cUxNdzI4V1lYVXdkSFo2clRvZFlUa08xQTI5RE51SkZwRWtXNFpLZ1FiRUJfal9qc01ReTZFUEhOcUNPSTFpN0hJdkZZVnZIRkNDd1hiOThpeXZad19hcHRoTFFzc1BoaENmQ1ZRbjhrX05NM1Q5aFdKNXRMRllLYTJPbnJfSk9qdDlZWjFEck1HQlUzOUpzdkhTVGhFNzZpN3BfYndTeXNn?oc=5 | published_at=2026-06-22 — Không có văn bản pháp lý mới hoặc cập nhật quy định về data residency, bảo mật dữ liệu, hay AI tại Việt Nam trong cửa sổ thời gian 3 ngày (2026-06-19 đến 2026-06-22). Các nguồn tin chính thống (Vietnam.vn) chỉ đề cập đến các sự kiện kinh tế (FPT giữ vị trí Fortune SEA 500, hợp tác FPT-France) và tin tức thời tiết, không có thông tin về thay đổi luật pháp. — Tác động tới GreenNode: Không có áp lực tuân thủ mới (compliance pressure) ngay lập tức. Môi trường pháp lý ổn định cho phép GreenNode tiếp tục sử dụng các luận điểm hiện có (Luật BVDLCN 2025, Luật An ninh mạng 2018) làm nền tảng positioning mà không cần điều chỉnh chiến lược pháp lý.
+- [RSS] AWS News Blog | https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ny-summit-recap-local-zone-in-hanoi-grok-4-3-in-bedrock-price-reductions-and-more-june-22-2026 | published_at=2026-06-22 — AWS công bố mở rộng Local Zone tại Hà Nội (Hanoi) trong bản tin tuần (2026-06-22), cùng với các tính năng AI mới (Grok 4.3 trên Bedrock). Việc mở rộng Local Zone tại VN là tín hiệu hạ tầng quan trọng, cho phép AWS đưa dịch vụ gần hơn về mặt vật lý. — Tác động tới GreenNode: ❌ Rủi ro cạnh tranh gia tăng: AWS Local Zone tại Hà Nội giúp giảm latency và có thể được marketing là 'hạ tầng tại VN'. Tuy nhiên, Local Zone vẫn là hạ tầng của hyperscaler nước ngoài, không phải là data center chủ quyền (sovereign) hoàn toàn như GreenNode. Khách hàng có yêu cầu data residency nghiêm ngặt (Luật BVDLCN) vẫn cần phân biệt rõ ràng giữa 'Local Zone' và 'Data Center tại VN'.
+- [Scrape] FPT Cloud | https://fptcloud.com/kubernetes | fetched_at=2026-06-22; [Scrape] Viettel Cloud | https://viettelcloud.vn/san-pham/kubernetes | fetched_at=2026-06-22; [Scrape] Bizfly Cloud | https://bizflycloud.vn/kubernetes | fetched_at=2026-06-22 — Các đối thủ nội địa (FPT, Viettel, Bizfly) không có thông tin cập nhật về thay đổi chính sách hoặc chứng nhận mới trong 3 ngày qua. Trang sản phẩm Kubernetes của họ (FKE, vOKS, BKE) vẫn giữ nguyên cấu trúc và thông tin cơ bản. — Tác động tới GreenNode: Không có thay đổi về mặt tuân thủ từ đối thủ. Lợi thế của GreenNode về tính minh bạch và các chứng nhận (nếu có trong workspace) vẫn giữ nguyên vị thế so với đối thủ khi họ không công bố cập nhật mới.
+
+## Recommended Actions
+
+- {"target": "Sales & Marketing", "action": "Cập nhật Battle Card đối với AWS: Làm rõ sự khác biệt giữa 'AWS Local Zone' (hạ tầng mở rộng, vẫn là entity nước ngoài) và 'GreenNode VKS' (hạ tầng chủ quyền, local entity, tuân thủ tuyệt đối Luật BVDLCN). Nhấn mạnh rủi ro pháp lý khi sử dụng Local Zone cho dữ liệu nhạy cảm.", "priority": "High", "timeline": "Trong tuần này"}
+- {"target": "Product & Compliance", "action": "Duy trì giám sát các nguồn tin chính phủ (Bộ TT&TT, Chính phủ) để phát hiện sớm các thông tư hướng dẫn mới về AI và dữ liệu. Không cần thay đổi tài liệu pháp lý hiện tại.", "priority": "Medium", "timeline": "Liên tục"}
+
+## Gaps / Thiếu dữ liệu
+
+- Cần xác minh: AWS Local Zone Hà Nội đã chính thức vận hành (GA) hay chỉ là thông báo kế hoạch? Cần kiểm tra thêm các nguồn chính thức của AWS Vietnam hoặc thông cáo báo chí chi tiết để xác định thời điểm đi vào hoạt động thực tế.
+- Cần cập nhật: Không có thông tin mới về các thông tư hướng dẫn Luật BVDLCN 2025 hoặc Nghị định 13/2023 trong 3 ngày qua. Cần tiếp tục theo dõi các nguồn chính phủ (Bộ TT&TT, Chính phủ) để nắm bắt các văn bản hướng dẫn chi tiết sắp tới.

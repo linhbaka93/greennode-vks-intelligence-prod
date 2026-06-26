@@ -4,29 +4,29 @@ Source: weekly-digest run | Model: qwen/qwen3-5-27b
 
 ## Key Findings
 
-- [RSS] [AWS News Blog](https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ny-summit-recap-local-zone-in-hanoi-grok-4-3-in-bedrock-price-reductions-and-more-june-22-2026) 2026-06-22 — AWS công bố giảm giá (price reductions) và mở rộng Local Zone tại Hà Nội. Tác động: Áp lực giá trực tiếp lên GreenNode cho các workload không yêu cầu data residency nghiêm ngặt. GreenNode cần rà soát lại TCO cho các workload hybrid để tránh mất khách vào AWS do chênh lệch giá.
-- [RSS] [AWS News Blog](https://aws.amazon.com/blogs/aws/announcing-amazon-ec2-g7-instances-accelerated-by-nvidia-rtx-pro-4500-blackwell-server-edition-gpus) 2026-06-18 — AWS GA EC2 G7 instances với GPU NVIDIA RTX PRO 4500 Blackwell Server Edition. Tác động: Feature gap về phần cứng GPU thế hệ mới. AWS cung cấp lợi thế hiệu năng ngay lập tức cho LLM inference nặng. GreenNode đang thua nếu khách hàng cần performance tối đa cho training/inference mà không có ràng buộc data residency VN.
-- [RSS] [AWS Containers Blog](https://aws.amazon.com/blogs/containers/amazon-eks-now-supports-control-plane-egress-through-your-vpc) 2026-06-22 — AWS EKS ra mắt tính năng 'customer-routed control plane egress', cho phép định tuyến toàn bộ traffic control plane qua VPC của khách hàng. Tác động: Feature gap nghiêm trọng về bảo mật và kiến trúc mạng cho phân khúc Enterprise/Gov. Khách hàng tài chính/chính phủ yêu cầu control plane traffic không ra internet sẽ ưu tiên AWS nếu GreenNode chưa có giải pháp tương đương (Private Link cho control plane).
-- [RSS] [AWS Containers Blog](https://aws.amazon.com/blogs/containers/faster-nodes-smarter-scaling-whats-new-inside-amazon-elastic-kubernetes-service-amazon-eks-auto-mode) 2026-06-23 — AWS công bố nâng cấp hiệu năng và khả năng mở rộng cho EKS Auto Mode. Tác động: Feature gap về tự động hóa và tối ưu hóa chi phí. EKS Auto Mode giúp khách hàng giảm vận hành và chi phí node; GreenNode cần đánh giá khả năng cạnh tranh về TCO vận hành cho các workload biến động cao.
+- [RSS] [AWS News Blog](https://aws.amazon.com/blogs/aws/announcing-amazon-ec2-g7-instances-accelerated-by-nvidia-rtx-pro-4500-blackwell-server-edition-gpus) 2026-06-18 — AWS ra mắt EC2 G7 với GPU NVIDIA RTX PRO 4500 Blackwell, tập trung vào AI inference. Tác động: Tăng áp lực cạnh tranh về hiệu năng/giá cho workload AI inference (S4). Nếu GreenNode chưa có GPU thế hệ mới tương đương, sẽ khó cạnh tranh về TCO cho các workload AI cao cấp, buộc phải định vị dựa trên yếu tố chủ quyền dữ liệu (Sovereign) thay vì chỉ giá phần cứng.
+- [RSS] [AWS Containers Blog](https://aws.amazon.com/blogs/containers/amazon-eks-now-supports-control-plane-egress-through-your-vpc) 2026-06-22 — AWS công bố tính năng 'customer-routed control plane egress' cho EKS, cho phép định tuyến lưu lượng control plane qua VPC khách hàng. Tác động: Tăng áp lực về bảo mật và compliance (churn risk) cho GreenNode VKS. Đây là tính năng bắt buộc với nhiều khách hàng ngân hàng/chính phủ. Nếu GreenNode chưa có tính năng tương đương, sẽ mất điểm trong các RFP yêu cầu strict security, dù giá có thể thấp hơn.
+- [RSS] [AWS HPC Blog](https://aws.amazon.com/blogs/hpc/transforming-hpc-operations-with-intelligent-workload-orchestration-on-aws) 2026-06-26 — AWS công bố giải pháp tự động hóa orchestration cho workload HPC. Tác động: Tăng áp lực cạnh tranh về khả năng tự động hóa (automation) cho các workload tính toán hiệu năng cao. Nếu GreenNode VKS chưa có công cụ orchestration tương tự, sẽ khó cạnh tranh trong phân khúc HPC/AI training (S5) về mặt TCO vận hành.
+- [Workspace] greennode/2026-06-19-positioning-summary.md — GreenNode là nhà cung cấp hạ tầng AI đầu tiên được TP.HCM cấp Chứng nhận Doanh nghiệp Công nghệ cao. Tác động: Đây là lợi thế định vị (positioning) mạnh để bảo vệ biên giá (premium pricing) trong phân khúc Enterprise & Gov (Sovereign AI), nơi khách hàng ưu tiên compliance (Luật BVDLCN 2025) hơn là giá list price thấp nhất.
+- [Workspace] greennode/2026-05-20_greennode-vks_product-overview.md — GreenNode VKS có 3 region tại VN (HCM, HAN, BKK) và hỗ trợ Cilium VPC Native. Tác động: Lợi thế về độ trễ (latency) và egress cost cho khách hàng nội địa so với Hyperscaler (thường phải egress qua Singapore/Global). Đây là điểm mấu chốt để tính toán TCO thấp hơn cho các workload data-heavy, dù compute price có thể cao hơn.
 
 ## Recommended Actions
 
-- Talk track cho Sales: Nhấn mạnh lợi thế data residency VN, compliance (Luật BVDLCN 2025, Luật An ninh mạng 2018), và hỗ trợ kỹ thuật local cho các khách hàng Enterprise/Gov. Đối với khách hàng không yêu cầu data residency, cần rà soát lại TCO và đề xuất giải pháp hybrid nếu cần.
-- Pricing recommendation: Rà soát lại bảng giá VKS và đề xuất discount model (Reserved, Committed) cạnh tranh hơn cho các workload không yêu cầu data residency nghiêm ngặt để giữ khách trước áp lực giảm giá của AWS.
-- Theo dõi thêm: Cập nhật ngay bảng giá đối thủ (AWS, FPT, Viettel, Bizfly) và tính toán TCO scenario S4 (AI Inference) với GPU Blackwell để đánh giá khả năng cạnh tranh của GreenNode.
-- Theo dõi thêm: Đánh giá khả năng triển khai Private Link cho control plane hoặc giải pháp tương đương để đáp ứng yêu cầu bảo mật cao của Enterprise/Gov.
+- Talk Track cho Sales: Nhấn mạnh 'Sovereign AI' và 'Data Residency' là yếu tố quyết định TCO thực tế (bao gồm chi phí tuân thủ pháp luật, rủi ro pháp lý) thay vì chỉ so sánh giá compute/giờ. Sử dụng chứng nhận SOC 2 Type 2 và Doanh nghiệp Công nghệ cao làm bằng chứng.
+- Pricing Recommendation: Không cạnh tranh trực tiếp về giá list price cho GPU mới (Blackwell) nếu chưa có phần cứng tương đương. Thay vào đó, tập trung vào gói 'Reserved' hoặc 'Committed Use' cho các workload AI inference dài hạn, kèm theo cam kết hỗ trợ kỹ thuật (support) và tối ưu hóa egress nội địa.
+- Theo dõi thêm: Cập nhật ngay lập tức pricing và tính năng của AWS EKS (Control Plane Egress) và FPT Cloud để đánh giá lại khả năng đáp ứng RFP của khách hàng ngân hàng/chính phủ.
+- Phân tích TCO: Xây dựng mô hình TCO cho scenario S4 (AI Inference) và S5 (AI Training) dựa trên giả định egress cost thấp hơn của GreenNode so với AWS (do data center tại VN), bù đắp cho chênh lệch giá compute nếu có.
 
 ## Risks
 
-- Thiếu dữ liệu pricing cụ thể (số liệu giá, discount, TCO) mới trong evidence bundle tuần này, không thể tính toán TCO delta chính xác.
-- Dữ liệu pricing đối thủ (AWS, FPT, Viettel, Bizfly) trong workspace memory đã STALE (cần cập nhật), không dùng được cho phân tích TCO chi tiết.
-- Feature gap về GPU Blackwell và Control Plane Egress có thể dẫn đến mất khách Enterprise/Gov nếu không có chiến lược giá bù đắp hoặc giải pháp kỹ thuật tương đương.
+- Thiếu dữ liệu pricing công khai (list price) mới nhất của GreenNode VKS và đối thủ nội địa (FPT, Viettel, Bizfly) để tính toán TCO chính xác theo scenario.
+- Dữ liệu profile đối thủ (AWS EKS, FPT FKE, Viettel IDC) trong workspace đã STALE (cập nhật lần cuối 2026-06-17), không thể dùng để so sánh chi tiết tính năng/giá.
+- Không có thông tin về chương trình khuyến mãi (promo) hoặc discount reserved instance mới từ các đối thủ trong 7 ngày qua.
 
 ## Gaps / Thiếu dữ liệu
 
-- Cần cập nhật: competitors/2026-06-17_bizfly-bke_profile.md — dữ liệu cũ, chưa dùng được.
-- Cần cập nhật: competitors/2026-06-17_fpt-cloud-fke_profile.md — dữ liệu cũ, chưa dùng được.
-- Cần cập nhật: competitors/2026-06-17_aws-eks_profile.md — dữ liệu cũ, chưa dùng được.
-- Cần cập nhật: competitors/2026-06-17_viettel-voks_profile.md — dữ liệu cũ, chưa dùng được.
-- Thiếu bảng giá cụ thể của AWS (EC2 G7, EKS Auto Mode) và đối thủ nội địa để tính toán TCO scenario S4 (AI Inference) và S2 (Mid Production).
-- Thiếu thông tin về discount model (Reserved, Committed) của AWS và đối thủ nội địa để so sánh TCO dài hạn.
+- Cần cập nhật: competitors/2026-06-17_aws-eks_profile.md — dữ liệu cũ, chưa có thông tin pricing mới cho tính năng EKS Auto Mode và Control Plane Egress.
+- Cần cập nhật: competitors/2026-06-17_fpt-cloud-fke_profile.md — thiếu dữ liệu pricing và tính năng mới của FPT Cloud.
+- Cần cập nhật: competitors/2026-06-17_viettel-idc-kubernetes_profile.md — thiếu dữ liệu pricing và tính năng mới của Viettel IDC.
+- Thiếu dữ liệu pricing công khai cho GPU Blackwell (G7) của AWS để ước tính TCO cho scenario AI Inference (S4).
+- Thiếu thông tin về chính sách egress pricing của GreenNode VKS so với AWS (inter-region/internet) để tính toán TCO cho workload data-heavy.

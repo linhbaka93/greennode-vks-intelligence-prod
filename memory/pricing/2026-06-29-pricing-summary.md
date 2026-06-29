@@ -4,31 +4,27 @@ Source: competitor-monitor run | Model: qwen/qwen3-5-27b
 
 ## Key Findings
 
-- [RSS] [AWS HPC Blog](https://aws.amazon.com/blogs/hpc/transforming-hpc-operations-with-intelligent-workload-orchestration-on-aws) 2026-06-26 — AWS công bố giải pháp tự động hóa orchestration cho HPC, giảm chi phí vận hành thủ công. Tác động: ⚠️ GreenNode VKS có thể thua về TCO cho workload HPC/AI nặng nếu không có tính năng tự động hóa tương đương, dù giá list có thể thấp hơn. Khách hàng sẽ so sánh OpEx tổng thể chứ không chỉ giá compute.
-- [RSS] [AWS Containers Blog](https://aws.amazon.com/blogs/containers/amazon-eks-now-supports-control-plane-egress-through-your-vpc) 2026-06-22 — AWS EKS cho phép định tuyến control plane traffic qua VPC khách hàng. Tác động: ❌ Feature gap bảo mật nghiêm trọng. Khách hàng Gov/Finance (đoạn 2026-06-26-positioning-summary.md) yêu cầu data residency và an ninh mạng cao sẽ ưu tiên AWS nếu GreenNode chưa có Private Link cho control plane, bất kể giá VKS rẻ hơn.
-- [RSS] [AWS News Blog](https://aws.amazon.com/blogs/aws/announcing-amazon-ec2-g7-instances-accelerated-by-nvidia-rtx-pro-4500-blackwell-server-edition-gpus) 2026-06-18 — AWS GA GPU Blackwell (RTX PRO 4500) cho AI inference. Tác động: ❌ Feature gap phần cứng. Nếu GreenNode chưa có GPU Blackwell, sẽ mất lợi thế cạnh tranh về hiệu năng/giá cho các workload LLM inference nặng, đặc biệt khi khách hàng không bị ràng buộc data residency tuyệt đối.
-- [Scrape] Viettel Cloud | https://viettelcloud.vn/san-pham/kubernetes | fetched_at=2026-06-29 — Trang sản phẩm VOKS được scrape nhưng chỉ trả về HTML/CSS, không có bảng giá. Tác động: Không xác định được giá list của đối thủ trực tiếp tại VN. Cần xác minh thủ công hoặc yêu cầu Sales Ops cung cấp quote mẫu.
-- [Scrape] Bizfly Cloud | https://bizflycloud.vn/kubernetes | fetched_at=2026-06-29 — Trang sản phẩm BKE không hiển thị giá công khai. Tác động: Đối thủ VN đang giữ chiến lược giá kín (sales-led), khiến việc so sánh TCO trực tiếp trở nên khó khăn. GreenNode cần chuẩn bị battlecard dựa trên TCO ước tính thay vì so sánh giá list.
+- [RSS] [AWS Containers Blog](https://aws.amazon.com/blogs/containers/amazon-eks-now-supports-control-plane-egress-through-your-vpc) 2026-06-22 — AWS công bố tính năng 'customer-routed control plane egress' cho EKS. Tác động: Tăng áp lực cạnh tranh về bảo mật (churn risk) cho GreenNode VKS. Nếu GreenNode chưa có tính năng tương đương, khách hàng ngân hàng/chính phủ có thể yêu cầu giảm giá hoặc chuyển dịch sang AWS nếu họ chấp nhận rủi ro pháp lý thấp hơn. GreenNode cần xác minh tính năng này và chuẩn bị talk track về lợi thế 'data residency' tuyệt đối.
+- [RSS] [AWS Containers Blog](https://aws.amazon.com/blogs/containers/faster-nodes-smarter-scaling-whats-new-inside-amazon-elastic-kubernetes-service-amazon-eks-auto-mode) 2026-06-23 — AWS cải tiến EKS Auto Mode (runtime, compute, storage, networking). Tác động: AWS đang tối ưu hóa trải nghiệm 'zero-management', làm giảm rào cản vận hành. GreenNode VKS cần xem xét lại định vị giá trị: nếu không thể cạnh tranh về độ tự động hóa, cần nhấn mạnh vào hỗ trợ kỹ thuật chuyên sâu (premium support) và tuân thủ pháp lý nội địa để biện minh cho mức giá.
+- [RSS] [Vietnam.vn](https://news.google.com/rss/articles/CBMijwFBVV95cUxQUF9HNTZhVFREd0p4TWY5S0JEOEZTc09kTkQxVzg0MlRrZWQwWWRySF9vRmsyS3RfQmJsYnY2azRMazNsME9MSVo5eTR4SUxHUzc2dUNCUTdvYXBiOS11T0IyemU3eDBhWFV1aGNWaW9YZWJMQVRKbTJySVFpaW9YQjVQSmpMbFFrUmF2VU5Fdw?oc=5) 2026-06-27 — CMC Cloud hợp tác với UBND TP. Hà Nội phát triển chính phủ số và thành phố AI. Tác động: CMC gia tăng thị phần trong phân khúc GovTech. GreenNode cần rà soát lại chiến lược giá cho các dự án chính phủ (RFP) sắp tới, đặc biệt khi đối thủ có lợi thế địa phương mạnh.
+- [Scrape] Viettel Cloud | https://viettelcloud.vn/san-pham/kubernetes | fetched_at=2026-06-29 — Trang sản phẩm Viettel vOKS không hiển thị bảng giá công khai. Tác động: Viettel tiếp tục chiến lược 'sales-led pricing' (giá qua đàm phán). GreenNode không thể so sánh trực tiếp giá niêm yết, cần tập trung vào TCO tổng thể (bao gồm chi phí vận hành và tuân thủ) thay vì chỉ so sánh giá compute.
 
 ## Recommended Actions
 
-- Talk Track cho Sales: Khi khách hàng hỏi về giá, chuyển hướng sang TCO tổng thể (OpEx + CapEx + Security). Nhấn mạnh GreenNode VKS giúp giảm chi phí tuân thủ pháp lý (Luật BVDLCN 2025) và chi phí vận hành nhờ Data Residency tuyệt đối, bù đắp cho việc có thể thiếu một số tính năng tự động hóa của AWS.
-- Pricing Recommendation: Đề xuất mô hình giá trị (value-based pricing) cho phân khúc Gov/Finance, tập trung vào tính năng Private Cluster và IP Whitelist thay vì cạnh tranh giá list. Xem xét gói Reserved Instances với discount sâu hơn để cạnh tranh với AWS EKS Auto Mode.
-- Theo dõi thêm: Rà soát roadmap GPU (A100/H100/Blackwell) của GreenNode và so sánh với AWS G7 instances. Nếu có kế hoạch ra mắt GPU mới, cần chuẩn bị pricing strategy riêng cho workload AI inference.
-- Yêu cầu Sales Ops cung cấp quote mẫu từ FPT, Bizfly, Viettel để cập nhật dữ liệu pricing và tính toán TCO chính xác hơn.
+- Talk Track cho Sales: Khi khách hàng hỏi về giá so với AWS, nhấn mạnh 'Total Cost of Ownership' (TCO) bao gồm chi phí tuân thủ pháp lý (Data Residency), chi phí vận hành (managed service) và rủi ro pháp lý khi dùng hyperscaler. Không so sánh trực tiếp giá compute nếu không có dữ liệu mới.
+- Pricing Recommendation: Rà soát lại bảng giá VKS cho phân khúc Enterprise/Gov. Nếu tính năng 'control plane egress' chưa có, cần ưu tiên phát triển hoặc chuẩn bị giải pháp thay thế (workaround) để không mất điểm trong RFP.
+- Theo dõi thêm: Thiết lập cảnh báo tự động cho các thay đổi pricing trên trang web của AWS, GCP, Azure và các đối thủ nội địa. Yêu cầu bộ phận Sales thu thập thông tin giá từ các deal gần đây của đối thủ để cập nhật vào workspace.
+- Phân tích TCO giả định: Sử dụng dữ liệu pricing cũ (với nhãn 'STALE') để xây dựng mô hình TCO giả định cho các scenario S1-S5, nhưng phải ghi rõ giả định và ngày dữ liệu. So sánh với các tính năng mới của AWS để đánh giá khoảng cách giá trị.
 
 ## Risks
 
-- Dữ liệu pricing đối thủ (AWS, FPT, Bizfly, Viettel) đã STALE (>12 ngày), không thể đảm bảo độ chính xác cho TCO calculation.
-- Thiếu dữ liệu về giá GPU Blackwell của AWS và roadmap GPU của GreenNode, gây khó khăn trong việc định giá cho workload AI inference.
-- Không có thông tin về discount structure (Reserved, Spot) của đối thủ VN, dẫn đến ước tính TCO có thể sai lệch lớn.
-- Feature gap về bảo mật (control plane egress) có thể khiến GreenNode mất deal lớn dù giá rẻ hơn, do khách hàng Gov/Finance ưu tiên an ninh.
+- Thiếu dữ liệu pricing cụ thể (USD/giờ hoặc VND/tháng) từ tất cả các đối thủ trong 3 ngày qua, không thể tính toán TCO chính xác.
+- Dữ liệu về tính năng mới của AWS (Control Plane Egress) có thể tạo ra rủi ro churn nếu GreenNode VKS không có tính năng tương đương hoặc không có chiến lược giá trị rõ ràng để bù đắp.
+- Các đối thủ nội địa (Viettel, FPT, Bizfly) sử dụng mô hình giá kín (sales-led), gây khó khăn cho việc so sánh giá niêm yết trực tiếp.
 
 ## Gaps / Thiếu dữ liệu
 
-- Cần cập nhật: competitors/2026-06-17_aws-eks_profile.md — dữ liệu cũ, chưa dùng được cho pricing analysis.
-- Cần cập nhật: competitors/2026-06-17_fpt-cloud-fke_profile.md — dữ liệu cũ, chưa dùng được.
-- Cần cập nhật: competitors/2026-06-17_bizfly-bke_profile.md — dữ liệu cũ, chưa dùng được.
-- Cần cập nhật: competitors/2026-06-17_viettel-voks_profile.md — dữ liệu cũ, chưa dùng được.
-- Không fetch được bảng giá công khai từ trang web của Viettel VOKS, FPT FKE, Bizfly BKE (chỉ thấy HTML/CSS). Cần xác minh thủ công hoặc yêu cầu Sales Ops cung cấp quote mẫu.
-- Thiếu thông tin về giá GPU Blackwell của AWS và thời gian ra mắt tại VN của GreenNode.
+- Cần cập nhật: memory/pricing/vks-pricing-2026.md — Dữ liệu pricing hiện tại trong workspace có thể đã cũ (last updated 2026-05-20), cần xác minh lại các mức giá compute, storage, egress và control plane.
+- Không có thông tin về chương trình khuyến mãi (promo) hoặc giá Reserved Instances mới từ AWS, GCP, Azure trong 3 ngày qua.
+- Không có dữ liệu về giá GPU (H100/A100) mới nhất từ các đối thủ, cần thiết cho phân tích TCO AI Inference/Training.
+- Cần xác minh xem GreenNode VKS đã có tính năng 'customer-routed control plane egress' hay chưa để so sánh trực tiếp với AWS.

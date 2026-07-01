@@ -4,27 +4,27 @@ Source: monthly-brief run | Model: qwen/qwen3-5-27b
 
 ## Key Findings
 
-- [RSS] [AWS News Blog](https://aws.amazon.com/blogs/aws/aws-weekly-roundup-ny-summit-recap-local-zone-in-hanoi-grok-4-3-in-bedrock-price-reductions-and-more-june-22-2026) 2026-06-22 — AWS thông báo giảm giá chung trong bản tin tuần. Tác động: Tăng áp lực biên lợi nhuận cho GreenNode nếu chỉ cạnh tranh bằng giá compute. GreenNode nên chuẩn bị battlecard nhấn mạnh TCO toàn diện (bao gồm chi phí tuân thủ pháp lý mà hyperscaler không cover).
-- [RSS] [FPT Cloud Blog](https://fptcloud.com/dung-thu-chi-0d-nhan-03-uu-dai-cung-fpt-cloud) 2026-06-04 — FPT Cloud triển khai chương trình 'Dùng thử 0 đồng'. Tác động: Rủi ro churn ở phân khúc SME/Startup nhạy cảm giá. GreenNode nên xem xét mở rộng free tier hoặc trial period cho VKS để giữ chân khách hàng giai đoạn onboarding.
-- [RSS] [GreenNode Blog](https://greennode.ai/blog/digest-june-2026) 2026-06-30 — GreenNode ra mắt Cost Explorer trong digest tháng 6. Tác động: Cải thiện khả năng minh bạch hóa chi phí cho khách hàng, giúp Sales thuyết phục về TCO thực tế thay vì chỉ list price. Cần đào tạo Sales cách sử dụng tool này trong proposal.
-- [RSS] [AWS Containers Blog](https://aws.amazon.com/blogs/containers/amazon-eks-now-supports-control-plane-egress-through-your-vpc) 2026-06-22 — AWS cho phép định tuyến egress control plane qua VPC của khách hàng. Tác động: Thu hẹp khoảng cách về bảo mật/compliance với GreenNode VKS. Nếu khách hàng yêu cầu tính năng này, GreenNode cần xác nhận ngay khả năng tương đương để tránh mất điểm trong RFP.
+- [RSS] [AWS Containers Blog](https://aws.amazon.com/blogs/containers/faster-nodes-smarter-scaling-whats-new-inside-amazon-elastic-kubernetes-service-amazon-eks-auto-mode) 2026-06-23 — AWS nâng cấp EKS Auto Mode tự động hóa runtime/compute/storage/networking. Tác động: Giảm chi phí vận hành (Ops Cost) cho khách hàng AWS; GreenNode VKS nếu thiếu tự động hóa tương đương sẽ thua về TCO tổng thể dù giá compute ngang bằng. Hành động: Đánh giá roadmap tự động hóa cluster scaling của VKS.
+- [RSS] [AWS News Blog](https://aws.amazon.com/blogs/aws/announcing-amazon-ec2-g7-instances-accelerated-by-nvidia-rtx-pro-4500-blackwell-server-edition-gpus) 2026-06-18 — AWS GA instance G7 với GPU NVIDIA RTX PRO 4500 Blackwell. Tác động: Tạo lợi thế hiệu năng/giá cho AI Inference nặng trên AWS; GreenNode mất cơ hội deal AI cao cấp nếu không có GPU thế hệ mới hoặc phải chấp nhận margin thấp hơn để bù phần cứng cũ. Hành động: Rà soát inventory GPU hiện tại và kế hoạch upgrade Blackwell.
+- [RSS] [FPT Cloud Blog](https://fptcloud.com/dung-thu-chi-0d-nhan-03-uu-dai-cung-fpt-cloud) 2026-06-04 — FPT Cloud tung chương trình dùng thử 0 đồng kèm ưu đãi. Tác động: Tín hiệu cạnh tranh giá trực tiếp ở phân khúc SMB/Startup; áp lực giảm giá entry-level cho GreenNode VKS. Hành động: Xem xét gói Free Tier hoặc Promo ngắn hạn cho SME để giữ thị phần.
+- [Workspace] greennode/2026-06-26-positioning-summary.md — GreenNode được TP.HCM cấp Chứng nhận Doanh nghiệp Công nghệ và hợp tác MSB Bank. Tác động: Khẳng định vị thế Sovereign AI, cho phép định giá premium cho segment Gov/Finance bất chấp feature gap kỹ thuật. Hành động: Nhấn mạnh 'Compliance & Data Residency' trong talk track pricing thay vì chỉ so sánh giá list.
 
 ## Recommended Actions
 
-- Talk Track Sales: Khi khách hỏi về chênh lệch giá với AWS, hãy dẫn dắt sang 'Compliance Risk Cost'. Ví dụ: 'Giá AWS thấp hơn X%, nhưng chi phí xử lý vi phạm Luật BVDLCN 2025 hoặc data residency risk có thể lên tới Y% doanh thu.'
-- Product Marketing: Đẩy mạnh tính năng Cost Explorer trong các demo. Chứng minh GreenNode giúp khách hàng tối ưu chi phí vận hành (FinOps) tốt hơn nhờ visibility cao hơn.
-- Pricing Strategy: Xem xét đề xuất gói 'Trial Extended' hoặc 'Proof of Concept Discount' cho các deal Enterprise lớn để đối phó với Free Trial của FPT Cloud.
-- Competitive Intel: Yêu cầu Product Team xác nhận timeline feature parity cho 'Control Plane Egress via VPC' để trả lời RFP ngân hàng/chính phủ.
+- Talk Track Sales: Khi khách hỏi giá, chuyển trọng tâm sang TCO bao gồm chi phí tuân thủ (compliance cost) và rủi ro pháp lý khi dùng hyperscaler global, thay vì chỉ so sánh giá giờ chạy máy ảo.
+- Internal Task: Yêu cầu Product Team cung cấp bảng giá VKS mới nhất (Q3 2026) và roadmap GPU Blackwell để cập nhật battlecard.
+- Pricing Strategy: Đề xuất gói 'Sovereign Bundle' (VKS + Compliance Audit Support) để gia tăng giá trị cảm nhận cho khách hàng Gov/Bank.
+- Monitoring: Theo dõi sát sao các chương trình promo của FPT/Bizfly trong 30 ngày tới để phản ứng kịp thời.
 
 ## Risks
 
-- Dữ liệu pricing từ workspace (`greennode/2026-05-20...`) đã cũ hơn 1 tháng so với thời điểm hiện tại (July 2026), có thể không phản ánh chính sách giá mới nhất.
-- Thiếu số liệu cụ thể về mức giảm giá của AWS và FPT Cloud, khó định lượng delta TCO chính xác.
-- Rủi ro churn tăng nếu khách hàng Enterprise so sánh trực tiếp list price GPU/Compute mà bỏ qua yếu tố compliance.
+- Thiếu bảng giá niêm yết (Price List) cập nhật của GreenNode VKS, AWS, FPT, Bizfly để tính toán delta chính xác.
+- Dữ liệu workspace về VKS Product Overview (2026-05-20) có thể đã cũ so với digest tháng 6/2026.
+- Không có thông tin về FX rate VND/USD tại thời điểm phân tích để normalize giá.
 
 ## Gaps / Thiếu dữ liệu
 
-- Cần cập nhật: Bảng giá công khai mới nhất của GreenNode VKS (Compute, Storage, Egress) — Dữ liệu hiện tại từ May 2026 chưa đủ để tính toán TCO scenario S1-S5.
-- Cần xác minh: Mức giảm giá cụ thể (%) của AWS trong bản tin 22/06/2026 — Snippet RSS chỉ ghi 'price reductions' không có con số.
-- Cần xác minh: Chi tiết gói Free Trial của FPT Cloud (thời hạn, giới hạn tài nguyên) để đánh giá mức độ ảnh hưởng đến segment SME.
-- Cần cập nhật: Chính sách giá cho instance GPU mới (Blackwell G7) của AWS để so sánh với roadmap GPU của GreenNode.
+- Cần thu thập bảng giá chi tiết (Compute, Storage, Egress, LB) của GreenNode VKS, AWS (ap-southeast-1), FPT Cloud, Bizfly Cloud.
+- Cần làm rõ mức discount Reserved Instances/Committed Use của từng nhà cung cấp.
+- Cần xác minh nội dung chi tiết bài 'price reductions' của AWS để biết scope ảnh hưởng (EC2, S3, hay EKS).
+- File workspace `greennode/2026-05-20_greennode-vks_product-overview.md` cần kiểm tra freshness (cũ >30 ngày).

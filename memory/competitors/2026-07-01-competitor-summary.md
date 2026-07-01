@@ -1,22 +1,25 @@
 # Competitor Summary — 2026-07-01
 
-Source: monthly-brief run | Model: qwen/qwen3-5-27b
+Source: competitor-monitor run | Model: qwen/qwen3-5-27b
 
 ## Key Findings
 
-- [RSS] AWS Containers Blog | https://aws.amazon.com/blogs/containers/amazon-eks-now-supports-control-plane-egress-through-your-vpc | published_at=2026-06-22
-- [RSS] Vietnam.vn | https://news.google.com/rss/articles/CBMijwFBVV95cUxQUF9HNTZhVFREd0p4TWY5S0JEOEZTc09kTkQxVzg0MlRrZWQwWWRySF9vRmsyS3RfQmJsYnY2azRMazNsME9MSVo5eTR4SUxHUzc2dUNCUTdvYXBiOS11T0IyemU3eDBhWFV1aGNWaW9YZWJMQVRKbTJySVFpaW9YQjVQSmpMbFFrUmF2VU5Fdw?oc=5 | published_at=2026-06-27
-- [RSS] AWS News Blog | https://aws.amazon.com/blogs/aws/introducing-amazon-bedrock-managed-knowledge-base-for-faster-more-accurate-enterprise-ai-applications | published_at=2026-06-17
-- [RSS] GreenNode Blog | https://greennode.ai/blog/digest-june-2026 | published_at=2026-06-30
-- [RSS] CNCF Blog | https://www.cncf.io/blog/2026/07/01/understanding-dynamic-resource-allocation-in-kubernetes | published_at=2026-07-01
+- [RSS] [AWS Containers Blog](https://aws.amazon.com/blogs/containers/announcing-amazon-eks-rollback-for-safe-and-reliable-management-of-cluster-upgrades) 2026-07-01 — AWS công bố Amazon EKS Version Rollback, cho phép rollback upgrade K8s version trong vòng 7 ngày mà không cần rebuild cluster. — Tác động: Tăng tiêu chuẩn về 'operational safety' cho Managed K8s. Khách hàng Enterprise/Gov sẽ kỳ vọng khả năng phục hồi nhanh khi upgrade lỗi.
+GreenNode nên: Đánh giá lại quy trình upgrade VKS; nếu chưa có rollback tự động, cần ghi rõ SLA recovery time hoặc phát triển tính năng tương đương để giảm churn risk.
+- [RSS] [CNCF Blog](https://www.cncf.io/blog/2026/07/01/understanding-dynamic-resource-allocation-in-kubernetes) 2026-07-01 — Dynamic Resource Allocation (DRA) đạt GA trong Kubernetes v1.35; NVIDIA dra-driver-nvidia-gpu chuyển sang SIGs. — Tác động: DRA là xu hướng bắt buộc cho workload AI/GPU hiệu quả cao. Nếu GreenNode VKS hỗ trợ DRA sớm hơn đối thủ VN, đây là lợi thế kỹ thuật lớn.
+GreenNode nên: Kiểm tra roadmap VKS về DRA support; nếu đã có, đưa vào battlecard như điểm khác biệt 'AI-native infrastructure'.
+- [RSS] [Bizfly Cloud News](https://bizflycloud.vn/tin-tuc/kubernetes-136-haru-giai-thich-chi-tiet-20260629145644358.htm) 2026-06-29 — Bizfly Cloud đăng bài giải thích chi tiết Kubernetes 1.36 (Haru), cùng các bài về Kafka, API performance. — Tác động: Bizfly đang đẩy mạnh developer engagement qua content kỹ thuật sâu, cạnh tranh trực tiếp với GreenNode về uy tín cộng đồng.
+GreenNode nên: Tăng tần suất blog kỹ thuật (không chỉ digest sản phẩm); cân nhắc series 'Deep Dive' về K8s versions mới để giữ chân DevOps audience.
+- [Scrape] Viettel IDC | https://viettelcloud.vn/san-pham/kubernetes | fetched_at=2026-07-01 — Trang sản phẩm VKS/vOKS trả về nội dung HTML/CSS không parse được text chính sách/giá. — Tác động: Không xác minh được thay đổi pricing/feature gần nhất của Viettel IDC từ nguồn public.
+GreenNode nên: Yêu cầu team Sales/Partner cung cấp thông tin internal về deal Viettel gần đây; không dùng dữ liệu cũ để so sánh TCO.
 
 ## Risks
 
-- {"risk": "Feature Gap - Control Plane Security", "description": "AWS EKS đã có tính năng định tuyến control plane traffic qua VPC riêng. Nếu GreenNode VKS chưa có cơ chế tương đương (private endpoint cho API server), sẽ khó thắng thầu các dự án ngân hàng/chính phủ yêu cầu strict network isolation.", "mitigation": "Kiểm tra kiến trúc mạng hiện tại của VKS. Nếu chưa hỗ trợ, cần có timeline rõ ràng hoặc giải pháp workaround (Private Link/VPC Peering) để Sales trình bày."}
-- {"risk": "Gov Segment Competition", "description": "CMC Cloud vừa ký hợp tác lớn với UBND TP. Hà Nội. Đối thủ nội địa đang chiếm lĩnh các dự án chính phủ số ở miền Bắc.", "mitigation": "Tập trung vào lợi thế Chứng nhận Công nghệ cao TP.HCM và mối quan hệ hiện hữu (ví dụ: MSB Bank) để mở rộng sang các tỉnh thành phía Nam trước, sau đó tìm đối tác chiến lược cho miền Bắc."}
+- ❌ **Feature Gap - Cluster Upgrade Safety**: AWS EKS Rollback tạo áp lực lên GreenNode VKS nếu chưa có cơ chế rollback tự động tương đương. Khách hàng Gov/Bank coi trọng tính ổn định khi upgrade major version.
+- ⚠️ **Data Stale - Competitor Specs**: Profile Viettel/FPT/CMC trong workspace có thể đã cũ (last updated trước tháng 6). Scrape hiện tại không lấy được nội dung mới, gây rủi ro so sánh sai lệch về K8s version hoặc SLA.
 
 ## Gaps / Thiếu dữ liệu
 
-- Pricing details: Chưa có dữ liệu cụ thể về mức giá mới của FPT Cloud FKE hoặc Viettel IDC VKS trong tuần qua để so sánh TCO.
-- Feature Parity: Chưa xác minh được GreenNode VKS đã hỗ trợ Kubernetes v1.35 (DRA GA) hay chưa. Cần kiểm tra internal docs.
-- Social Signals: Không fetch được nội dung chi tiết từ trang Facebook/LinkedIn của đối thủ do login wall/consent wall. Chỉ dựa vào RSS/Blog public.
+- Cần cập nhật: `competitors/2026-06-xx-viettel-idc-profile.md` — Dữ liệu cũ, scrape thất bại, chưa xác minh được pricing/feature mới nhất của Viettel IDC VKS.
+- Cần cập nhật: `competitors/2026-06-xx-fpt-cloud-profile.md` — Chưa có evidence mới về FKE pricing hoặc region expansion.
+- Thiếu dữ liệu: CMC Cloud K8s — Không có tin mới trong 3 ngày qua, cần refresh từ nguồn khác ngoài RSS Google News.

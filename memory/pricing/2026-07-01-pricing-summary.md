@@ -1,28 +1,29 @@
 # Pricing Summary — 2026-07-01
 
-Source: monthly-brief run | Model: qwen/qwen3-5-27b
+Source: competitor-monitor run | Model: qwen/qwen3-5-27b
 
 ## Key Findings
 
-- [RSS] [AWS Containers Blog](https://aws.amazon.com/blogs/containers/faster-nodes-smarter-scaling-whats-new-inside-amazon-elastic-kubernetes-service-amazon-eks-auto-mode) 2026-06-23 — AWS cải tiến EKS Auto Mode giảm overhead vận hành. Tác động: Tăng áp lực cạnh tranh về TCO vận hành cho GreenNode VKS. Hành động: Đánh giá lại các tính năng automation của VKS để so sánh lợi ích giảm nhân sự DevOps.
-- [RSS] [Vietnam.vn](https://news.google.com/rss/articles/CBMijwFBVV95cUxQUF9HNTZhVFREd0p4TWY5S0JEOEZTc09kTkQxVzg0MlRrZWQwWWRySF9vRmsyS3RfQmJsYnY2azRMazNsME9MSVo5eTR4SUxHUzc2dUNCUTdvYXBiOS11T0IyemU3eDBhWFV1aGNWaW9YZWJMQVRKbTJySVFpaW9YQjVQSmpMbFFrUmF2VU5Fdw?oc=5) 2026-06-27 — CMC Cloud hợp tác chính phủ số Hà Nội. Tác động: Khẳng định cuộc đua Sovereign Cloud không chỉ là giá mà là quan hệ đối tác chiến lược. Hành động: Sales cần nhấn mạnh chứng nhận Doanh nghiệp Công nghệ cao của GreenNode khi đấu thầu Gov/Enterprise.
-- [Workspace] greennode/2026-05-20_greennode-vks_product-overview.md — Hồ sơ sản phẩm VKS cập nhật tháng 5/2026. Tác động: Dữ liệu giá có thể đã cũ (>30 ngày). Hành động: Cần xác minh bảng giá hiện hành trước khi dùng cho RFP Q3.
+- [RSS] [AWS Containers Blog](https://aws.amazon.com/blogs/containers/amazon-eks-now-supports-control-plane-egress-through-your-vpc) 2026-06-22 — AWS cho phép định tuyến lưu lượng control plane qua VPC khách hàng. Tác động: Giảm rủi ro compliance cho ngân hàng/chính phủ; GreenNode cần xác nhận VKS đã đáp ứng yêu cầu này để tránh churn risk khi khách so sánh tính năng bảo mật.
+- [RSS] [AWS News Blog](https://aws.amazon.com/blogs/aws/upgrade-amazon-eks-clusters-with-confidence-using-kubernetes-version-rollbacks) 2026-07-01 — AWS ra mắt tính năng rollback phiên bản Kubernetes trong 7 ngày. Tác động: Giảm chi phí downtime do lỗi upgrade; GreenNode cần rà soát quy trình upgrade VKS để đảm bảo SLA tương đương.
+- [Scrape] Viettel/Bizfly/FPT | https://viettelcloud.vn/san-pham/kubernetes | fetched_at=2026-07-01 — Không thu thập được dữ liệu giá từ trang web đối thủ (chỉ thấy CSS/JS). Tác động: Không thể so sánh TCO trực tiếp; Sales cần dựa vào báo giá tùy chỉnh (quote-based) thay vì list price.
 
 ## Recommended Actions
 
-- Talk Track: Khi khách hỏi giá, chuyển trọng tâm sang TCO toàn phần (bao gồm chi phí tuân thủ pháp lý BVDLCN 2025) thay vì chỉ so sánh giá compute giờ.
-- Internal Check: Yêu cầu Product Team xác nhận lại bảng giá VKS và các chương trình Reserved Instance (nếu có) trước 15/07/2026.
-- Competitor Intel: Thu thập brochure giá của CMC Cloud sau tin hợp tác Hà Nội để đánh giá mức giá tham chiếu cho segment Gov.
+- Talk Track: Nhấn mạnh Sovereign Compliance & Data Residency thay vì chỉ so sánh giá compute. Đối thủ global (AWS) đang tăng tính năng bảo mật (Egress), nhưng GreenNode vẫn giữ lợi thế tuyệt đối về Luật BVDLCN 2025.
+- Pricing Recommendation: Yêu cầu Product Team cung cấp bảng giá VKS mới nhất (vòng 7 ngày tới) để update TCO calculator.
+- Feature Check: Kiểm tra ngay khả năng định tuyến traffic control plane của VKS. Nếu chưa có, đánh giá lộ trình roadmap để tránh mất điểm với khách hàng ngân hàng.
+- Sales Enablement: Cung cấp tài liệu so sánh 'Hidden Cost' (egress, support, migration) giữa VKS và Hyperscaler, vì list price thường không phản ánh đúng TCO thực tế.
 
 ## Risks
 
-- Dữ liệu giá cụ thể (USD/VND/giờ) không có trong evidence bundle hoặc memory context mới nhất.
-- Hồ sơ sản phẩm VKS trong memory có timestamp tháng 5/2026, có nguy cơ stale (>30 ngày) so với thời điểm hiện tại (01/07/2026).
-- Không có thông tin về discount/reserved instance cho đối thủ nội địa (FPT, Viettel) trong feed này.
+- Dữ liệu pricing GreenNode VKS trong workspace (file 2026-05-20) đã quá 40 ngày, chưa được refresh theo policy >30 ngày.
+- Không có số liệu giá cụ thể từ đối thủ nội địa để tính toán delta TCO chính xác.
+- Tính năng Control Plane Egress của AWS có thể tạo lợi thế cạnh tranh về security/compliance mà không cần giảm giá.
 
 ## Gaps / Thiếu dữ liệu
 
-- Cần cập nhật: Bảng giá public VKS mới nhất (tháng 6/2026) — hiện tại chỉ có hồ sơ tháng 5.
-- Cần thu thập: Pricing page của FPT Cloud và Bizfly Cloud cho Managed K8s để so sánh delta.
-- Cần xác minh: Chi tiết 'cost-optimized' trong bài viết AWS Nova 2 Lite + Claude (liệu có giảm giá model hay chỉ tối ưu kiến trúc?).
-- Thiếu dữ liệu: Egress fee và LB cost của GreenNode so với AWS Local Zone Hanoi (nếu có).
+- Cần cập nhật: greennode/2026-05-20_greennode-vks_product-overview.md — dữ liệu cũ, chưa dùng được cho phân tích giá hiện tại.
+- Thiếu bảng giá niêm yết (list price) của Viettel VOKS, Bizfly BKE, FPT FKE — scraper không lấy được nội dung giá.
+- Thiếu thông tin về discount structure (Reserved/Savings Plan) của đối thủ nội địa để so sánh TCO dài hạn.
+- Cần xác minh: GreenNode VKS có tính năng tương đương 'Control Plane Egress' hay không?

@@ -1,0 +1,12 @@
+# Positioning Summary — 2026-07-03
+
+Source: weekly-digest run | Model: google/gemma-4-31b-it
+
+## Key Findings
+
+- {"segment": "Enterprise & Gov (Sovereign AI/Cloud)", "target_customer": "Tổ chức chính phủ, ngân hàng, doanh nghiệp lớn tại Việt Nam chịu ràng buộc bởi Luật BVDLCN 2025 và Luật An ninh mạng 2018.", "top_proof_point": "[Workspace] [greennode/2026-06-26-positioning-summary.md] — GreenNode là nhà cung cấp hạ tầng AI đầu tiên được TP.HCM cấp Chứng nhận Doanh nghiệp Công nghệ và đã hợp tác chiến lược với MSB Bank vận hành hàng trăm ứng dụng.", "differentiation": {"greennode_advantage": "[Workspace] [greennode/2026-06-26-positioning-summary.md] — Data Residency tuyệt đối tại Việt Nam với 3 region (HCM, HAN, BKK) và tuân thủ pháp lý nội địa chặt chẽ.", "competitor_advantage": "[RSS] [vietnamnews.vn](https://news.google.com/rss/articles/CBMiqwFBVV95cUxQYlBCY1FrdVQzbXhwNS1pcGtlS05hd1FSZGpYQnJ2bE5pMnhrUUNONWtQampHUV92WHpMd2V6UkdJX19XbFVDdndmcUZyeVIzMFIyWkxYZmhLRS1leWJZeGRLblJ0REhTandMLU42NEtQRVFHaDBtZGNVTWhfbFhhNkNOYjhQSHhsbDBzSFFQWXNtV0lSRlNPV21pUTAzMkQtM1VyNl9tZHBWM28?oc=5) 2026-07-02 — AWS Local Zone tại Hà Nội giảm độ trễ và tăng khả năng residency cho workload AI tại miền Bắc; [RSS] [AWS Containers Blog](https://aws.amazon.com/blogs/containers/amazon-eks-now-supports-control-plane-egress-through-your-vpc) 2026-06-22 — AWS EKS hỗ trợ 'customer-routed control plane egress' cho phép traffic control plane đi qua VPC khách hàng, không ra internet public."}, "recommended_actions": {"talk_track": {"opening": "Đối với các tổ chức chịu ràng buộc bởi Luật BVDLCN 2025, việc kiểm soát tuyệt đối vị trí dữ liệu và luồng traffic là yêu cầu tiên quyết.", "discovery": "Anh/chị có yêu cầu cụ thể nào về việc traffic của Control Plane không được phép đi qua internet public để đáp ứng tiêu chuẩn bảo mật nội bộ không?", "value": "GreenNode VKS không chỉ cung cấp Data Residency tại 3 region Việt Nam mà còn là đối tác hạ tầng AI được chứng nhận bởi TP.HCM, đảm bảo tuân thủ pháp lý cao nhất.", "close": "Chúng tôi có thể triển khai mô hình Private Cluster với IP Whitelist để cô lập hoàn toàn môi trường vận hành của anh/chị."}, "message_to_avoid": "Tránh khẳng định 'vượt trội hoàn toàn về bảo mật mạng' khi chưa có tính năng tương đương 'customer-routed control plane egress' của AWS EKS."}}
+
+## Gaps / Thiếu dữ liệu
+
+- Tác động tới GreenNode: Rủi ro mất deal với khách hàng Tài chính/Chính phủ yêu cầu bảo mật mạng tuyệt đối.
+- Tác động tới GreenNode: Feature gap đối với khách hàng chạy workload AI/HPC nặng.
